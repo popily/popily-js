@@ -141,7 +141,7 @@ function Popily(token, apiUrl) {
 
       ['full', 'height', 'width'].forEach(function(key) {
         if(key in params)
-          payload[key] = params[key].join(',')
+          payload[key] = params[key];
       });
       
       _request('GET', '/insights/' + insightId + '/', {qs: payload}, cb);
@@ -171,5 +171,5 @@ function Popily(token, apiUrl) {
   }
 }
 
-
+window.Popily = Popily;
 module.exports = Popily;
