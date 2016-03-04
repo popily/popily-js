@@ -4,7 +4,7 @@
     "Jonathon Morgan <jonathon@goodattheinternet.com>"
   ],
   "description": "JavaScript wrapper for the Popily API",
-  "main": "build/popily-js.js",
+  "main": "build/popily.js",
   "moduleType": [
     "globals"
   ],
