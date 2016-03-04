@@ -1,0 +1,24 @@
+{
+  "name": "popily-js",
+  "authors": [
+    "Jonathon Morgan <jonathon@goodattheinternet.com>"
+  ],
+  "description": "JavaScript wrapper for the Popily API",
+  "main": "build/popily-js.js",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "popily",
+    "charts"
+  ],
+  "license": "MIT",
+  "homepage": "https://popily.com",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
