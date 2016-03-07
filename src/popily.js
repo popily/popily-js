@@ -1,6 +1,7 @@
 'use strict';
 
 
+var c3 = require('c3');
 var request = require('browser-request');
 
 Popily.DEFAULT_URL = 'https://popily.com';
