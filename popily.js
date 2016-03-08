@@ -39,7 +39,7 @@ function Popily(token, apiUrl) {
     
     request(params, function(err, httpResponse, body) {
       if(err)
-        return cb(_error('Request error', err));
+        return callback(_error('Request error', err));
         
       if(httpResponse.statusCode === 401)
         return callback(_error('Invalid API token'));
