@@ -573,7 +573,21 @@ function Popily(token, apiUrl) {
     return packedStr;
   }
   
-  
+  var assignCustomizations = function(dataDict, insightData) {
+    [
+      'title',
+      'x_label',
+      'y_label',
+      'z_label',
+      'category_order',
+      'time_interval'
+    ].forEach(function(key) {
+      if(key in insightData)
+        dataDict[key] = insightData[key];
+    });
+
+    return dataDict;
+  };
   
   return {
         
@@ -616,7 +630,7 @@ function Popily(token, apiUrl) {
       params = params || {};
       var payload = {'source': sourceId};
 
-      ['columns', 'insight_types', 'insight_type_categories'].forEach(function(key) {
+      ['columns', 'insight_types', 'insight_actions'].forEach(function(key) {
         if(key in params)
           payload[key] = params[key].join(',')
       });
@@ -626,6 +640,11 @@ function Popily(token, apiUrl) {
 
       if('full' in params)
         payload['full'] = params['full']
+
+      if('single' in params) {
+        payload['single'] = params['single'];
+        payload = assignCustomizations(payload, params);
+      }
 
       _request('GET', '/insights/', {qs: payload}, cb);
     },
@@ -640,24 +659,15 @@ function Popily(token, apiUrl) {
         if(key in params)
           payload[key] = params[key];
       });
+
+      payload = assignCustomizations(payload, params);
       
       _request('GET', '/insights/' + insightId + '/', {qs: payload}, cb);
     },
     
     
     customizeInsight: function(insightId, params, insightData, cb) {
-      var data = {};
-      [
-        'title',
-        'x_label',
-        'y_label',
-        'z_label',
-        'category_order',
-        'time_interval'
-      ].forEach(function(key) {
-        if(key in insightData)
-          data[key] = insightData[key];
-      });
+      var data = assignCustomizations({}, insightData);
       if('filters' in params)
         data['filters'] = packFilters(params['filters'])
 
