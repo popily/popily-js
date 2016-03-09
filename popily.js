@@ -83,7 +83,8 @@ function Popily(token, apiUrl) {
       'y_label',
       'z_label',
       'category_order',
-      'time_interval'
+      'time_interval',
+      'refresh_rate'
     ].forEach(function(key) {
       if(key in insightData)
         dataDict[key] = insightData[key];
