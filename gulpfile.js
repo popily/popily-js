@@ -27,7 +27,7 @@ gulp.task('default', ['clean'], function () {
   gulp.start('build');
 });
 
-gulp.task('build', ['scripts', 'styles']);
+gulp.task('build', ['scripts']);
 
 gulp.task('clean', function () {
   return $.del(['build/']);
@@ -47,30 +47,3 @@ gulp.task('scripts', function() {
 });
 
 
-gulp.task('styles', function() {
-  var sassOptions = {
-    style: 'expanded'
-  };
-
-  var injectFiles = gulp.src(['src/popily.scss'], { read: false });
-
-  var injectOptions = {
-    transform: function(filePath) {
-      filePath = filePath.replace('src/', '');
-      return '@import "' + filePath + '";';
-    },
-    starttag: '// injector',
-    endtag: '// endinjector',
-    addRootSlash: false
-  };
-
-
-  return gulp.src(['src/popily.scss'])
-    .pipe($.inject(injectFiles, injectOptions))
-    .pipe($.sass(sassOptions)).on('error', errorHandler('Sass'))
-    .pipe($.autoprefixer()).on('error', errorHandler('Autoprefixer'))
-    .pipe(gulp.dest('./build'))
-		.pipe($.rename({suffix: '.min'}))
-    .pipe($.minifyCss())
-    .pipe(gulp.dest('./build'));
-});

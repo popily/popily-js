@@ -4,8 +4,7 @@
   "description": "",
   "main": "popily.js",
   "dependencies": {
-    "browser-request": "^0.3.3",
-    "c3": "^0.4.11-rc4"
+    "browser-request": "^0.3.3"
   },
   "repository": {
     "type": "git",
