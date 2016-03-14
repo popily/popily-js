@@ -6,7 +6,20 @@ A JavaScript wrapper for the [Popily](https://popily.com) API.
 
 ## Quickstart
 
-Add `<script src="popily.min.js"></script>` to your page, then add some data to Popily.
+First add `<meta charset="utf-8">` just after the `<head>` tag, then put `<script src="popily.min.js"></script>` wherever you want. 
+
+```html
+<head>
+    <meta charset="utf-8">
+    <!-- other stuff goes here -->
+</head>
+<body>
+    <!-- lots of stuff here -->
+    <script src="popily.min.js"></script>
+</body>
+```
+
+Now you can add some data to Popily.
 
 ```javascript
 popily.api.setToken('your-api-token');
@@ -27,7 +40,7 @@ popily.addSource('http://ages-and-colors.csv', {columns:columns}, function(err, 
 });
 ```
 
-Now get back interactive visualizations about the relationships in your data, and drop them into a web page.
+Once data is added, you can get back interactive visualizations about the relationships in your data, and drop them into a web page.
 
 ```html
 <div id="my-chart"></div>
