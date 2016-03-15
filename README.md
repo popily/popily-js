@@ -51,4 +51,4 @@ Once data is added, you can get back interactive visualizations about the relati
 popily.api.getAndRender('#my-chart', {insight: 'age-favorite-color'});
 ```
 
-From the here the world is your oyster. Connect directly to a database, customize your charts, filter the data displayed in the charts, and update your charts automatically whenever the data changes. Get more details about how to use the API at [developers.popily.com](http://developers.popily.com).
+From the here the world is your oyster. Connect directly to a database, customize how the insight is displayed (or just use the best-practice visualization we generate out of the box), filter the data displayed in the charts, and update your charts automatically whenever the data changes. Get more details about how to use the API at [developers.popily.com](http://developers.popily.com).
