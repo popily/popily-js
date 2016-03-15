@@ -47,10 +47,8 @@ Once data is added, you can get back interactive visualizations about the relati
 ```
 
 ```javascript
-popily.api.getInsight('age-favorite-color', {}, function(err, chartData) {
-    popily.chart.render('#my-chart', chartData);
-  }
-);
+// Grab insight with slug age-favorite-color and render in my-chart div
+popily.api.getAndRender('#my-chart', {insight: 'age-favorite-color'});
 ```
 
 From the here the world is your oyster. Connect directly to a database, customize your charts, filter the data displayed in the charts, and update your charts automatically whenever the data changes. Get more details about how to use the API at [developers.popily.com](http://developers.popily.com).
