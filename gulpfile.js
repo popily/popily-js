@@ -28,31 +28,33 @@ gulp.task('default', ['clean'], function () {
   gulp.start('build');
 });
 
-gulp.task('build', ['api', 'min-scripts', 'min-styles']);
+gulp.task('build', ['api', 'scripts', 'styles']);
+gulp.task('deploy', ['api', 'min-scripts', 'min-styles']);
 
 gulp.task('clean', function () {
   return $.del(['build/']);
 });
 
-gulp.task('scripts', function() {
+gulp.task('scripts', ['api'], function() {
 	// Single entry point to browserify 
 	return gulp.src(['src/lib/d3.min.js',
             'src/lib/d3-tip.js',
             'src/lib/d3.geomap.dependencies.min.js',
             'src/lib/d3.geomap.min.js',
+            'src/lib/pathseg.js',
             'src/lib/c3.min.js',
             'src/lib/underscore.min.js',
             'src/lib/numeral.min.js',
             'src/lib/leaflet.min.js',
+            'build/popily-api.js',
             'src/popily.js', 
             'src/utils/*.js', 
             'src/types/common/*.js', 
-            'src/types/*.js',
-            'build/api.js'])
+            'src/types/*.js'])
 	  .pipe($.eslint())
     .pipe($.eslint.format())
     .pipe($.eslint.failAfterError())
-	  .pipe($.concat('popily-charts.js'))
+	  .pipe($.concat('popily.js'))
 	  //.pipe($.browserify({
 		//  insertGlobals : false,
 		//  debug : true
@@ -61,12 +63,11 @@ gulp.task('scripts', function() {
 });
 
 gulp.task('min-scripts', ['scripts', ], function() {
-	return gulp.src(['build/popily-charts.js'])
+	return gulp.src(['build/popily.js'])
 		.pipe($.uglify())
 		.pipe($.rename({suffix: '.min'}))
 		.pipe(gulp.dest('./build'));
-})
-
+});
 
 
 gulp.task('styles', function() {
@@ -91,12 +92,12 @@ gulp.task('styles', function() {
     .pipe($.inject(injectFiles, injectOptions))
     .pipe($.sass(sassOptions)).on('error', errorHandler('Sass'))
     .pipe($.autoprefixer()).on('error', errorHandler('Autoprefixer'))
-    .pipe($.concat('popily-charts.css'))
+    .pipe($.concat('popily.css'))
     .pipe(gulp.dest('./build'))
 });
 
 gulp.task('min-styles', ['styles'], function() {
-	return gulp.src(['build/popily-charts.css'])
+	return gulp.src(['build/popily.css'])
 		.pipe($.rename({suffix: '.min'}))
     .pipe($.cleanCss())
     .pipe(gulp.dest('./build'));

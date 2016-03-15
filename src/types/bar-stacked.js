@@ -1,13 +1,20 @@
 (function(window) {
   var popilyChart = window.popily.chart;
   var chart = _.clone(popilyChart.baseChart);
+
   chart.defaultFor = [
+    'sum_by_category_by_category',
+    'count_by_category_by_category'
+  ];
+  chart.accepts = [
     'average_per_category_by_category',
     'sum_per_category_by_category',
     'count_by_value_by_category',
     'average_by_category_by_category',
+    'sum_per_category_by_date',
+    'sum_by_category_by_date',
+    'count_by_category_by_date'
   ];
-  chart.accepts = [];
 
   chart.render = function(element, options, rawData) {
       var that = this;
@@ -19,8 +26,10 @@
       var yLabel = rawData.chartData.y.label;
 
       var data = popilyChart.dataset.c3ify(xValues,yValues,zValues);
+      data.categories.unshift('x');
+      data.columns.unshift(data.categories);
       var rotated = false;
-      if(data.columns.length > 25) {
+      if(data.columns[0].length > 40) {
           rotated = true;
       }
 
@@ -34,6 +43,12 @@
         element: element
       };
       var chartData = popilyChart.chartTypes.barCommon.getChartObject(kwargs);
+      chartData.data = {
+          x: 'x',
+          columns: data.columns,
+          type: 'bar',
+          groups: [data.groups]
+      };
 
       var chart = c3.generate(chartData);
       this.chart = chart;
@@ -43,5 +58,5 @@
       return this.chart;
   };
 
-  popilyChart.chartTypes.barGrouped = chart;
+  popilyChart.chartTypes.barStacked = chart;
 })(window);

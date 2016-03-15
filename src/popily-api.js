@@ -54,10 +54,11 @@ var _request = function(method, path, data, callback) {
       var response = body;
       if(typeof body === 'string')
         response = JSON.parse(body);
-      callback(null, response);
     } catch(e) {
-      callback(_error('Invalid JSON received from the Stripe API: '+e, e) )
+      return callback(_error('Error: '+e, e) )
     }
+
+    callback(null, response);
 
   });
 };
@@ -73,7 +74,11 @@ var packFilters = function(filters) {
     if(i > 0)
       filterStr += '__';
 
-    filterStr += f['column'] + '!' + op + '!' + ( f['values'].join(',') );
+    var valStr = '';
+    if(f.hasOwnProperty('values')) {
+      valStr = f['values'].join(',');
+    }
+    filterStr += f['column'] + '!' + op + '!' + ( valStr );
     packedStr += filterStr
   });
   return packedStr;

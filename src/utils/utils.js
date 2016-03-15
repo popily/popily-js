@@ -2,7 +2,7 @@
   window.popily.chart.utils = {
     formatData: function(insightData) {
       var newData = _.extend({}, insightData);
-      
+
       newData.chartData = {}
       if(newData.x_values) {
         newData.chartData.x = { values: newData.x_values, label: newData.x_label };

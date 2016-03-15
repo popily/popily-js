@@ -69,6 +69,9 @@
   };
 
   popily.chart.render = function(element, chartData, options) {
+    if(_.isUndefined(options)) {
+      options = {};
+    }
     var formattedData = popily.chart.utils.formatData(chartData);
     var _chartType = popily.chart.getChartForType(formattedData.analysisType, 
                                                       options.chartType);

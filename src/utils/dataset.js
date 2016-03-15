@@ -173,11 +173,19 @@
       return _.unzip(sorted);
   };
 
+  var checkIsDateStr = function(str) {
+    if (!isNaN((new Date(str).getTime()))) {
+      return true;
+    }
+    return false;
+  };
+
   window.popily.chart.dataset = {        
       sortData: sortData,
       cleanData: cleanData,
       cleanNanToZero: cleanNanToZero,
       c3ify: c3ify,
+      checkIsDateStr: checkIsDateStr,
       limit : function(max) {
         return this;
       },
