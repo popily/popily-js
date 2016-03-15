@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+
+<link href="../build/popily.css" rel="stylesheet" />
+<script src="../build/popily.js" ></script>
+<script src="./api-responses.js" ></script>
+</head>
+<body>
+
+<h1>Single chart</h1>
+
+<div id="my-chart-01"></div>
+<div id="my-chart-02"></div>
+<div id="my-chart-04"></div>
+
+<script >
+
+(function() {
+
+popily.api.setToken('04d3355451dc557066bca149de2b83f3746f9102');
+popily.api.setURL('http://localhost:8000')
+var options = {
+    filters: [
+        {
+            'column': 'Ballot Close Date',
+            'op': 'distinct'
+        }
+    ],
+    swap: 'swap'
+};
+popily.api.getInsight(250256, {}, function(err, chartData) {
+    popily.chart.render('#my-chart-01', chartData, {chartType: 'barStacked'});
+});
+
+})();
+</script>
+
+
+</body>
+</html>
+
