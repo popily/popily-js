@@ -206,32 +206,34 @@
   window.popily.dataset = function(columns, options) {
 
     var labels = [];
-    var table = zip(columns);
     var columnsCache = null;
     
     var zip = function(columns) {
       var data = [];
+      
       for(k in columns) {
-        data.append(columns[k]);
-        columnLabels.append(k);
-      });
-      return _.zip(data);
+        data.push(columns[k]);
+        labels.push(k);
+      };
+      return _.zip.apply(null, data);
     }
     
     var unzip = function(data) {
       var columns = {};
-      _.unzip(data).forEach(function(column, i) {
-        columns[labels[i]] = column;
+      _.unzip(data).forEach(function(c, i) {
+        columns[labels[i]] = c;
       });
-      return unzip;
+      return columns;
     }
 
     var columnIdx = function(column) {
-      var idx = columnLabels.indexof(column);
+      var idx = labels.indexOf(column);
       if(idx == -1)
         throw Error('column '+column+' not found in dataset');
       return idx;
     };
+    
+    var table = zip(columns);
     
     return {
     
@@ -250,7 +252,7 @@
         return this;
       },
       
-      where: function(column, values) {
+      filter: function(column, values) {
         columnsCache = null;
         var idx = columnIdx(column);
         table = _.filter(table, function(e) {
@@ -284,7 +286,7 @@
         var keys = groupped.keys();
         var values = []
         var groupped = _.map(keys, function(k) {
-          values.append(groupingFunction(groupped[k])); 
+          values.push(groupingFunction(groupped[k])); 
         });
         return popily.dataset({
           column: keys,

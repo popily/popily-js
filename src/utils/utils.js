@@ -18,14 +18,13 @@
         newData.chartData.metadata = newData.insight_metadata;
       }
 
-      if(newData.analysis_type) {
-        newData.analysisType = newData.analysis_type;
+      if(newData.insight_type) {
+        newData.analysisType = newData.insight_type;
       }
 
-      if(newData.analysisType.indexOf('geo') > -1) {
+      if(newData.analysisType && newData.analysisType.indexOf('geo') > -1) {
         newData.chartData.x.values = _.map(newData.chartData.x.values, JSON.parse);
       }
-
       return newData;
     },
 

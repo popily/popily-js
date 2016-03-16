@@ -19,14 +19,18 @@
 
 (function() {
 
-popily.api.setToken('04d3355451dc557066bca149de2b83f3746f9102');
-popily.api.setURL('http://localhost:8000')
+popily.api.setToken('2f0fc32981297c8bbc31d843213f21bc45cc20ee');
+popily.api.setURL('http://local.popily.com')
 
 var options = {
 
-    swap: true,
-    chartType: 'bar',
-    insight: 250256
+    insight: 8585,
+    filters : [
+      {
+        column: 'Category A',
+        values: ['Awesome', 'OK']
+      }
+    ]
 };
 
 popily.chart.getAndRender('#my-chart-01', options);
