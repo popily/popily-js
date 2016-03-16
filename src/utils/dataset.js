@@ -201,4 +201,102 @@
   
   }
 
+
+
+  window.popily.dataset = function(columns, options) {
+
+    var labels = [];
+    var table = zip(columns);
+    var columnsCache = null;
+    
+    var zip = function(columns) {
+      var data = [];
+      for(k in columns) {
+        data.append(columns[k]);
+        columnLabels.append(k);
+      });
+      return _.zip(data);
+    }
+    
+    var unzip = function(data) {
+      var columns = {};
+      _.unzip(data).forEach(function(column, i) {
+        columns[labels[i]] = column;
+      });
+      return unzip;
+    }
+
+    var columnIdx = function(column) {
+      var idx = columnLabels.indexof(column);
+      if(idx == -1)
+        throw Error('column '+column+' not found in dataset');
+      return idx;
+    };
+    
+        
+    return {
+    
+      orderBy: function(column) {
+        columnsCache = null;
+        var idx = columnIdx(column);
+        table = _.sortBy(table, function(e) {
+          return e[idx];
+        });
+        return this;
+      },
+      
+      reverse: function() {
+        columnsCache = null;
+        table = table.reverse();
+        return this;
+      },
+      
+      filterBy: function(column, values) {
+        columnsCache = null;
+        var idx = columnIdx(column);
+        table = _.filter(table, function(e) {
+          return values.indexOf(e[idx])!==-1;
+        });
+        return this;
+      },
+      
+      limit : function(max) {
+        if(max && _.size(table)>max ) {
+          columnsCache = null;
+          var i=0;
+          var nth = Math.floor(_.size(sorted) / limit);
+          table = _.filter(table, function() {
+            i++;
+            return i % nth == 0;
+          });
+        }
+        return this;
+      },
+      
+      getColumns: function(cb) {
+        if(!columnsCache)
+          columnsCache = unzip(table);
+        
+        if(cb) {
+          cb(columnsCache);
+          return this;
+        }
+        else
+          return columnsCache;
+      },
+      
+      getColumn: function(column, cb) {
+        var columns = this.getColumns();
+        if(cb) {
+          cb(columns[column]);
+          return this;
+        }
+        else
+          return columns[column];
+      }
+      
+    }
+  }
+
+
 })(window);
