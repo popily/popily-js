@@ -52,10 +52,36 @@
       _buildChartMap();
     }
 
+    var toComplex = {
+      'bar': ['barStacked', 'barGrouped'],
+      'scatterplot': ['scatterplotCategory'],
+      'line': ['multiLine']
+    }
+
     if(analysisType in popily.chart.chartMap) {
         if(!_.isUndefined(chartType)) {
             if(_(popily.chart.chartMap[analysisType].allowed).contains(chartType)) {
                 return chartType;
+            }
+            else if(popily.chart.chartMap[analysisType].defaultChart === chartType) {
+              return chartType;
+            }
+            else if(toComplex.hasOwnProperty(chartType)) {
+              var toReturn;
+              _.each(toComplex[chartType], function(complexChartType) {
+                if(_(popily.chart.chartMap[analysisType].allowed).contains(complexChartType)) {
+                  toReturn = complexChartType;
+                }
+                else if(popily.chart.chartMap[analysisType].defaultChart === complexChartType) {
+                  toReturn = complexChartType;
+                }
+              });
+              
+              if(!_.isUndefined(toReturn)) {
+                return toReturn;
+              }
+
+              throw Error(chartType + ' not possible for ' + analysisType);
             }
             else {
                 throw Error(chartType + ' not possible for ' + analysisType);
@@ -90,6 +116,52 @@
 
     element.classList.add('popily-chart');
     return chart.render(element, options, formattedData);
+  };
+
+  popily.chart.getAndRender = function(element, options) {
+    var chartOptions = {};
+    var serverOptions = {};
+
+    var availableChartOptions = {
+      'chartType': 'chartType'
+    };
+
+    var availableServerOptions = {
+      'columns': 'columns',
+      'calculation': 'insight_action',
+      'analysisType': 'insight_type',
+      'filters': 'filters',
+      'swap': 'swap'
+    };
+
+    _.each(_.keys(availableChartOptions), function(option) {
+      if(options.hasOwnProperty(option)) {
+        chartOptions[availableChartOptions[option]] = options[option];
+      }
+    });
+
+    _.each(_.keys(availableServerOptions), function(option) {
+      if(options.hasOwnProperty(option)) {
+        serverOptions[availableServerOptions[option]] = options[option];
+      }
+    });
+
+    if(serverOptions.hasOwnProperty('swap')) {
+      serverOptions.swap = 'swap';
+    }
+
+    if(options.hasOwnProperty('insight')) {
+      console.log(serverOptions);
+      popily.api.getInsight(options.insight, serverOptions, function(err, chartData) {
+        popily.chart.render(element, chartData, chartOptions);
+      });
+    }
+    else {
+      serverOptions.single = true;
+      popily.api.getInsights(serverOptions, function(err, chartData) {
+        popily.chart.render(element, chartData, chartOptions);
+      });
+    }
   };
 
   var _buildChartMap = function() {
