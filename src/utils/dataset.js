@@ -233,7 +233,6 @@
       return idx;
     };
     
-        
     return {
     
       orderBy: function(column) {
@@ -251,7 +250,7 @@
         return this;
       },
       
-      filterBy: function(column, values) {
+      where: function(column, values) {
         columnsCache = null;
         var idx = columnIdx(column);
         table = _.filter(table, function(e) {
@@ -271,6 +270,26 @@
           });
         }
         return this;
+      },
+      
+      groupBy: function(column, groupingFunction, grouppedColumnName) {
+        var idx = columnIdx(column);
+        groupingFunction = groupingFunction || function(e) {return e;};
+        grouppedColumnName = grouppedColumnName || 'groupped';
+
+        var groupped = _.groupBy(table, function(e){ 
+          return e[column]; 
+        });
+        
+        var keys = groupped.keys();
+        var values = []
+        var groupped = _.map(keys, function(k) {
+          values.append(groupingFunction(groupped[k])); 
+        });
+        return popily.dataset({
+          column: keys,
+          grouppedColumnName: values
+        });
       },
       
       getColumns: function(cb) {
@@ -298,5 +317,12 @@
     }
   }
 
+  popily.dataset.count = function(arr) {
+    return arr.length;
+  }
+
+  popily.dataset.countUnique = function(arr) {
+    return _.uniq(arr).length;
+  }
 
 })(window);
