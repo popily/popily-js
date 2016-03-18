@@ -109,6 +109,7 @@
     }
 
     options = _.extend(chart.defaults.options, options);
+    console.log(options);
 
     if(typeof element === "string") {
       element = document.querySelector(element);

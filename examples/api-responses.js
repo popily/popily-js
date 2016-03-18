@@ -46,7 +46,8 @@ var barResponse = {
     'Amazing',
     'Amazing',
     'OK',
-    'Amazing'
+    'Amazing',
+    'Alright'
   ],
   'x_label':'Category A',
   'y_label':'Number of records',
@@ -86,12 +87,13 @@ var barResponse = {
     2,
     6,
     2,
-    2
+    2,
+    3
   ],
   'title':'Count of each Category A',
   'id':8585,
   'z_label':'',
-  'analysis_type':'count_by_category'
+  'analysis_type':'top_by_label'
 };
 
 var stackedBarResponse = JSON.parse('{"slug": "employer-first-donation-payment-type-23", "embed_url": "https://popily.com/widget/chart/employer-first-donation-payment-type-23/-/?style=compact-500-500&app_id=606&sig=8f248177b62d41d4943ef06950f97c51&timestamp=1458041727", "refresh_rate": 0, "x_values": ["COLEMAN & BALOGH LLP", "WINDSOR VALLEJO CARE", "AAA INSURANCE EXCHANGE", "COLEMAN & BALOGH LLP", "WINDSOR VALLEJO CARE", "AAA INSURANCE EXCHANGE", "CLAREMONT REALTY", "RETIRED", "CLAREMONT REALTY", "COUNTY OF ALAMEDA"], "x_label": "Employer", "y_label": "First Donation", "filters_key": "", "z_values": ["NON-MONETARY", "MONETARY", "NON-MONETARY", "MONETARY", "NON-MONETARY", "MONETARY", "MONETARY", "MONETARY", "NON-MONETARY", "NON-MONETARY"], "insight_action": "sum", "source": 2487, "y_values": ["44680.0", "40380.0", "37400.0", "34490.0", "15280.0", "14715.0", "13750.0", "11816.0", "10509.0", "100.0"], "analysis_type": "sum_by_category_by_category", "title": "Total First Donation by Employer, grouped by Payment Type", "insight_metadata": null, "id": 3132999, "z_label": "Payment Type"}');

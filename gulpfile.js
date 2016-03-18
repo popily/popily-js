@@ -29,7 +29,7 @@ gulp.task('default', ['clean'], function () {
 });
 
 gulp.task('build', ['api', 'scripts', 'styles']);
-gulp.task('deploy', ['api', 'min-scripts', 'min-styles']);
+//gulp.task('deploy', ['api', 'min-scripts', 'min-styles']);
 
 gulp.task('clean', function () {
   return $.del(['build/']);
@@ -38,9 +38,9 @@ gulp.task('clean', function () {
 gulp.task('scripts', ['api'], function() {
 	// Single entry point to browserify 
 	return gulp.src(['src/lib/d3.min.js',
-            'src/lib/d3-tip.js',
             'src/lib/d3.geomap.dependencies.min.js',
             'src/lib/d3.geomap.min.js',
+            'src/lib/d3-tip.js',
             'src/lib/pathseg.js',
             'src/lib/c3.min.js',
             'src/lib/underscore.min.js',
@@ -62,13 +62,14 @@ gulp.task('scripts', ['api'], function() {
 		.pipe(gulp.dest('./build'))
 });
 
+/*
 gulp.task('min-scripts', ['scripts', ], function() {
 	return gulp.src(['build/popily.js'])
 		.pipe($.uglify())
 		.pipe($.rename({suffix: '.min'}))
 		.pipe(gulp.dest('./build'));
 });
-
+*/
 
 gulp.task('styles', function() {
   var sassOptions = {

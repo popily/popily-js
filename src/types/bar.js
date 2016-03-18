@@ -3,6 +3,14 @@
   
   var bar = _.clone(popilyChart.baseChart);
   bar.defaultFor = [
+  ];
+  bar.accepts = [
+    'count_by_date',
+    'ratio_by_date',
+    'sum_by_date',
+    'average_by_date',
+    'count_per_category_by_date',
+    'average_per_category_by_date',
     'count_per_category_by_category',
     'count_by_category_by_category_distinct',
     'count_by_value',
@@ -14,15 +22,8 @@
     'average_by_category_per_category',
     'count_by_category_per_category',
     'count_per_category_by_category',
-    'count_by_category_by_date_distinct'
-  ];
-  bar.accepts = [
-    'count_by_date',
-    'ratio_by_date',
-    'sum_by_date',
-    'average_by_date',
-    'count_per_category_by_date',
-    'average_per_category_by_date'
+    'count_by_category_by_date_distinct',
+    'top_by_label'
   ];
 
 

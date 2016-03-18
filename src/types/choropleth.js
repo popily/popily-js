@@ -34,7 +34,7 @@
     var cleanValues = that.cleanData(rawData);
 
     var order = options.order || 'auto';
-    cleanValues = popilyChart.dataset.sortData(cleanValues[0],cleanValues[1]);
+    cleanValues = popilyChart.dataset.sortData(cleanValues[0],popilyChart.format.toNumber(cleanValues[1]));
 
     var cleanXValues = cleanValues[0];
     var cleanYValues = popilyChart.format.formatNumbers(cleanValues[1]);
@@ -64,7 +64,6 @@
       var yValues = preppedData[1];
       var valueLookup = preppedData[2];
       var dataDirectory = options.dataDirectory || '/data';
-
 
       var currentMousePos = { x: -1, y: -1 };
       var onMouseMove = function(event) {
@@ -120,7 +119,7 @@
     element.style.marginRight = 'auto';
     var mapRatio = mapSize[0]/mapSize[1];
     
-    var height = options.height;
+    var height = options.height || 500;
     var width = element.getBoundingClientRect().width;
     if(width/mapRatio < height) {
         var height = width/mapRatio;
@@ -142,6 +141,7 @@
     var format = function(d) {
         return d3.format(',.2f')(d);
     }
+
     mapObj = mapObj
         .colors(colorbrewer[mapColor][9])
         .column('yValue')
@@ -199,7 +199,7 @@
         d3.select(svg).remove();
         element.style.width = 'auto';
                     
-        height = options.height;
+        height = options.height || 500;
         width = element.parentNode.getBoundingClientRect().width;
         if(width/mapRatio < height) {
             height = width/mapRatio;

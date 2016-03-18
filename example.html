@@ -9,11 +9,50 @@
     <script src="/build/popily.min.js"></script>
         
     <script>
+        /*
         popily.api.setToken('YOUR TOKEN');        
         popily.api.getInsight('INSIGHT ID OR SLUG', {}, function(err, chartData) {
             popily.chart.render('#test', chartData);
           }
         );
+        */
+        //var source = 450;
+        //popily.api.setToken('04d3355451dc557066bca149de2b83f3746f9102');
+        //popily.api.setURL('http://localhost:8000');
+        
+        /*
+        popily.api.setToken('0bf49e81cf8afd9e684d00cea3d7ce57a1dbaba1');
+        var source = 2493;
+        params = {
+            columns: ['Ballot Name', 'Group Name'],
+            filters: [{
+                column: 'Ballot Name',
+                op: 'distinct'
+            }],
+            swap: 'swap',
+            single: true
+        };
+        
+        popily.api.getInsights(source, params, function(err, insights) {
+            popily.chart.render('#my-chart-01', insights);
+        });
+        */
+        var source = 450;
+        popily.api.setToken('04d3355451dc557066bca149de2b83f3746f9102');
+        popily.api.setURL('http://localhost:8000');
+        params = {
+            columns: ['Ballot Subject', 'Group Name'],
+            filters: [{
+                column: 'Ballot Subject',
+                op: 'distinct'
+            }],
+            swap: 'swap',
+            single: true
+        };
+        
+        popily.api.getInsights(source, params, function(err, insights) {
+            popily.chart.render('#my-chart-01', insights);
+        });
     </script>
 </body>
 </html>
