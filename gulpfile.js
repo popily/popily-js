@@ -59,10 +59,12 @@ gulp.task('scripts', ['api'], function() {
     .pipe($.eslint.format())
     .pipe($.eslint.failAfterError())
 	  .pipe($.concat('popily.js'))
-	  //.pipe($.browserify({
-		//  insertGlobals : false,
-		//  debug : true
-		//}))
+	  /*
+    .pipe($.browserify({
+		  insertGlobals : false,
+		  debug : true
+		}))
+    */
 		.pipe(gulp.dest('./build'))
 });
 

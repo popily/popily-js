@@ -1311,7 +1311,7 @@ case"touchend":return this.addPointerListenerEnd(t,e,i,n);case"touchmove":return
       'columns': 'columns',
       'calculation': 'insight_action',
       'analysisType': 'insight_type',
-      'filters': 'filters',
+      //'filters': 'filters',
       'swap': 'swap'
     };
 
@@ -1330,21 +1330,54 @@ case"touchend":return this.addPointerListenerEnd(t,e,i,n);case"touchmove":return
     if(serverOptions.hasOwnProperty('swap')) {
       serverOptions.swap = 'swap';
     }
+    serverOptions.full = true;
 
     if(options.hasOwnProperty('insight')) {
-      console.log(serverOptions);
       popily.api.getInsight(options.insight, serverOptions, function(err, chartData) {
+        if(options.filters)
+          chartData = popily.chart.applyFilters(chartData, options.filters);
         popily.chart.render(element, chartData, chartOptions);
       });
     }
     else {
       serverOptions.single = true;
       popily.api.getInsights(serverOptions, function(err, chartData) {
+        if(options.filters)
+          chartData = popily.chart.applyFilters(chartData, options.filters);
         popily.chart.render(element, chartData, chartOptions);
       });
     }
   };
-
+  popily.chart.applyFilters = function(chartData, filters) {
+  
+    var columns = {};
+    
+    if(chartData.x_values.length) {
+      columns[chartData.x_label] = chartData.x_values;
+    }
+    if(chartData.y_values.length) {
+      columns[chartData.y_label] = chartData.y_values;
+    }
+    if(chartData.z_values.length) {
+      columns[chartData.z_label] = chartData.z_values;
+    }
+    
+    var ds = popily.dataset(columns);
+    
+    filters.forEach(function(filter) {
+      ds.filter(filter.column, filter.values)
+    });
+    
+    Object.keys(ds.getColumns()).forEach(function(column) {
+      if(column == chartData.x_label) chartData.x_values = ds.getColumn(column);
+      if(column == chartData.y_label) chartData.y_values = ds.getColumn(column);
+      if(column == chartData.z_label) chartData.z_values = ds.getColumn(column);
+    });
+    
+    return chartData;
+  }
+  
+  
   var _buildChartMap = function() {
     var chartMap = {};
 
@@ -1376,6 +1409,7 @@ case"touchend":return this.addPointerListenerEnd(t,e,i,n);case"touchmove":return
   }
   
 })(window);
+
 /**
 Analyze data from the Popily API and prepare for rendering
 */
@@ -1747,6 +1781,132 @@ Analyze data from the Popily API and prepare for rendering
       cleanNanToZero: cleanNanToZero,
       c3ify: c3ify,
       checkIsDateStr: checkIsDateStr
+  }
+
+
+
+  window.popily.dataset = function(columns, options) {
+
+    var labels = [];
+    var columnsCache = null;
+    
+    var zip = function(columns) {
+      var data = [];
+      
+      for(k in columns) {
+        data.push(columns[k]);
+        labels.push(k);
+      };
+      return _.zip.apply(null, data);
+    }
+    
+    var unzip = function(data) {
+      var columns = {};
+      _.unzip(data).forEach(function(c, i) {
+        columns[labels[i]] = c;
+      });
+      return columns;
+    }
+
+    var columnIdx = function(column) {
+      var idx = labels.indexOf(column);
+      if(idx == -1)
+        throw Error('column '+column+' not found in dataset');
+      return idx;
+    };
+    
+    var table = zip(columns);
+    
+    return {
+    
+      orderBy: function(column) {
+        columnsCache = null;
+        var idx = columnIdx(column);
+        table = _.sortBy(table, function(e) {
+          return e[idx];
+        });
+        return this;
+      },
+      
+      reverse: function() {
+        columnsCache = null;
+        table = table.reverse();
+        return this;
+      },
+      
+      filter: function(column, values) {
+        columnsCache = null;
+        var idx = columnIdx(column);
+        table = _.filter(table, function(e) {
+          return values.indexOf(e[idx])!==-1;
+        });
+        return this;
+      },
+      
+      limit : function(max) {
+        if(max && _.size(table)>max ) {
+          columnsCache = null;
+          var i=0;
+          var nth = Math.floor(_.size(sorted) / limit);
+          table = _.filter(table, function() {
+            i++;
+            return i % nth == 0;
+          });
+        }
+        return this;
+      },
+      
+      groupBy: function(column, groupingFunction, grouppedColumnName) {
+        var idx = columnIdx(column);
+        groupingFunction = groupingFunction || function(e) {return e;};
+        grouppedColumnName = grouppedColumnName || 'groupped';
+
+        var groupped = _.groupBy(table, function(e){ 
+          return e[column]; 
+        });
+        
+        var keys = groupped.keys();
+        var values = []
+        var groupped = _.map(keys, function(k) {
+          values.push(groupingFunction(groupped[k])); 
+        });
+        return popily.dataset({
+          column: keys,
+          grouppedColumnName: values
+        });
+      },
+      
+      getColumns: function(cb) {
+        if(!columnsCache)
+          columnsCache = unzip(table);
+        
+        if(cb) {
+          cb(columnsCache);
+          return this;
+        }
+        else
+          return columnsCache;
+      },
+      
+      getColumn: function(column, cb) {
+        var columns = this.getColumns();
+        if(cb) {
+          cb(columns[column]);
+          return this;
+        }
+        else
+          return columns[column];
+      }
+      
+    }
+  }
+
+  popily.dataset.count = function(arr) {
+    return arr.length;
+  }
+
+  popily.dataset.countUnique = function(arr) {
+    return _.uniq(arr).length;
   }
 
 })(window);

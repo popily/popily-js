@@ -132,7 +132,7 @@
       'columns': 'columns',
       'calculation': 'insight_action',
       'analysisType': 'insight_type',
-      'filters': 'filters',
+      //'filters': 'filters',
       'swap': 'swap'
     };
 
@@ -151,21 +151,54 @@
     if(serverOptions.hasOwnProperty('swap')) {
       serverOptions.swap = 'swap';
     }
+    serverOptions.full = true;
 
     if(options.hasOwnProperty('insight')) {
-      console.log(serverOptions);
       popily.api.getInsight(options.insight, serverOptions, function(err, chartData) {
+        if(options.filters)
+          chartData = popily.chart.applyFilters(chartData, options.filters);
         popily.chart.render(element, chartData, chartOptions);
       });
     }
     else {
       serverOptions.single = true;
       popily.api.getInsights(serverOptions, function(err, chartData) {
+        if(options.filters)
+          chartData = popily.chart.applyFilters(chartData, options.filters);
         popily.chart.render(element, chartData, chartOptions);
       });
     }
   };
-
+  popily.chart.applyFilters = function(chartData, filters) {
+  
+    var columns = {};
+    
+    if(chartData.x_values.length) {
+      columns[chartData.x_label] = chartData.x_values;
+    }
+    if(chartData.y_values.length) {
+      columns[chartData.y_label] = chartData.y_values;
+    }
+    if(chartData.z_values.length) {
+      columns[chartData.z_label] = chartData.z_values;
+    }
+    
+    var ds = popily.dataset(columns);
+    
+    filters.forEach(function(filter) {
+      ds.filter(filter.column, filter.values)
+    });
+    
+    Object.keys(ds.getColumns()).forEach(function(column) {
+      if(column == chartData.x_label) chartData.x_values = ds.getColumn(column);
+      if(column == chartData.y_label) chartData.y_values = ds.getColumn(column);
+      if(column == chartData.z_label) chartData.z_values = ds.getColumn(column);
+    });
+    
+    return chartData;
+  }
+  
+  
   var _buildChartMap = function() {
     var chartMap = {};
 
