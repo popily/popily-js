@@ -98,7 +98,8 @@
     if(_.isUndefined(options)) {
       options = {};
     }
-    var formattedData = popily.chart.utils.formatData(chartData);
+
+    var formattedData = popily.chart.analyze.inspectAPIResponse(chartData, options);
     var _chartType = popily.chart.getChartForType(formattedData.analysisType, 
                                                       options.chartType);
 

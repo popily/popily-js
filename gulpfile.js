@@ -29,7 +29,7 @@ gulp.task('default', ['clean'], function () {
 });
 
 gulp.task('build', ['api', 'scripts', 'styles']);
-gulp.task('deploy', ['api', 'min-scripts', 'min-styles']);
+//gulp.task('deploy', ['api', 'min-scripts', 'min-styles']);
 
 gulp.task('clean', function () {
   return $.del(['build/']);
@@ -46,11 +46,15 @@ gulp.task('scripts', ['api'], function() {
             'src/lib/underscore.min.js',
             'src/lib/numeral.min.js',
             'src/lib/leaflet.min.js',
-            'build/popily-api.js',
-            'src/popily.js', 
-            'src/utils/*.js', 
-            'src/types/common/*.js', 
-            'src/types/*.js'])
+            //'src/popily-api.js',
+            'src/popily.js',
+            'src/analyze.js', 
+            'src/chart-data.js',
+            'src/dataset.js',
+            'src/format.js', 
+            'src/utils.js',  
+            'src/chart-types/common/*.js', 
+            'src/chart-types/*.js'])
 	  .pipe($.eslint())
     .pipe($.eslint.format())
     .pipe($.eslint.failAfterError())
@@ -62,14 +66,14 @@ gulp.task('scripts', ['api'], function() {
 		.pipe(gulp.dest('./build'))
 });
 
-
+/*
 gulp.task('min-scripts', ['scripts', ], function() {
 	return gulp.src(['build/popily.js'])
 		.pipe($.uglify())
 		.pipe($.rename({suffix: '.min'}))
 		.pipe(gulp.dest('./build'));
 });
-
+*/
 
 gulp.task('styles', function() {
   var sassOptions = {
@@ -126,7 +130,7 @@ gulp.task('watch', ['scripts', 'styles'], function() {
     }
   });
   gulp.watch(['src/**/*.js'], ['scripts', browserSync.reload]);
-  gulp.watch(['examples/*.html'], [browserSync.reload]);
+  gulp.watch(['examples/*.html', 'tests/*.js', 'tests/*.html'], [browserSync.reload]);
   gulp.watch(['src/popily.scss'], ['styles', browserSync.reload]);
 });
 

@@ -18,58 +18,11 @@
 <script >
 
 (function() {
-/*
-popily.api.setToken('04d3355451dc557066bca149de2b83f3746f9102');
-popily.api.setURL('http://localhost:8000')
 
-var options = {
-
-    swap: true,
-    chartType: 'bar',
-    insight: 250256
+var chartOptions = {
+    dataDirectory: '/src/data'
 };
-
-popily.chart.getAndRender('#my-chart-01', options);
-*/
-
-// Count (unique) Voting Close Date by Ballot Name
-/*
-popily.api.setToken('0bf49e81cf8afd9e684d00cea3d7ce57a1dbaba1');
-var source = 2493;
-params = {
-    columns: ['Ballot Name', 'Voting Close Date'],
-    filters: [{
-        column: 'Voting Close Date',
-        op: 'distinct'
-    }],
-    swap: 'swap',
-    single: true
-};
-
-popily.api.getInsights(source, params, function(err, insights) {
-    popily.chart.render('#my-chart-01', insights);
-});
-*/
-/*
-var source = 'ballot-metrics11';
-popily.api.setToken('04d3355451dc557066bca149de2b83f3746f9102');
-popily.api.setURL('http://localhost:8000');
-params = {
-    columns: ['Ballot Name', 'Group Name'],
-    filters: [{
-        column: 'Ballot Name',
-        op: 'distinct'
-    }],
-    swap: 'swap',
-    single: true
-};
-
-popily.api.getInsights(source, params, function(err, insights) {
-    popily.chart.render('#my-chart-01', insights);
-});
-*/
-
-popily.chart.render('#my-chart-01', choroplethResponse, {dataDirectory: '/src/data'});
+popily.chart.render('#my-chart-01', categoryDatetime, chartOptions);
 
 
 })();

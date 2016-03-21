@@ -180,25 +180,12 @@
     return false;
   };
 
-  window.popily.chart.dataset = {        
+  window.popily.chart.chartData = {        
       sortData: sortData,
       cleanData: cleanData,
       cleanNanToZero: cleanNanToZero,
       c3ify: c3ify,
-      checkIsDateStr: checkIsDateStr,
-      limit : function(max) {
-        return this;
-      },
-      
-      order : function() {
-        return this;
-      },
-      
-      unzip : function(cb) {
-        cb(_.unzip(ziped)[0]);
-        return this;
-      }
-  
+      checkIsDateStr: checkIsDateStr
   }
 
 })(window);

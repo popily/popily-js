@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+
+  <link rel="stylesheet" href="../bower_components/mocha/mocha.css" />
+
+</head>
+<body>
+
+<div id="mocha"></div>
+
+<script src="../bower_components/chai/chai.js"></script>
+<script src="../bower_components/mocha/mocha.js"></script>
+<script src="../build/popily.js" ></script>
+<script src="api-responses.js" ></script>
+<script>mocha.setup('bdd')</script>
+<script src="test-analyze.js"></script>
+<script src="test-dataset.js"></script>
+
+<script>
+mocha.run();
+</script>
+
+</body>
+</html>
+
