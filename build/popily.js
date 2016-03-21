@@ -1851,52 +1851,25 @@ Analyze data from the Popily API and prepare for rendering
         });
       },
 
-      distinct: function(column) {
-        columnsCache = null;
+      countUnique: function(column) {
         var idx = columnIdx(column);
-        var used = [];
+        var column = this.getColumns()[idx];
+        var counts = _.countBy(column.values, function(val) { return val; });
+        var newColumns = [];
 
-        table = _.filter(table, function(e) {
-          if(used.indexOf(e[idx])!==-1) {
-            return false;
-          }
-          used.push(e[idx]);
-          return true;
-        });
+        var valColumn = {
+          column_header: column.column_header,
+          data_type: column.data_type,
+          values: _(counts).keys()
+        };
+        var countColumn = {
+          column_header: 'count_0',
+          data_type: 'numeric',
+          values: _(counts).values()
+        };
 
-        return this;
+        return popily.dataset([valColumn,countColumn]);
       },
-
-      distinctTogether: function(columns) {
-        columnsCache = null;
-        var idxs = _.map(columns, columnIdx);
-        var used = [];
-
-        table = _.filter(table, function(e) {
-          var combined = '';
-          _.each(idxs, function(idx) {
-            combined += '__' + e[idx];
-          });
-          if(used.indexOf(combined)!==-1) {
-            return false;
-          }
-          used.push(combined);
-          return true;
-        });
-        return this;
-      },
-
-      /*
-      countDistinct: function(column, assignCounts) {
-        if(_.isUndefined(assignCounts)) {
-          assignCounts = 'count_0';
-        }
-
-        _.countBy([1, 2, 3, 4, 5], function(num) {
-          return num % 2 == 0 ? 'even': 'odd';
-        });
-      },
-      */
       
       getColumns: function(cb) {
         if(!columnsCache)
@@ -1922,14 +1895,6 @@ Analyze data from the Popily API and prepare for rendering
       }
       
     }
-  }
-
-  popily.dataset.count = function(arr) {
-    return arr.length;
-  }
-
-  popily.dataset.countUnique = function(arr) {
-    return _.uniq(arr).length;
   }
 
 })(window);
