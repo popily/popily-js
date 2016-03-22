@@ -29,7 +29,7 @@ gulp.task('default', ['clean'], function () {
 });
 
 gulp.task('build', ['api', 'scripts', 'styles']);
-//gulp.task('deploy', ['api', 'min-scripts', 'min-styles']);
+gulp.task('deploy', ['api', 'min-scripts', 'min-styles']);
 
 gulp.task('clean', function () {
   return $.del(['build/']);
@@ -46,7 +46,7 @@ gulp.task('scripts', ['api'], function() {
             'src/lib/underscore.min.js',
             'src/lib/numeral.min.js',
             'src/lib/leaflet.min.js',
-            //'src/popily-api.js',
+            'build/popily-api.js',
             'src/popily.js',
             'src/analyze.js', 
             'src/chart-data.js',
@@ -65,17 +65,17 @@ gulp.task('scripts', ['api'], function() {
 		  debug : true
 		}))
     */
+    
 		.pipe(gulp.dest('./build'))
 });
 
-/*
+
 gulp.task('min-scripts', ['scripts', ], function() {
 	return gulp.src(['build/popily.js'])
 		.pipe($.uglify())
 		.pipe($.rename({suffix: '.min'}))
 		.pipe(gulp.dest('./build'));
 });
-*/
 
 gulp.task('styles', function() {
   var sassOptions = {

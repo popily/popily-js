@@ -3,33 +3,33 @@ Analyze data from the Popily API and prepare for rendering
 */
 
 (function(window) {
-    var formatData = function(insightData) {
-        var newData = _.extend({}, insightData);
+    var categoricals = [
+        'category',
+        'state',
+        'country',
+        'zipcode',
+        'rowlabel'
+    ];
 
-        newData.chartData = {}
-        if(newData.x_values) {
-          newData.chartData.x = { values: newData.x_values, label: newData.x_label };
-        }
-        if(newData.y_values) {
-          newData.chartData.y = { values: newData.y_values, label: newData.y_label };
-        }
-        if(newData.z_values) {
-          newData.chartData.z = { values: newData.z_values, label: newData.z_label };
-        }
+    var numerals = [
+        'numeric',
+        'currency'
+    ];
 
-        if(newData.insight_metadata) {
-          newData.chartData.metadata = newData.insight_metadata;
+    var isA = function(dataType, column) {
+        if(_.isUndefined(column)) {
+            return false;
         }
+        var typeList = dataType === 'number' ? numerals : categoricals;
+        return _(typeList).contains(column.data_type);
+    };
 
-        if(newData.analysis_type) {
-          newData.analysisType = newData.analysis_type;
-        }
+    var isNumeric = function(column) {
+        return isA('number', column);
+    };
 
-        if(newData.analysisType.indexOf('geo') > -1) {
-          newData.chartData.x.values = _.map(newData.chartData.x.values, JSON.parse);
-        }
-
-        return newData;
+    var isCategorical = function(column) {
+        return isA('category', column);
     };
 
     var hasSingleEquality = function(filters) {
@@ -44,13 +44,18 @@ Analyze data from the Popily API and prepare for rendering
 
     var hasDistinct = function(filters) {
         return _.some(filters, function(_filter) {
-            return _filter.op === 'distinct';
+            return _filter.op === 'distinct' || _filter.op === 'countUnique';
         });
     };
 
     var assignToAxis = function(columns, filters) {
         var axisAssignments = {};
         var filterRef = {};
+
+        var assigned = [];
+        var isAssigned = function(prop) {
+            return _(assigned).contains(prop);
+        };
 
         if(!_.isUndefined(filters)) {
             _.each(filters, function(columnFilter) {
@@ -90,80 +95,92 @@ Analyze data from the Popily API and prepare for rendering
             if(filterRef.hasOwnProperty(column.column_header) && filterRef[column.column_header].length > 0) {
                 // if column has filter where and 1 value, it is z
                 if(hasSingleEquality(filterRef[column.column_header])) {
-                    if(axisAssignments.hasOwnProperty('z')) {
+                    if(isAssigned('z')) {
                         axisAssignments.z2 = column;
+                        assigned.push('z2');
                         continue;
                     }
                     else {
                         axisAssignments.z = column;
+                        assigned.push('z');
                         continue;
                     }
                 }
 
-                // if column has filter distinct
+                // if column has filter distinct/countUnique
                 else if(hasDistinct(filterRef[column.column_header])) {
                     // if we already assigned z2, then it is z
-                    if(axisAssignments.hasOwnProperty('z2')) {
+                    if(isAssigned('x')) {
                         axisAssignments.z = column;
+                        assigned.push('z');
                         continue;
                     }
                     else {
-                        if(axisAssignments.hasOwnProperty('z')) {
-                            axisAssignments.z2 = column;
-                            continue;
-                        }
-                        else {
-                            axisAssignments.z = column;
-                            continue;
-                        }
+                        axisAssignments.x = column;
+                        assigned.push('x');
+                        continue; 
                     }
                 }
 
             }
 
+            // geo
+            if(dataType === 'coordinate') {
+                axisAssignments.x = column;
+                assigned.push('x');
+                continue;
+            }
+
             // if column is numeric
-            if(dataType === 'numeric') {
+            if(isNumeric(column)) {
                 // if we already have a y
-                if(axisAssignments.hasOwnProperty('y')) {
+                if(isAssigned('y')) {
                     // if there are three columns it is y2
-                    if(columns.length === 5) {
+                    if(columns.length > 3) {
                         axisAssignments.y2 = column;
+                        assigned.push('y2');
                         continue;
                     }
                     // if two columns it is x
                     else {
                         axisAssignments.x = column;
+                        assigned.push('x');
                         continue;
                     }
                 }
                 // else it is y
                 else {
                     axisAssignments.y = column;
+                    assigned.push('y');
                     continue;
                 }
             }
 
             else if(dataType === 'datetime' && !hasSingleOrDistinct(column)) {
                 axisAssignments.x = column;
+                assigned.push('x');
                 continue;
             }
 
             // if column is category
-            else if(dataType === 'category' || dataType === 'rowlabel') {
+            else if(isCategorical(column)) {
                 // if we already have x
-                if(axisAssignments.hasOwnProperty('x')) {
+                if(isAssigned('x')) {
                     // if we already have z
-                    if(axisAssignments.hasOwnProperty('z')) {
+                    if(isAssigned('z')) {
                         axisAssignments.z2 = column;
+                        assigned.push('z2');
                         continue;
                     }
                     else {
                         axisAssignments.z = column;
+                        assigned.push('z');
                         continue;
                     }
                 }
                 else {
                     axisAssignments.x = column;
+                    assigned.push('x');
                 }
             } 
         }
@@ -171,13 +188,118 @@ Analyze data from the Popily API and prepare for rendering
         return axisAssignments;
     };
 
-    var inspectAPIResponse = function(apiResponse, options) {
-        return formatData(apiResponse);
+    var determineType = function(columns, axisAssignments, calculation) {
+        var types = {
+            countByCategory: 'count_by_category',
+            averageByCategory: 'average_by_category',
+            sumByCategory: 'sum_by_category',
+            geoPoints: 'geo_points',
+            geoPointsCategory: 'geo_points_category',
+            geoPointsAmount: 'geo_points_amount',
+            geoPointsCategoryAmount: 'geo_points_category_amount',
+            scatterplot: 'scatterplot',
+            scatterplotByCategory: 'scatterplot_by_category',
+            countPerCategoryByDatetime: 'count_per_category_by_datetime',
+            ratioPerCategory: 'ratio_per_category',
+            countByState: 'count_by_state',
+            countByCountry: 'count_by_country'
+        };
+
+        var defaultType = (function() {
+            if(calculation==='comparison') {
+                return 'scatterplot';
+            }
+
+            var typeStr = calculation;
+            var sortedColumns = _(columns).sortBy('data_type');
+
+            _.each(sortedColumns, function(column) {
+                if(!isNumeric(column)) {
+                    typeStr += '_by_' + column.data_type;
+                }
+            });
+
+            return typeStr;
+        })();
+
+        // geo_points
+        if(axisAssignments.x.data_type === 'coordinate') {
+            if(axisAssignments.hasOwnProperty('z')) {
+                if(axisAssignments.z.values.length === 1) {
+                    if(axisAssignments.hasOwnProperty('y')) {
+                        return types.geoPointsAmount;
+                    }
+                    return types.geoPoints;
+                }
+                if(axisAssignments.hasOwnProperty('y')) {
+                    return types.geoPointsCategoryAmount;
+                }
+
+                return types.geoPointsCategory;
+            }
+            else if(axisAssignments.hasOwnProperty('y')) {
+                return types.geoPointsAmount;
+            }
+
+            return types.geoPoints;
+        }
+
+        // scatterplot
+        if(isNumeric(axisAssignments.x) &&
+            axisAssignments.hasOwnProperty('y') && 
+            isNumeric(axisAssignments.y)) {
+
+            console.log(axisAssignments);
+            if(columns.length === 3) {
+                return types.scatterplotByCategory;
+            }
+            return types.scatterplot;
+        }
+
+        // count_by_category
+        if(columns.length === 2 && 
+            isCategorical(axisAssignments.x) === 'category' && 
+            isNumeric(axisAssignments.y)) {
+
+            return types[calculation + 'ByCategory'];
+        }
+
+        if(columns.length === 3 &&
+            axisAssignments.hasOwnProperty('z') &&
+            axisAssignments.z.values.length === 1) {
+
+            if(axisAssignments.x.data_type === 'datetime') {
+                return types[calculation + 'PerCategoryByDatetime'];
+            }
+
+            return types[calculation + 'ByCategory'];
+        }
+
+        if(calculation === 'geo') {
+            if(axisAssignments.x.data_type === 'state') {
+                return types.countByState;
+            }
+
+            if(axisAssignments.x_data_type === 'country') {
+                return types.countByCountry;
+            }
+        }
+
+        // ratio_per_category
+        if(columns.length === 2 &&
+            calculation === 'ratio' &&
+            axisAssignments.x.values.length === 1 &&
+            axisAssignments.hasOwnProperty('y') &&
+            axisAssignments.y.values.length === 1) {
+
+            return types.ratioPerCategory;
+        }
+
+        return defaultType;
     };
 
     window.popily.chart.analyze = {
-        inspectAPIResponse: inspectAPIResponse,
         assignToAxis: assignToAxis,
-        formatData: formatData
+        determineType: determineType
     }
 })(window);

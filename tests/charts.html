@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+
+<link href="../build/popily.css" rel="stylesheet" />
+<script src="../build/popily.js" ></script>
+<script src="./api-responses.js" ></script>
+</head>
+<body>
+
+<h1>Stacked Area</h1>
+<div id="stacked-area"></div>
+
+<hr>
+
+<h1>Bar</h1>
+<div id="bar"></div>
+
+<hr>
+
+<h1>Map</h1>
+<div id="map"></div>
+
+<hr>
+
+<h1>Choropleth</h1>
+<div id="choropleth"></div>
+
+<hr>
+
+<h1>Bar 2</h1>
+<div id="bar2"></div>
+
+<hr>
+
+<h1>Scatterplot</h1>
+<div id="scatterplot"></div>
+
+<hr>
+
+<h1>Bar 3</h1>
+<div id="bar3"></div>
+
+<hr>
+
+<h1>Stacked Area API</h1>
+<div id="stacked-area-2"></div>
+
+<hr>
+
+<h1>Count Unique Bar</h1>
+<div id="count-unique-bar"></div>
+
+<script >
+
+
+var chartOptions = {
+    dataDirectory: '/src/data'
+};
+
+popily.chart.render('#stacked-area', categoryDatetime, chartOptions);
+popily.chart.render('#bar', categoryCategoryDatetime, {'filters': [{'column': 'Group Name', 'op': 'countUnique'}]});
+popily.chart.render('#map', coordinates, chartOptions);
+popily.chart.render('#choropleth', sumByCategory, chartOptions);
+popily.chart.render('#bar2', sumByCategory, {chartType: 'bar'});
+popily.chart.render('#scatterplot', scatterplot);
+popily.chart.render('#bar3', countByValue);
+
+popily.api.setToken('04d3355451dc557066bca149de2b83f3746f9102');
+popily.api.setURL('http://localhost:8000');
+popily.chart.getAndRender('#stacked-area-2', {insight:categoryDatetime.slug});
+
+var source = 450;
+params = {
+    columns: ['Ballot Subject', 'Group Name'],
+    single: true
+};
+
+popily.api.getInsights(source, params, function(err, insights) {
+    popily.chart.render('#count-unique-bar', insights, {'filters': [{'op': 'countUnique', 'column': 'Group Name'}]});
+});
+
+</script>
+
+
+</body>
+</html>

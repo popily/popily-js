@@ -79,7 +79,7 @@
       var chart = c3.generate(chartData);
       chartData.bindto = element;
       this.chart = chart;
-      popily.chart.format.updateChart(element, chart, chartData, chartPadding);
+      popily.chart.utils.updateChart(element, chart, chartData, chartPadding);
 
       return this.chart;
   };

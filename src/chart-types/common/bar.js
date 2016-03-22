@@ -26,12 +26,12 @@
     }
     else {
         var order = options.order || 'auto';
-        cleanValues = popilyChart.dataset.sortData(cleanValues[0],cleanValues[1],cleanValues[2],limit,order);
+        cleanValues = popilyChart.chartData.sortData(cleanValues[0],cleanValues[1],cleanValues[2],limit,order);
     }
 
     var cleanXValues = cleanValues[0];
     
-    if(rawData.analysisType.indexOf('date') > -1 && _.every(cleanXValues, popilyChart.dataset.checkIsDateStr)) {
+    if(rawData.analysisType.indexOf('date') > -1 && _.every(cleanXValues, popilyChart.chartData.checkIsDateStr)) {
       var dateFormatStr = popilyChart.format.formatFromInspection(cleanXValues);
       var dateFormat = d3.time.format(dateFormatStr);
       cleanXValues = _.map(cleanXValues, function(x) { return dateFormat((new Date(x))); });

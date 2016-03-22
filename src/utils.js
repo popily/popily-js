@@ -97,10 +97,38 @@
           chart.destroy();
           chart = c3.generate(chartData);
       }
+  };    
+
+  var formatDataset = function(apiResponse, axisAssignments, analysisType) {
+      var newData = _.extend({}, apiResponse);
+      var possibleAxis = ['x','y','z','z2','y2'];
+
+      newData.chartData = {}
+      newData.analysisType = analysisType;
+
+      _.each(possibleAxis, function(axis) {
+        if(axisAssignments.hasOwnProperty(axis)) {
+          newData.chartData[axis] = {
+            values: axisAssignments[axis].values,
+            label: axisAssignments[axis].column_header
+          }
+        }
+      });
+
+      if(apiResponse.insight_metadata) {
+        newData.chartData.metadata = apiResponse.insight_metadata;
+      }
+
+      if(newData.analysisType.indexOf('geo') > -1) {
+        newData.chartData.x.values = _.map(newData.chartData.x.values, JSON.parse);
+      }
+
+      return newData;
   };
 
   window.popily.chart.utils = {
       chartSize: chartSize,
-      updateChart: updateChart
+      updateChart: updateChart,
+      formatDataset: formatDataset
   };
 })(window);

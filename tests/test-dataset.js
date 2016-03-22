@@ -39,8 +39,8 @@ describe('Testing dataset filtering', function() {
         //dataset.distinct('Voting Close Date');
         //dataset.distinctTogether(['Ballot Name', 'Voting Close Date', 'Group Name']);
         //dataset.distinct('Group Name');
-        window.testData = dataset;
-        console.log(dataset.getColumns());
+        //window.testData = dataset;
+        //console.log(dataset.getColumns());
         /*
         console.log(_.countBy(dataset.getColumns()[2].values, function(col) {
             return col;

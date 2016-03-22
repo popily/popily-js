@@ -5,24 +5,33 @@
   bar.defaultFor = [
   ];
   bar.accepts = [
-    'count_by_date',
-    'ratio_by_date',
-    'sum_by_date',
-    'average_by_date',
-    'count_per_category_by_date',
-    'average_per_category_by_date',
+    'count_by_datetime',
+    'ratio_by_datetime',
+    'sum_by_datetime',
+    'average_by_datetime',
+    'count_per_category_by_datetime',
+    'average_per_category_by_datetime',
     'count_per_category_by_category',
     'count_by_category_by_category_distinct',
     'count_by_value',
     'count_by_category',
     'average_by_category',
     'sum_by_category',
+
+    'count_by_state',
+    'average_by_state',
+    'sum_by_state',
+
+    'count_by_country',
+    'average_by_country',
+    'sum_by_country',
+
     'sum_sum_by_category',
     'sum_by_category_per_category',
     'average_by_category_per_category',
     'count_by_category_per_category',
     'count_per_category_by_category',
-    'count_by_category_by_date_distinct',
+    'count_by_category_by_datetime_distinct',
     'top_by_label'
   ];
 
@@ -112,7 +121,7 @@
       chartData.bindto = element;
       var chart = c3.generate(chartData);
       this.chart = chart;
-      popily.chart.format.updateChart(element, chart, chartData, chartPadding);
+      popily.chart.utils.updateChart(element, chart, chartData, chartPadding);
 
       return this.chart;
   };

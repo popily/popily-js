@@ -5,11 +5,11 @@
   chart.prepData = function(rawData, options) {
     var that = this;
     var limit = that.defaults.categoryLimit;
-    rawData.chartData.y.values = popily.chart.dataset.cleanNanToZero(rawData.chartData.y.values)
+    rawData.chartData.y.values = popily.chart.chartData.cleanNanToZero(rawData.chartData.y.values)
     var cleanValues = that.cleanData(rawData);
 
     var order = options.order || 'auto';
-    cleanValues = popilyChart.dataset.sortData(cleanValues[0],cleanValues[1],cleanValues[2],0,order);
+    cleanValues = popilyChart.chartData.sortData(cleanValues[0],cleanValues[1],cleanValues[2],0,order);
 
     var cleanXValues = cleanValues[0];
     var cleanYValues = popilyChart.format.formatNumbers(cleanValues[1]);
@@ -150,7 +150,7 @@
       var yMin = that.getYMin(yValues);
       yValues.unshift(yLabel);
       
-      var data = popilyChart.dataset.c3ify(xValues,yValues,zValues);
+      var data = popilyChart.chartData.c3ify(xValues,yValues,zValues);
       var dateData = that.formatDates(xValues, data, options);
 
       data.categories.unshift('x');
@@ -185,7 +185,7 @@
       }
       
       var chart = c3.generate(chartData);
-      popily.chart.format.updateChart(element, chart, chartData, chartPadding);
+      popily.chart.utils.updateChart(element, chart, chartData, chartPadding);
   };
 
   popilyChart.chartTypes.linear = chart;

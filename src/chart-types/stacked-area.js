@@ -3,19 +3,19 @@
 
   var chart = _.clone(popilyChart.baseChart);
   chart.defaultFor = [
-    'sum_by_date',
-    'ratio_by_date',
-    'sum_per_category_by_date',
-    'sum_by_category_by_date',
-    'count_by_category_by_date'
+    'sum_by_datetime',
+    'ratio_by_datetime',
+    'sum_per_category_by_datetime',
+    'sum_by_category_by_datetime',
+    'count_by_category_by_datetime'
   ];
   chart.accepts = [
-    'count_by_date',
-    'ratio_by_date',
-    'average_by_date',
-    'count_per_category_by_date',
-    'average_per_category_by_date',
-    'average_by_category_by_date'
+    'count_by_datetime',
+    'ratio_by_datetime',
+    'average_by_datetime',
+    'count_per_category_by_datetime',
+    'average_per_category_by_datetime',
+    'average_by_category_by_datetime'
   ];
 
   chart.render = function(element, options, rawData) {

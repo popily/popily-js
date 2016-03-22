@@ -41,7 +41,7 @@
         var zValues = rawData.chartData.z.values;
       }
 
-      var cleanValues = popily.chart.dataset.cleanData(xValues,yValues,zValues);
+      var cleanValues = popily.chart.chartData.cleanData(xValues,yValues,zValues);
 
       return cleanValues;
     }
@@ -94,14 +94,25 @@
     }
   };
 
-  popily.chart.render = function(element, chartData, options) {
+  popily.chart.render = function(element, apiResponse, options) {
     if(_.isUndefined(options)) {
       options = {};
     }
 
-    var formattedData = popily.chart.analyze.inspectAPIResponse(chartData, options);
-    var _chartType = popily.chart.getChartForType(formattedData.analysisType, 
+    var ds = popily.dataset(apiResponse.columns);
+
+    if(options.filters) {
+        ds = popily.chart.applyFilters(ds, options.filters);
+    }
+
+    var calculation = apiResponse.calculation;
+    var axisAssignments = popily.chart.analyze.assignToAxis(ds.getColumns(), options.filters);
+    var analysisType = popily.chart.analyze.determineType(ds.getColumns(), axisAssignments, calculation);
+    var formattedData = popily.chart.utils.formatDataset(apiResponse, axisAssignments, analysisType);
+
+    var _chartType = popily.chart.getChartForType(analysisType, 
                                                       options.chartType);
+
 
     var chart = popily.chart.chartTypes[_chartType];
 
@@ -110,7 +121,6 @@
     }
 
     options = _.extend(chart.defaults.options, options);
-    console.log(options);
 
     if(typeof element === "string") {
       element = document.querySelector(element);
@@ -131,9 +141,8 @@
     var availableServerOptions = {
       'columns': 'columns',
       'calculation': 'insight_action',
-      'analysisType': 'insight_type',
-      //'filters': 'filters',
-      'swap': 'swap'
+      'insight_action': 'insight_action',
+      'analysisType': 'insight_type'
     };
 
     _.each(_.keys(availableChartOptions), function(option) {
@@ -148,55 +157,38 @@
       }
     });
 
-    if(serverOptions.hasOwnProperty('swap')) {
-      serverOptions.swap = 'swap';
-    }
     serverOptions.full = true;
 
     if(options.hasOwnProperty('insight')) {
-      popily.api.getInsight(options.insight, serverOptions, function(err, chartData) {
-        if(options.filters)
-          chartData = popily.chart.applyFilters(chartData, options.filters);
-        popily.chart.render(element, chartData, chartOptions);
+      popily.api.getInsight(options.insight, serverOptions, function(err, apiResponse) {
+        popily.chart.render(element, apiResponse, chartOptions);
       });
     }
     else {
       serverOptions.single = true;
-      popily.api.getInsights(serverOptions, function(err, chartData) {
-        if(options.filters)
-          chartData = popily.chart.applyFilters(chartData, options.filters);
-        popily.chart.render(element, chartData, chartOptions);
+      popily.api.getInsights(serverOptions, function(err, apiResponse) {
+        popily.chart.render(element, apiResponse, chartOptions);
       });
     }
   };
-  popily.chart.applyFilters = function(chartData, filters) {
-  
-    var columns = {};
-    
-    if(chartData.x_values.length) {
-      columns[chartData.x_label] = chartData.x_values;
-    }
-    if(chartData.y_values.length) {
-      columns[chartData.y_label] = chartData.y_values;
-    }
-    if(chartData.z_values.length) {
-      columns[chartData.z_label] = chartData.z_values;
-    }
-    
-    var ds = popily.dataset(columns);
+
+
+  popily.chart.applyFilters = function(ds, filters) {
+    var filterMap = {
+      'distinct': 'countUnique',
+      'countUnique': 'countUnique',
+      'eq': 'filter'
+    };
     
     filters.forEach(function(filter) {
-      ds.filter(filter.column, filter.values)
+      var op = filter.op || 'eq';
+      if(filterMap.hasOwnProperty(op)) {
+        ds = ds[filterMap[op]](filter.column, filter.values);
+      }
     });
     
-    Object.keys(ds.getColumns()).forEach(function(column) {
-      if(column == chartData.x_label) chartData.x_values = ds.getColumn(column);
-      if(column == chartData.y_label) chartData.y_values = ds.getColumn(column);
-      if(column == chartData.z_label) chartData.z_values = ds.getColumn(column);
-    });
-    
-    return chartData;
-  }
+    return ds;
+  };
   
   
   var _buildChartMap = function() {

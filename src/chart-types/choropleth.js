@@ -34,7 +34,7 @@
     var cleanValues = that.cleanData(rawData);
 
     var order = options.order || 'auto';
-    cleanValues = popilyChart.dataset.sortData(cleanValues[0],popilyChart.format.toNumber(cleanValues[1]));
+    cleanValues = popilyChart.chartData.sortData(cleanValues[0],popilyChart.format.toNumber(cleanValues[1]));
 
     var cleanXValues = cleanValues[0];
     var cleanYValues = popilyChart.format.formatNumbers(cleanValues[1]);

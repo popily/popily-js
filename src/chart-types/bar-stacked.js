@@ -11,9 +11,9 @@
     'sum_per_category_by_category',
     'count_by_value_by_category',
     'average_by_category_by_category',
-    'sum_per_category_by_date',
-    'sum_by_category_by_date',
-    'count_by_category_by_date'
+    'sum_per_category_by_datetime',
+    'sum_by_category_by_datetime',
+    'count_by_category_by_datetime'
   ];
 
   chart.render = function(element, options, rawData) {
@@ -25,7 +25,7 @@
       var xLabel = rawData.chartData.x.label;
       var yLabel = rawData.chartData.y.label;
 
-      var data = popilyChart.dataset.c3ify(xValues,yValues,zValues);
+      var data = popilyChart.chartData.c3ify(xValues,yValues,zValues);
       data.categories.unshift('x');
       data.columns.unshift(data.categories);
       var rotated = false;
@@ -53,7 +53,7 @@
       var chart = c3.generate(chartData);
       this.chart = chart;
 
-      popily.chart.format.updateChart(element, chart, chartData, that.defaults.chartPadding);
+      popily.chart.utils.updateChart(element, chart, chartData, that.defaults.chartPadding);
 
       return this.chart;
   };

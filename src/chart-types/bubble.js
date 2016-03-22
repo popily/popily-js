@@ -53,7 +53,7 @@
     });
 
     width = element.getBoundingClientRect().width;
-    var size = popilyChart.format.chartSize();
+    var size = popilyChart.utils.chartSize();
     height = size['height'];
     
 
@@ -119,7 +119,7 @@
 
     var onResize = function() {
         width = element.getBoundingClientRect().width;
-        size = popilyChart.format.chartSize();
+        size = popilyChart.utils.chartSize();
         height = size['height'];
         svg
             .attr("width", width)

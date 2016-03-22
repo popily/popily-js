@@ -53,10 +53,11 @@
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
     });
 
+    var height = options.height || 500;
     var mapContainer = document.createElement('div');
     var elId = "popily-id-" + (Math.floor(Math.random() * 90000) + 10000).toString();
     mapContainer.id = elId;
-    mapContainer.style.height = options.height.toString() + 'px';
+    mapContainer.style.height = height.toString() + 'px';
     element.appendChild(mapContainer);
 
     //console.log(elId);

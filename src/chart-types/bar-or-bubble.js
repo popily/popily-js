@@ -13,7 +13,7 @@
     'count_by_category_per_category',
     'count_per_category_by_category',
     'count_by_category_by_category_distinct',
-    'count_by_category_by_date_distinct',
+    'count_by_category_by_datetime_distinct',
     'top_by_label'
   ];
   chart.accepts = [];

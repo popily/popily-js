@@ -3,11 +3,11 @@
 
   var chart = _.clone(popilyChart.baseChart);
   chart.defaultFor = [
-    'count_by_date',
-    'ratio_by_date',
-    'average_by_date',
-    'count_per_category_by_date',
-    'average_per_category_by_date'
+    'count_by_datetime',
+    'ratio_by_datetime',
+    'average_by_datetime',
+    'count_per_category_by_datetime',
+    'average_per_category_by_datetime'
   ];
   chart.accepts = [];
 
@@ -17,7 +17,7 @@
     var cleanValues = that.cleanData(rawData);
 
     var order = options.order || 'auto';
-    cleanValues = popilyChart.dataset.sortData(cleanValues[0],cleanValues[1],[],limit,order);
+    cleanValues = popilyChart.chartData.sortData(cleanValues[0],cleanValues[1],[],limit,order);
 
     var cleanXValues = cleanValues[0];
     var cleanYValues = popilyChart.format.formatNumbers(cleanValues[1]);
@@ -136,7 +136,7 @@
       var chart = c3.generate(chartData);
       this.chart = chart;
 
-      popily.chart.format.updateChart(element, chart, chartData, chartPadding);
+      popily.chart.utils.updateChart(element, chart, chartData, chartPadding);
 
       return this.chart;
   };

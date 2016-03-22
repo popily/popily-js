@@ -18,7 +18,7 @@
       var xLabel = rawData.chartData.x.label;
       var yLabel = rawData.chartData.y.label;
 
-      var data = popilyChart.dataset.c3ify(xValues,yValues,zValues);
+      var data = popilyChart.chartData.c3ify(xValues,yValues,zValues);
       var rotated = false;
       if(data.columns.length > 25) {
           rotated = true;
@@ -38,7 +38,7 @@
       var chart = c3.generate(chartData);
       this.chart = chart;
 
-      popily.chart.format.updateChart(element, chart, chartData, that.defaults.chartPadding);
+      popily.chart.utils.updateChart(element, chart, chartData, that.defaults.chartPadding);
 
       return this.chart;
   };
