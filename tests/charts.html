@@ -52,6 +52,9 @@
 <h1>Count Unique Bar</h1>
 <div id="count-unique-bar"></div>
 
+<h1>Row Label</h1>
+<div id="row-label"></div>
+
 <script >
 
 
@@ -59,6 +62,7 @@ var chartOptions = {
     dataDirectory: '/src/data'
 };
 
+popily.chart.render('#row-label', rowLabel, chartOptions);
 popily.chart.render('#stacked-area', categoryDatetime, chartOptions);
 popily.chart.render('#bar', categoryCategoryDatetime, {'filters': [{'column': 'Group Name', 'op': 'countUnique'}]});
 popily.chart.render('#map', coordinates, chartOptions);
