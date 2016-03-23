@@ -90,7 +90,7 @@
             show: false
         },
         tooltip: {
-            show: true
+            show: (_.isUndefined(options.tooltip)?true:options.tooltip)
         },
         size: {
             height: options.height

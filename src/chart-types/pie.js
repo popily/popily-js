@@ -46,7 +46,8 @@
           },
           size: {
             height: options.height
-          }
+          },
+          tooltip: (_.isUndefined(options.tooltip)?true:options.tooltip)
       };
       var chart = c3.generate(chartData); 
 

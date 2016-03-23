@@ -120,7 +120,8 @@
               y: {
                   show: true
               }
-          }
+          },
+          tooltip: (_.isUndefined(options.tooltip)?true:options.tooltip)
       }
 
       if(options.order == 'auto') {

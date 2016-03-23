@@ -94,7 +94,7 @@
           show: zValues.length < 50 ? true : false
       },
       tooltip: {
-          show: true,
+          show: (_.isUndefined(options.tooltip)?true:options.tooltip),
           grouped: false,
       },
       size: {

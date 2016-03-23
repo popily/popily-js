@@ -104,6 +104,9 @@
     if(options.filters) {
         ds = popily.chart.applyFilters(ds, options.filters);
     }
+    if(options.groupData) {
+        ds = popily.chart.applyGroupData(ds, options.groupData);
+    }
 
     var calculation = apiResponse.calculation;
     var axisAssignments = popily.chart.analyze.assignToAxis(ds.getColumns(), options.filters);
@@ -172,20 +175,51 @@
     }
   };
 
-
+  /*
+    filter = [{
+      column: <column-name>,
+      op: none|eq|noteq,
+      values: [<array-of-values]>
+    }, .. ]
+  */
   popily.chart.applyFilters = function(ds, filters) {
-    var filterMap = {
-      'distinct': 'countUnique',
-      'countUnique': 'countUnique',
-      'eq': 'filter'
-    };
     
     filters.forEach(function(filter) {
-      var op = filter.op || 'eq';
-      if(filterMap.hasOwnProperty(op)) {
-        ds = ds[filterMap[op]](filter.column, filter.values);
+      // I think this countUnique should not be here!
+      if(filter.op == 'distinct' || filter.op == 'countUnique') {
+        console.log('filter countUnique is DEPRECATED please dont use it, use "groupData" instead!');
+        ds = ds.countUnique();
+      } else {
+        ds.filter(filter.column, filter.op || 'eq', filter.values);
       }
     });
+    
+    return ds;
+  };
+  
+  /*
+    groupData = {
+      column: <column-name-to-group-by>,
+      aggregation: count|countUnique,
+      groupInto: <new-column-with-aggregated-values>,
+      customFunction: <optional-custom-aggregation-function>
+      customDataType: <optional-custom-type-ofaggregations>
+    }
+  */
+  popily.chart.applyGroupData = function(ds, groupData) {
+    
+    if(groupData.customFunction) {
+      var groupFunc = customFunction;
+    }
+    else if(['count', 'countUnique'].indexOf(groupData.aggregation) !== -1) {
+      var groupFunc = popily.dataset[groupData.aggregation]
+    }
+    else {
+      console.error('Unrecognizer grouping agregation function');
+      return ds;
+    }
+    
+    ds = ds.groupBy(groupData.column, groupFunc, customDataType || groupDataType, groupData.groupInto || groupFunc.columnLabel);
     
     return ds;
   };

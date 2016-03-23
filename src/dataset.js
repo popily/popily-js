@@ -56,12 +56,24 @@
         return this;
       },
       
-      filter: function(column, values) {
+      filter: function(column, op, values) {
+        if(_.isUndefined(values)) {
+          values = op;
+          op = 'eq';
+        }
         columnsCache = null;
         var idx = columnIdx(column);
-        table = _.filter(table, function(e) {
-          return values.indexOf(e[idx])!==-1;
-        });
+        
+        if(op == 'eq')
+          var testFunc = function(e) {return values.indexOf(e[idx])!==-1}
+        else if(op == 'noteq')
+          var testFunc = function(e) {return values.indexOf(e[idx])===-1}
+        else {
+          console.error('Unrecognized filter option: '+op);
+          return this; 
+        }
+        
+        table = _.filter(table, testFunc);
         return this;
       },
       
@@ -78,24 +90,33 @@
         return this;
       },
       
-      groupBy: function(column, groupingFunction, grouppedColumnName) {
+      groupBy: function(column, groupingFunction, grouppedDataType, grouppedColumnHeader ) {
         var idx = columnIdx(column);
         groupingFunction = groupingFunction || function(e) {return e;};
-        grouppedColumnName = grouppedColumnName || 'groupped';
+        grouppedColumnHeader = grouppedColumnHeader || 'groupped';
+        grouppedDataType = grouppedDataType || 'numeric';
 
         var groupped = _.groupBy(table, function(e){ 
           return e[column]; 
         });
         
-        var keys = groupped.keys();
+        var keysColumn = { 
+          column_header: labels[idx],
+          data_type: dataTypes[idx],
+          values: groupped.keys()
+        };
+        
         var values = []
-        var groupped = _.map(keys, function(k) {
+        _.map(keys.values, function(k) {
           values.push(groupingFunction(groupped[k])); 
         });
-        return popily.dataset({
-          column: keys,
-          grouppedColumnName: values
-        });
+        
+        var grouppedColumn = {
+          column_header: grouppedColumnHeader,
+          data_type: grouppedDataType,
+          values: values
+        }
+        return popily.dataset([keysColumn, grouppedColumn]);
       },
 
       countUnique: function(column) {
@@ -143,5 +164,17 @@
       
     }
   }
+  
+  popily.dataset.count = function(arr) {
+    return arr.length;
+  }
+  popily.dataset.count.dataType = 'numeric';
+  popily.dataset.count.columnLabel = 'Count';
+  
+  popily.dataset.countUnique = function(arr) {
+    return _.uniq(arr).length;
+  }
+  popily.dataset.countUnique.dataType = 'numeric';
+  popily.dataset.countUnique.columnLabel = 'Count unique';
 
 })(window);
