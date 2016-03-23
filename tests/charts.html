@@ -57,18 +57,23 @@
 <h1>Count Unique Bar</h1>
 <div id="count-unique-bar"></div>
 
+<h1>Row Label</h1>
+<div id="row-label"></div>
+
 <script >
 
 
 var chartOptions = {
-    dataDirectory: '/src/data',
-    xColumn: 'Ballot Name',
-    groupByColumn: 'Group Name',
-    height: 1000
+    dataDirectory: '/src/data'
 };
 
-popily.chart.render('#multi-stacked', categoryCategoryCategory, chartOptions);
+var multiStackedOptions = {
+    xColumn: 'Ballot Name',
+    groupByColumn: 'Group Name'
+}
 
+popily.chart.render('#multi-stacked', categoryCategoryCategory, multiStackedOptions);
+popily.chart.render('#row-label', rowLabel, chartOptions);
 
 
 popily.chart.render('#stacked-area', categoryDatetime, chartOptions);
