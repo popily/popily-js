@@ -97,17 +97,17 @@
         grouppedDataType = grouppedDataType || 'numeric';
 
         var groupped = _.groupBy(table, function(e){ 
-          return e[column]; 
+          return e[idx]; 
         });
         
         var keysColumn = { 
           column_header: labels[idx],
           data_type: dataTypes[idx],
-          values: groupped.keys()
+          values: Object.keys(groupped)
         };
         
         var values = []
-        _.map(keys.values, function(k) {
+        _.map(keysColumn.values, function(k) {
           values.push(groupingFunction(groupped[k])); 
         });
         

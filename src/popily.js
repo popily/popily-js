@@ -219,7 +219,7 @@
       return ds;
     }
     
-    ds = ds.groupBy(groupData.column, groupFunc, customDataType || groupDataType, groupData.groupInto || groupFunc.columnLabel);
+    ds = ds.groupBy(groupData.column, groupFunc, groupData.customDataType || groupFunc.dataType, groupData.groupInto || groupFunc.columnLabel);
     
     return ds;
   };

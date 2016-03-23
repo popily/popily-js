@@ -21,7 +21,10 @@
 
 var chartOptions = {
     dataDirectory: '/src/data',
-    tooltip: false
+    groupData: { 
+      column: 'Voting Close Date',
+      aggregation: 'countUnique',
+    }
 };
 popily.chart.render('#my-chart-01', categoryDatetime, chartOptions);
 
