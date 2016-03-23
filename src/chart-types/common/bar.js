@@ -26,7 +26,7 @@
     }
     else {
         var order = options.order || 'auto';
-        cleanValues = popilyChart.chartData.sortData(cleanValues[0],cleanValues[1],cleanValues[2],limit,order);
+        cleanValues = popilyChart.chartData.sortData(cleanValues[0],cleanValues[1],cleanValues[2],limit,order,cleanValues[3]);
     }
 
     var cleanXValues = cleanValues[0];
@@ -39,8 +39,9 @@
 
     var cleanYValues = popilyChart.format.formatNumbers(cleanValues[1]);
     var cleanZValues = cleanValues[2];
+    var cleanZ2Values = cleanValues[3];
 
-    return [cleanXValues, cleanYValues, cleanZValues];
+    return [cleanXValues, cleanYValues, cleanZValues, cleanZ2Values];
   };
 
   chart.getChartObject = function(kwargs) {
@@ -48,6 +49,7 @@
     var element = kwargs.element;
     var data = kwargs.data;
     var zValues = kwargs.zValues;
+    var z2Values = kwargs.z2Values;
     var xLabel = kwargs.xLabel;
     var yLabel = kwargs.yLabel;
     var options = kwargs.options;
@@ -91,14 +93,26 @@
       },
       legend: {
           position: 'bottom',
-          show: zValues.length < 50 ? true : false
+          show: (function() {
+            if(options.showLegend) {
+              return true;
+            }
+            if(z2Values && z2Values.length > 0) {
+              return true;
+            }
+            if(zValues.length < 50) {
+              return true; 
+            }
+
+            return false;
+          })()
       },
       tooltip: {
           show: (_.isUndefined(options.tooltip)?true:options.tooltip),
           grouped: false,
       },
       size: {
-          height: options.size.height
+          height: options.height || options.size.height
       },
       bar: {
         width: {

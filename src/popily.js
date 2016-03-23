@@ -37,11 +37,17 @@
       var xValues = rawData.chartData.x.values;
       var yValues = rawData.chartData.y.values;
       var zValues = [];
+      var z2Values = [];
+
       if(rawData.chartData.z) {
         var zValues = rawData.chartData.z.values;
       }
 
-      var cleanValues = popily.chart.chartData.cleanData(xValues,yValues,zValues);
+      if(rawData.chartData.z2) {
+        var z2Values = rawData.chartData.z2.values;
+      }
+
+      var cleanValues = popily.chart.chartData.cleanData(xValues,yValues,zValues,z2Values);
 
       return cleanValues;
     }
