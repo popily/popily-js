@@ -94,43 +94,61 @@
     }
   };
 
+  popily.chart.create = function(apiResponse) {
+  
+    var ds = popily.dataset(apiResponse.columns);
+    
+    return {
+      dataset : function() {
+        return ds;
+      },
+      
+      draw: function(element, options) {
+        var that = this;
+        var calculation = apiResponse.calculation;
+        var axisAssignments = popily.chart.analyze.assignToAxis(ds.getColumns(), options.filters);
+        var analysisType = popily.chart.analyze.determineType(ds.getColumns(), axisAssignments, calculation);
+        var formattedData = popily.chart.utils.formatDataset(apiResponse, axisAssignments, analysisType);
+
+        var chartType = popily.chart.getChartForType(analysisType, options.chartType);
+        var chartClass = popily.chart.chartTypes[chartType];
+
+        if(options.skipRender) {
+          return chartClass;
+        }
+
+        options = _.extend(chartClass.defaults.options, options);
+
+        if(typeof element === "string") {
+          element = document.querySelector(element);
+        }
+        element.classList.add('popily-chart');
+        
+        var chart = chartClass.render(element, options, formattedData);
+        return chart;
+      },
+      
+    }
+  
+  } 
+
   popily.chart.render = function(element, apiResponse, options) {
     if(_.isUndefined(options)) {
       options = {};
     }
-
-    var ds = popily.dataset(apiResponse.columns);
-
-    if(options.filters) {
-        ds = popily.chart.applyFilters(ds, options.filters);
+    
+    var chart = popily.chart.create(apiResponse);
+    
+    if(options.filetrs && !options.transformations)
+      options.transformations = options.filetrs;
+      
+    if(options.transformations) {
+      var ds = chart.dataset();
+      popily.chart.applyTransformations(ds, options.transformations);
     }
-    if(options.groupData) {
-        ds = popily.chart.applyGroupData(ds, options.groupData);
-    }
-
-    var calculation = apiResponse.calculation;
-    var axisAssignments = popily.chart.analyze.assignToAxis(ds.getColumns(), options.filters);
-    var analysisType = popily.chart.analyze.determineType(ds.getColumns(), axisAssignments, calculation);
-    var formattedData = popily.chart.utils.formatDataset(apiResponse, axisAssignments, analysisType);
-
-    var _chartType = popily.chart.getChartForType(analysisType, 
-                                                      options.chartType);
-
-
-    var chart = popily.chart.chartTypes[_chartType];
-
-    if(options.skipRender) {
-      return chart;
-    }
-
-    options = _.extend(chart.defaults.options, options);
-
-    if(typeof element === "string") {
-      element = document.querySelector(element);
-    }
-
-    element.classList.add('popily-chart');
-    return chart.render(element, options, formattedData);
+    
+    return chart.draw(element, options);
+    
   };
 
   popily.chart.getAndRender = function(element, options) {
@@ -175,6 +193,17 @@
     }
   };
 
+  popily.chart.applyTransformations = function(ds, transformations) {
+    transformations.forEach(function(transformation) {
+      if(['count', 'countUnique'].indexOf(transformation.op)) {
+        popily.chart.applyGroupData(ds, transformation);
+      }
+      else {
+        popily.chart.applyFilter(ds, transformation);
+      }
+    });
+  };
+
   /*
     filter = [{
       column: <column-name>,
@@ -182,13 +211,13 @@
       values: [<array-of-values]>
     }, .. ]
   */
-  popily.chart.applyFilters = function(ds, filters) {
+  popily.chart.applyFilter = function(ds, filters) {
     
     filters.forEach(function(filter) {
       // I think this countUnique should not be here!
       if(filter.op == 'distinct' || filter.op == 'countUnique') {
         console.log('filter countUnique is DEPRECATED please dont use it, use "groupData" instead!');
-        ds = ds.countUnique();
+        ds.countUnique();
       } else {
         ds.filter(filter.column, filter.op || 'eq', filter.values);
       }
@@ -211,15 +240,15 @@
     if(groupData.customFunction) {
       var groupFunc = customFunction;
     }
-    else if(['count', 'countUnique'].indexOf(groupData.aggregation) !== -1) {
-      var groupFunc = popily.dataset[groupData.aggregation]
+    else if(['count', 'countUnique'].indexOf(groupData.op) !== -1) {
+      var groupFunc = popily.dataset[groupData.op]
     }
     else {
       console.error('Unrecognizer grouping agregation function');
       return ds;
     }
     
-    ds = ds.groupBy(groupData.column, groupFunc, groupData.customDataType || groupFunc.dataType, groupData.groupInto || groupFunc.columnLabel);
+    ds.groupBy(groupData.column, groupFunc, groupData.customDataType || groupFunc.dataType, groupData.groupInto || groupFunc.columnLabel);
     
     return ds;
   };

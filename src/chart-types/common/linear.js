@@ -186,6 +186,7 @@
       
       var chart = c3.generate(chartData);
       popily.chart.utils.updateChart(element, chart, chartData, chartPadding);
+      return chart;
   };
 
   popilyChart.chartTypes.linear = chart;

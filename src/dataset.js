@@ -1,11 +1,18 @@
+'use strict';
+
 (function(window) {
 
 
   window.popily.dataset = function(columns, options) {
 
-    var labels = [];
-    var dataTypes = [];
-    var columnsCache = null;
+    var labels, dataTypes, table, columnsCache;
+    
+    var initialize = function(columns) {
+      labels = [];
+      dataTypes = [];
+      columnsCache = null;
+      table = zip(columns);
+    }
     
     var zip = function(columns) {
       var data = [];
@@ -37,22 +44,30 @@
       return idx;
     };
     
-    var table = zip(columns);
+    var dataListeners = []
+    var dataChanged = function() {
+      columnsCache = null;
+      dataListeners.forEach(function(listner) {
+        listner();
+      })
+    }
+    
+    initialize(columns);
     
     return {
     
       orderBy: function(column) {
-        columnsCache = null;
         var idx = columnIdx(column);
         table = _.sortBy(table, function(e) {
           return e[idx];
         });
+        dataChanged();
         return this;
       },
       
       reverse: function() {
-        columnsCache = null;
         table = table.reverse();
+        dataChanged();
         return this;
       },
       
@@ -61,7 +76,6 @@
           values = op;
           op = 'eq';
         }
-        columnsCache = null;
         var idx = columnIdx(column);
         
         if(op == 'eq')
@@ -74,18 +88,19 @@
         }
         
         table = _.filter(table, testFunc);
+        dataChanged();
         return this;
       },
       
       limit : function(max) {
         if(max && _.size(table)>max ) {
-          columnsCache = null;
           var i=0;
           var nth = Math.floor(_.size(sorted) / limit);
           table = _.filter(table, function() {
             i++;
             return i % nth == 0;
           });
+          dataChanged();
         }
         return this;
       },
@@ -116,7 +131,9 @@
           data_type: grouppedDataType,
           values: values
         }
-        return popily.dataset([keysColumn, grouppedColumn]);
+        initialize([keysColumn, grouppedColumn]);
+        dataChanged();
+        return this;
       },
 
       countUnique: function(column) {
@@ -136,7 +153,9 @@
           values: _(counts).values()
         };
 
-        return popily.dataset([valColumn,countColumn]);
+        initialize([valColumn,countColumn]);
+        dataChanged();
+        return this;
       },
       
       getColumns: function(cb) {
@@ -160,8 +179,11 @@
         }
         else
           return column;
-      }
+      },
       
+      onChange: function(cb) {
+        dataListeners.push(cb);
+      }
     }
   }
   
