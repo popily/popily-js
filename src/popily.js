@@ -112,7 +112,7 @@
       draw: function(element, options) {
         var that = this;
         var calculation = apiResponse.calculation;
-        var axisAssignments = popily.chart.analyze.assignToAxis(ds.getColumns(), options.filters);
+        var axisAssignments = popily.chart.analyze.assignToAxis(ds.getColumns(), options);
         var analysisType = popily.chart.analyze.determineType(ds.getColumns(), axisAssignments, calculation);
         var formattedData = popily.chart.utils.formatDataset(apiResponse, axisAssignments, analysisType);
 
