@@ -9,6 +9,11 @@
 </head>
 <body>
 
+<h1>Multi-Stacked Bar</h1>
+<div id="multi-stacked"></div>
+
+<hr>
+
 <h1>Stacked Area</h1>
 <div id="stacked-area"></div>
 
@@ -56,8 +61,15 @@
 
 
 var chartOptions = {
-    dataDirectory: '/src/data'
+    dataDirectory: '/src/data',
+    xColumn: 'Ballot Name',
+    groupByColumn: 'Group Name',
+    height: 1000
 };
+
+popily.chart.render('#multi-stacked', categoryCategoryCategory, chartOptions);
+
+
 
 popily.chart.render('#stacked-area', categoryDatetime, chartOptions);
 popily.chart.render('#bar', categoryCategoryDatetime, {'filters': [{'column': 'Group Name', 'op': 'countUnique'}]});
@@ -66,6 +78,7 @@ popily.chart.render('#choropleth', sumByCategory, chartOptions);
 popily.chart.render('#bar2', sumByCategory, {chartType: 'bar'});
 popily.chart.render('#scatterplot', scatterplot);
 popily.chart.render('#bar3', countByValue);
+
 
 popily.api.setToken('04d3355451dc557066bca149de2b83f3746f9102');
 popily.api.setURL('http://localhost:8000');
@@ -80,6 +93,7 @@ params = {
 popily.api.getInsights(source, params, function(err, insights) {
     popily.chart.render('#count-unique-bar', insights, {'filters': [{'op': 'countUnique', 'column': 'Group Name'}]});
 });
+
 
 </script>
 
