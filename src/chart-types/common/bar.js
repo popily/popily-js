@@ -108,7 +108,7 @@
           })()
       },
       tooltip: {
-          show: true,
+          show: (_.isUndefined(options.tooltip)?true:options.tooltip),
           grouped: false,
       },
       size: {

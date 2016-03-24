@@ -1,11 +1,18 @@
+'use strict';
+
 (function(window) {
 
 
   window.popily.dataset = function(columns, options) {
 
-    var labels = [];
-    var dataTypes = [];
-    var columnsCache = null;
+    var labels, dataTypes, table, columnsCache;
+    
+    var initialize = function(columns) {
+      labels = [];
+      dataTypes = [];
+      columnsCache = null;
+      table = zip(columns);
+    }
     
     var zip = function(columns) {
       var data = [];
@@ -37,65 +44,96 @@
       return idx;
     };
     
-    var table = zip(columns);
+    var dataListeners = []
+    var dataChanged = function() {
+      columnsCache = null;
+      dataListeners.forEach(function(listner) {
+        listner();
+      })
+    }
+    
+    initialize(columns);
     
     return {
     
       orderBy: function(column) {
-        columnsCache = null;
         var idx = columnIdx(column);
         table = _.sortBy(table, function(e) {
           return e[idx];
         });
+        dataChanged();
         return this;
       },
       
       reverse: function() {
-        columnsCache = null;
         table = table.reverse();
+        dataChanged();
         return this;
       },
       
-      filter: function(column, values) {
-        columnsCache = null;
+      filter: function(column, op, values) {
+        if(_.isUndefined(values)) {
+          values = op;
+          op = 'eq';
+        }
         var idx = columnIdx(column);
-        table = _.filter(table, function(e) {
-          return values.indexOf(e[idx])!==-1;
-        });
+        
+        if(op == 'eq')
+          var testFunc = function(e) {return values.indexOf(e[idx])!==-1}
+        else if(op == 'noteq')
+          var testFunc = function(e) {return values.indexOf(e[idx])===-1}
+        else {
+          console.error('Unrecognized filter option: '+op);
+          return this; 
+        }
+        
+        table = _.filter(table, testFunc);
+        dataChanged();
         return this;
       },
       
       limit : function(max) {
         if(max && _.size(table)>max ) {
-          columnsCache = null;
           var i=0;
           var nth = Math.floor(_.size(sorted) / limit);
           table = _.filter(table, function() {
             i++;
             return i % nth == 0;
           });
+          dataChanged();
         }
         return this;
       },
       
-      groupBy: function(column, groupingFunction, grouppedColumnName) {
+      groupBy: function(column, groupingFunction, grouppedDataType, grouppedColumnHeader ) {
         var idx = columnIdx(column);
         groupingFunction = groupingFunction || function(e) {return e;};
-        grouppedColumnName = grouppedColumnName || 'groupped';
+        grouppedColumnHeader = grouppedColumnHeader || 'groupped';
+        grouppedDataType = grouppedDataType || 'numeric';
 
         var groupped = _.groupBy(table, function(e){ 
-          return e[column]; 
+          return e[idx]; 
         });
         
-        var keys = groupped.keys();
+        var keysColumn = { 
+          column_header: labels[idx],
+          data_type: dataTypes[idx],
+          values: Object.keys(groupped)
+        };
+        
         var values = []
-        var groupped = _.map(keys, function(k) {
+        _.map(keysColumn.values, function(k) {
           values.push(groupingFunction(groupped[k])); 
         });
-        return popily.dataset({
-          column: keys,
-          grouppedColumnName: values
-        });
+        
+        var grouppedColumn = {
+          column_header: grouppedColumnHeader,
+          data_type: grouppedDataType,
+          values: values
+        }
+        initialize([keysColumn, grouppedColumn]);
+        dataChanged();
+        return this;
       },
 
       countUnique: function(column) {
@@ -115,7 +153,9 @@
           values: _(counts).values()
         };
 
-        return popily.dataset([valColumn,countColumn]);
+        initialize([valColumn,countColumn]);
+        dataChanged();
+        return this;
       },
       
       getColumns: function(cb) {
@@ -139,9 +179,24 @@
         }
         else
           return column;
-      }
+      },
       
+      onChange: function(cb) {
+        dataListeners.push(cb);
+      }
     }
   }
+  
+  popily.dataset.count = function(arr) {
+    return arr.length;
+  }
+  popily.dataset.count.dataType = 'numeric';
+  popily.dataset.count.columnLabel = 'Count';
+  
+  popily.dataset.countUnique = function(arr) {
+    return _.uniq(arr).length;
+  }
+  popily.dataset.countUnique.dataType = 'numeric';
+  popily.dataset.countUnique.columnLabel = 'Count unique';
 
 })(window);

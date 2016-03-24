@@ -19,7 +19,7 @@
   ];
 
   chart.render = function(element, options, rawData) {
-      popilyChart.chartTypes.linear.render(element, options, rawData, true);
+      return popilyChart.chartTypes.linear.render(element, options, rawData, true);
   };
 
   popilyChart.chartTypes.stackedArea = chart;
