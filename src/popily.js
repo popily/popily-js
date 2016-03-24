@@ -127,7 +127,7 @@
         
         element.classList.add('popily-box');
         element.innerHTML = '';
-        if(options.showTitle) {
+        if(options.title) {
           var titleElement = document.createElement("div");
           titleElement.classList.add('popily-title');
           titleElement.appendChild(document.createTextNode(apiResponse.title));

@@ -603,6 +603,11 @@
   background: #fff;
   border: 1px solid #666; }
 
+.popily-title {
+  text-align: center;
+  font-family: sans-serif;
+  font-size: 20px; }
+
 .popily-chart {
   font-family: sans-serif; }
   .popily-chart .unit {
