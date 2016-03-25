@@ -216,8 +216,11 @@
 
   popily.chart.applyTransformations = function(ds, transformations) {
     transformations.forEach(function(transformation) {
-      if(['count', 'countUnique'].indexOf(transformation.op)) {
+      if(['count', 'countUnique'].indexOf(transformation.op) !== -1) {
         popily.chart.applyGroupData(ds, transformation);
+      }
+      else if('replace' == transformation.op) {
+        ds.replaceValues(transformation.column, transformation.replacements);
       }
       else {
         popily.chart.applyFilter(ds, transformation);

@@ -158,6 +158,20 @@
         return this;
       },
       
+      replaceValues: function(column, replacements) {
+        var idx = columnIdx(column);
+        
+        _.map(table, function(row) {
+          if(row[idx] in replacements)
+            row[idx] = replacements[row[idx]];
+        });
+        
+        
+        dataChanged();
+        return this;
+        
+      },
+      
       getColumns: function(cb) {
         if(!columnsCache)
           columnsCache = unzip(table);

@@ -44,8 +44,17 @@ popily.api.setToken('2f0fc32981297c8bbc31d843213f21bc45cc20ee');
 popily.api.setURL('http://local.popily.com');
 
 popily.chart.getAndRender('#my-chart-01', {
-  insight: 6143,
-  title: true
+  insight: 6596,
+  title: true,
+  transformations: [
+    {
+      op: 'replace',
+      column: 'category_1',
+      replacements: {
+        'Single' : 'replaced'
+      }
+    }
+  ]
 });
 
 })();
