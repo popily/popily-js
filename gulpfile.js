@@ -29,7 +29,7 @@ gulp.task('default', ['clean'], function () {
 });
 
 gulp.task('build', ['api', 'scripts', 'styles']);
-//gulp.task('deploy', ['api', 'min-scripts', 'min-styles']);
+gulp.task('deploy', ['api', 'min-scripts', 'min-styles']);
 
 gulp.task('clean', function () {
   return $.del(['build/']);
@@ -70,14 +70,14 @@ gulp.task('scripts', ['api'], function() {
 		.pipe(gulp.dest('./build'))
 });
 
-/*
+
 gulp.task('min-scripts', ['scripts', ], function() {
 	return gulp.src(['build/popily.js'])
 		.pipe($.uglify())
 		.pipe($.rename({suffix: '.min'}))
 		.pipe(gulp.dest('./build'));
 });
-*/
+
 
 gulp.task('styles', function() {
   var sassOptions = {
