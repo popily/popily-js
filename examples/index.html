@@ -27,18 +27,26 @@ var chartOptions = {
     }]
 };
 popily.chart.render('#my-chart-01', categoryDatetime, chartOptions);
-*/
 
 var chart = popily.chart.create(categoryDatetime);
 var ds = chart.dataset();
 
 chart.draw('#my-chart-01', {
-  showTitle : true
+  title : true
 });
 
 setTimeout(function() {
-  ds.groupBy('Voting Close Date', popily.dataset.countUnique);
+  //ds.groupBy('Voting Close Date', popily.dataset.countUnique);
 }, 1000)
+*/
+
+popily.api.setToken('2f0fc32981297c8bbc31d843213f21bc45cc20ee');
+popily.api.setURL('http://local.popily.com');
+
+popily.chart.getAndRender('#my-chart-01', {
+  insight: 6143,
+  title: true
+});
 
 })();
 </script>

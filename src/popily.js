@@ -111,6 +111,8 @@
         var axisAssignments = popily.chart.analyze.assignToAxis(ds.getColumns(), options);
         var analysisType = popily.chart.analyze.determineType(ds.getColumns(), axisAssignments, calculation);
         var formattedData = popily.chart.utils.formatDataset(apiResponse, axisAssignments, analysisType);
+        
+        var labels = popily.chart.generateLabels(calculation, axisAssignments);
 
         var chartType = popily.chart.getChartForType(analysisType, options.chartType);
         var chartClass = popily.chart.chartTypes[chartType];
@@ -132,7 +134,7 @@
         if(options.title) {
           var titleElement = document.createElement("div");
           titleElement.classList.add('popily-title');
-          titleElement.appendChild(document.createTextNode(apiResponse.title));
+          titleElement.innerHTML = labels.title;
           element.appendChild(titleElement);
         }
 
@@ -177,6 +179,7 @@
       'chartType': 'chartType',
       'colors': 'colors',
       'transformations': 'transformations',
+      'filters': 'transformations',
       'xLabel': 'xLabel',
       'yLabel': 'yLabel',
       'xColumn': 'xColumn',

@@ -54,12 +54,15 @@ gulp.task('scripts', ['api'], function() {
             'src/dataset.js',
             'src/format.js', 
             'src/utils.js',  
+            'src/label.js',  
             'src/chart-types/common/*.js', 
             'src/chart-types/*.js'])
 	  .pipe($.eslint())
     .pipe($.eslint.format())
     .pipe($.eslint.failAfterError())
+    .pipe($.sourcemaps.init())
 	  .pipe($.concat('popily.js'))
+    .pipe($.sourcemaps.write())
 	  /*
     .pipe($.browserify({
 		  insertGlobals : false,
@@ -136,8 +139,8 @@ gulp.task('watch', ['scripts', 'styles'], function() {
     }
   });
   gulp.watch(['src/**/*.js'], ['scripts', browserSync.reload]);
-  gulp.watch(['examples/*.html', 'tests/*.js', 'tests/*.html'], [browserSync.reload]);
   gulp.watch(['src/popily.scss'], ['styles', browserSync.reload]);
+  gulp.watch(['examples/*.html', 'examples/*.js', 'tests/*.js', 'tests/*.html']).on('change', browserSync.reload);
 });
 
 

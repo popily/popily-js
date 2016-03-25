@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 
 <link href="../build/popily.css" rel="stylesheet" />
-<script src="../build/popily.min.js" ></script>
+<script src="../build/popily.js" ></script>
 <script src="./api-responses.js" ></script>
 </head>
 <body>
@@ -64,7 +64,8 @@
 
 
 var chartOptions = {
-    dataDirectory: '/src/data'
+    dataDirectory: '/src/data',
+    title: true
 };
 
 var multiStackedOptions = {
@@ -74,6 +75,7 @@ var multiStackedOptions = {
 
 popily.chart.render('#multi-stacked', categoryCategoryCategory, multiStackedOptions);
 popily.chart.render('#row-label', rowLabel, chartOptions);
+
 popily.chart.render('#stacked-area', categoryDatetime, chartOptions);
 
 popily.chart.render('#bar', categoryCategoryDatetime, {'filters': [{'column': 'Group Name', 'op': 'countUnique'}]});
@@ -84,7 +86,6 @@ popily.chart.render('#bar2', sumByCategory, {chartType: 'bar'});
 popily.chart.render('#scatterplot', scatterplot);
 
 popily.chart.render('#bar3', countByValue);
-
 
 popily.api.setToken('04d3355451dc557066bca149de2b83f3746f9102');
 popily.api.setURL('http://localhost:8000');
@@ -99,8 +100,6 @@ params = {
 popily.api.getInsights(source, params, function(err, insights) {
     popily.chart.render('#count-unique-bar', insights, {'filters': [{'op': 'countUnique', 'column': 'Group Name'}]});
 });
-
-
 </script>
 
 
