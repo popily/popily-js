@@ -6,6 +6,9 @@
     'sum_per_category_by_category',
     'count_by_value_by_category',
     'average_by_category_by_category',
+    'sum_by_category_by_state',
+    'count_by_value_by_state',
+    'average_by_category_by_state'
   ];
   chart.accepts = [];
 

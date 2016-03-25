@@ -82,14 +82,14 @@
               fit: true
             },
             label: {
-              text: rawData.chartData.x.label,
+              text: options.xLabel || rawData.chartData.x.label,
               position: rotated?'outer-middle':'inner-right',
             }
           },
           y: {
             show: true,
             label: {
-              text: yLabel,
+              text: options.yLabel || yLabel,
               position: rotated?'inner-right':'outer-middle'
             },
             tick: {

@@ -7,14 +7,12 @@
   popily.chart.baseChart = {
     defaults: {
       options: {
-          size: {
-            width: '100%',
-            height: '100%'
-          },
+          width: '100%',
+          height: '100%',
           style: 'detail',
           rotated: false,
           redrawOnResize: true,
-          color: [
+          colors: [
             '#54C88A', '#BBD442', '#85C4ED', '#FFC59C', '#4FB27A', '#741699', '#FF7364',
             '#F1C40F', '#DC8345', '#E74C3C', '#096C34', '#4D1567', '#98460C', '#DAF16B',
             '#F9D543', '#947700', '#188849', '#CC3A7F', '#A01507', '#F9D543', '#DB5C98',
@@ -25,8 +23,6 @@
             '#C92918', '#FAA96F'
           ]
       },
-      categoryLimit: 100,
-      pieLimit: 20,
       barBubbleCutoff: 30,
       chartPadding: {right: 50, top: 10}
     },
@@ -87,16 +83,16 @@
                 return toReturn;
               }
 
-              throw Error(chartType + ' not possible for ' + analysisType);
+              console.error(chartType + ' not possible for ' + analysisType);
             }
             else {
-                throw Error(chartType + ' not possible for ' + analysisType);
+                console.error(chartType + ' not possible for ' + analysisType);
             }
         }
         return popily.chart.chartMap[analysisType].defaultChart;
     }
     else {
-        throw Error('No chart for ' + analysisType);
+        console.error('No chart for ' + analysisType);
     }
   };
 
@@ -121,7 +117,13 @@
         var chartType = popily.chart.getChartForType(analysisType, options.chartType);
         var chartClass = popily.chart.chartTypes[chartType];
 
-        options = _.extend(chartClass.defaults.options, options);
+        //options = _.extend(chartClass.defaults.options, options);
+
+        _.each(_.keys(popily.chart.baseChart.defaults.options), function(key) {
+          if(!options[key]) {
+            options[key] = popily.chart.baseChart.defaults.options[key];
+          }
+        });
 
         if(typeof element === "string") {
           element = document.querySelector(element);
@@ -149,15 +151,15 @@
   } 
 
   popily.chart.render = function(element, apiResponse, options) {
-    if(_.isUndefined(options)) {
-      options = {};
-    }
-    // backward compatibility
-    if(options.filters && !options.transformations) {
-      console.log('filetrs proprtty is deprecated, please rename it to transformations')
-      options.transformations = options.filters;
-    }
+    var that = this;
+    options = options || {};
     
+    var chart = popily.chart.create(apiResponse);
+    
+    if(options.filters && !options.transformations) {
+      console.log('filters proprtty is deprecated, please rename it to transformations')
+      options.transformations = options.filters;
+    }      
     var chart = popily.chart.create(apiResponse);
     
     if(options.transformations) {
@@ -175,14 +177,27 @@
 
     var availableChartOptions = {
       'chartType': 'chartType',
-      'title': 'title',
-      'filters': 'filters',
+      'colors': 'colors',
       'transformations': 'transformations',
+      'filters': 'transformations',
+      'xLabel': 'xLabel',
+      'yLabel': 'yLabel',
+      'xColumn': 'xColumn',
+      'groupByColumn': 'groupByColumn',
+      'height': 'height',
+      'width': 'width',
+      'rotated': 'rotated',
+      'title': 'title',
+      'xOrder': 'order',
+      'timeInterval': 'interval',
+      'time_interval': 'interval'
     };
 
     var availableServerOptions = {
       'columns': 'columns',
       'calculation': 'insight_action',
+      'timeInterval': 'time_interval',
+      'time_interval': 'time_interval',
       'insight_action': 'insight_action',
       'analysisType': 'insight_type'
     };
@@ -240,6 +255,7 @@
     filters.forEach(function(filter) {
       // I think this countUnique should not be here!
       if(filter.op == 'distinct' || filter.op == 'countUnique') {
+        console.log('filter countUnique is deprecated please dont use it, use "groupData" instead!');
         ds.countUnique();
       } else {
         ds.filter(filter.column, filter.op || 'eq', filter.values);

@@ -57,7 +57,7 @@
                     centered: true
                 },
                 label: {
-                    text: xLabel,
+                    text: options.xLabel || xLabel,
                     position: 'inner-right'
                 }
             },
@@ -65,7 +65,7 @@
                 show: true,
                 min: yMin,
                 label: {
-                    text: yLabel,
+                    text: options.yLabel || yLabel,
                     position: 'outer-middle'
                 },
                 tick: {

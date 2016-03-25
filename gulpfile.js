@@ -36,6 +36,7 @@ gulp.task('clean', function () {
 });
 
 gulp.task('scripts', ['api'], function() {
+//gulp.task('scripts', function() {
 	// Single entry point to browserify 
 	return gulp.src(['src/lib/d3.min.js',
             'src/lib/d3.geomap.dependencies.min.js',
@@ -107,12 +108,14 @@ gulp.task('styles', function() {
     .pipe(gulp.dest('./build'))
 });
 
+
 gulp.task('min-styles', ['styles'], function() {
 	return gulp.src(['build/popily.css'])
 		.pipe($.rename({suffix: '.min'}))
     .pipe($.cleanCss())
     .pipe(gulp.dest('./build'));
 })
+
 
 gulp.task('api', function() {
 	// Single entry point to browserify 

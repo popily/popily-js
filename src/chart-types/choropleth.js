@@ -118,6 +118,11 @@
     element.style.marginLeft = 'auto';
     element.style.marginRight = 'auto';
     var mapRatio = mapSize[0]/mapSize[1];
+
+    if(options.height && options.height.toString().indexOf('%') > -1) {
+      console.error('Choropleth map height must be supplied as pixel value, defaulting to 500');
+      options.height = 500;
+    }
     
     var height = options.height || 500;
     var width = element.getBoundingClientRect().width;
