@@ -83,16 +83,16 @@
                 return toReturn;
               }
 
-              throw Error(chartType + ' not possible for ' + analysisType);
+              console.error(chartType + ' not possible for ' + analysisType);
             }
             else {
-                throw Error(chartType + ' not possible for ' + analysisType);
+                console.error(chartType + ' not possible for ' + analysisType);
             }
         }
         return popily.chart.chartMap[analysisType].defaultChart;
     }
     else {
-        throw Error('No chart for ' + analysisType);
+        console.error('No chart for ' + analysisType);
     }
   };
 
