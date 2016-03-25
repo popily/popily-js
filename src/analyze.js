@@ -49,6 +49,7 @@ Analyze data from the Popily API and prepare for rendering
     };
 
     var assignToAxis = function(columns, options) {
+        options = options || {};
         var filters = options.filters;
         var axisAssignments = {};
         var filterRef = {};
@@ -145,6 +146,7 @@ Analyze data from the Popily API and prepare for rendering
             // check filters
             if(filterRef.hasOwnProperty(column.column_header) && filterRef[column.column_header].length > 0) {
                 // if column has filter where and 1 value, it is z
+
                 if(hasSingleEquality(filterRef[column.column_header])) {
                     if(isAssigned('z')) {
                         axisAssignments.z2 = column;
@@ -235,7 +237,6 @@ Analyze data from the Popily API and prepare for rendering
                 }
             } 
         }
-
         return axisAssignments;
     };
 
@@ -302,7 +303,6 @@ Analyze data from the Popily API and prepare for rendering
             axisAssignments.hasOwnProperty('y') && 
             isNumeric(axisAssignments.y)) {
 
-            console.log(axisAssignments);
             if(columns.length === 3) {
                 return types.scatterplotByCategory;
             }

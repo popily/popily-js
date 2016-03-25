@@ -48,7 +48,29 @@ Once data is added, you can get back interactive visualizations about the relati
 
 ```javascript
 // Grab insight with slug age-favorite-color and render in my-chart div
-popily.api.getAndRender('#my-chart', {insight: 'age-favorite-color'});
+popily.chart.getAndRender('#my-chart', {insight: 'age-favorite-color'});
+```
+
+If you'd prefer to separate your API requests and chart rendering, that's cool too. 
+
+```javascript
+var requestOptions = {
+    time_interval: 'day' // get output by day
+}
+
+var chartOptions = {
+    chartType: 'bar',
+    filters: [
+        {
+            op: 'countUnique',
+            column: 'Favorite Color'
+        }
+    ]
+}
+
+popily.api.getInsight('favorite-color-response-date', requestOptions, function(err, response) {
+    popily.chart.render('#my-chart', chartOptions); 
+});
 ```
 
 From the here the world is your oyster. Connect directly to a database, customize how the insight is displayed (or just use the best-practice visualization we generate out of the box), filter the data displayed in the charts, and update your charts automatically whenever the data changes. Get more details about how to use the API at [developers.popily.com](http://developers.popily.com).
