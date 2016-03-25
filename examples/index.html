@@ -11,7 +11,7 @@
 
 <h1>Single chart</h1>
 
-<div id="my-chart-01"></div>
+<div id="my-chart-01">asdasdasd</div>
 <div id="my-chart-02"></div>
 <div id="my-chart-04"></div>
 
@@ -32,7 +32,9 @@ popily.chart.render('#my-chart-01', categoryDatetime, chartOptions);
 var chart = popily.chart.create(categoryDatetime);
 var ds = chart.dataset();
 
-chart.draw('#my-chart-01', {});
+chart.draw('#my-chart-01', {
+  showTitle : true
+});
 
 setTimeout(function() {
   ds.groupBy('Voting Close Date', popily.dataset.countUnique);

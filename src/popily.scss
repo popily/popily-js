@@ -1,80 +1,91 @@
 @import '../node_modules/c3/src/scss/main';
 @import '../src/lib/leaflet';
 
-.popily-chart .unit {
+.popily-box {
+  
+}
+
+
+.popily-title {
+  text-align: center;
+  font-family: sans-serif;
+  font-size: 20px;
+}
+
+.popily-chart {
+  font-family: sans-serif;
+  
+  .unit {
     cursor: pointer;
     fill: #333;
     stroke: #000;
     stroke-width: .4px;
-}
-.popily-chart .legend-bg {
+  }
+  .legend-bg {
     fill: #fff;
     fill-opacity: .8;
-}
-.popily-chart .legend-bar {
+  }
+  .legend-bar {
     stroke: #222;
     stroke-width: 1px;
-}
-.popily-chart .unit {
+  }
+  .unit {
     stroke: #555;
     stroke-opacity: .3;
     opacity: .8;
     fill: #ccc;
   }
-.popily-chart .unit.active {
+  .unit.active {
     stroke-opacity: .9;
     stroke-width: 3;
     transition: 300ms;
     opacity: 1;
-}
-.popily-chart .background {
+  }
+  .background {
     fill: none;
     pointer-events: all;
-}
+  }
 
-.popily-chart text {
+  text {
     fill: #333;
     font-size: 12px;
-}
+  }
 
-.popily-chart.hide-legend .legend {
+  &.hide-legend .legend {
     display: None;
-}
+  }
 
-.popily-chart .legend-color:hover {
+  .legend-color:hover {
     cursor:pointer;
     opacity: 1;
-}
-.popily-chart .legend-color {
+  }
+  .legend-color {
     opacity: .8;
     transition: 300ms;
-}
-.popily-chart path.leaflet-clickable {
+  }
+  path.leaflet-clickable {
     transition: 300ms;
-}
-.popily-chart .category-legend {
+  }
+  .category-legend {
     margin-bottom: 12px;
     margin-top: 12px;
-}
-.popily-chart .category-legend div {
-    display: inline-block;
-    font-size: 12px;
-    margin-left: 10px;
-}
+    div {
+      display: inline-block;
+      font-size: 12px;
+      margin-left: 10px;
+    }
+  }
 
-.popily-chart .legend-color {
+  .legend-color {
     opacity: .8;
     transition: 300ms;
-}
+    span {
+      background-color: #2475B0;
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      margin-right: 5px;
+    }
+  }
 
-.popily-chart .legend-color span {
-    background-color: #2475B0;
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    margin-right: 5px;
-}
-
-.popily-chart {
-    font-family: sans-serif;
 }

@@ -12,7 +12,7 @@
           style: 'detail',
           rotated: false,
           redrawOnResize: true,
-          colors: [
+          color: [
             '#54C88A', '#BBD442', '#85C4ED', '#FFC59C', '#4FB27A', '#741699', '#FF7364',
             '#F1C40F', '#DC8345', '#E74C3C', '#096C34', '#4D1567', '#98460C', '#DAF16B',
             '#F9D543', '#947700', '#188849', '#CC3A7F', '#A01507', '#F9D543', '#DB5C98',
@@ -115,18 +115,26 @@
         var chartType = popily.chart.getChartForType(analysisType, options.chartType);
         var chartClass = popily.chart.chartTypes[chartType];
 
-        if(options.skipRender) {
-          return chartClass;
-        }
-
         options = _.extend(chartClass.defaults.options, options);
 
         if(typeof element === "string") {
           element = document.querySelector(element);
         }
-        element.classList.add('popily-chart');
         
-        var chart = chartClass.render(element, options, formattedData);
+        element.classList.add('popily-box');
+        element.innerHTML = '';
+        if(options.title) {
+          var titleElement = document.createElement("div");
+          titleElement.classList.add('popily-title');
+          titleElement.appendChild(document.createTextNode(apiResponse.title));
+          element.appendChild(titleElement);
+        }
+
+        var chartElement = document.createElement("div");
+        chartElement.classList.add('popily-chart');
+        element.appendChild(chartElement);
+        
+        var chart = chartClass.render(chartElement, options, formattedData);
         return chart;
       },
       
@@ -141,9 +149,12 @@
     
     var chart = popily.chart.create(apiResponse);
     
-    if(options.filters && !options.transformations)
+    if(options.filters && !options.transformations) {
+      console.log('filters proprtty is deprecated, please rename it to transformations')
       options.transformations = options.filters;
-      
+    }      
+    var chart = popily.chart.create(apiResponse);
+    
     if(options.transformations) {
       var ds = chart.dataset();
       popily.chart.applyTransformations(ds, options.transformations);
@@ -226,7 +237,7 @@
     filters.forEach(function(filter) {
       // I think this countUnique should not be here!
       if(filter.op == 'distinct' || filter.op == 'countUnique') {
-        console.log('filter countUnique is DEPRECATED please dont use it, use "groupData" instead!');
+        console.log('filter countUnique is deprecated please dont use it, use "groupData" instead!');
         ds.countUnique();
       } else {
         ds.filter(filter.column, filter.op || 'eq', filter.values);
