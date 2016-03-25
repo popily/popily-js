@@ -70,6 +70,7 @@ gulp.task('scripts', ['api'], function() {
 		.pipe(gulp.dest('./build'))
 });
 
+
 gulp.task('min-scripts', ['scripts', ], function() {
 	return gulp.src(['build/popily.js'])
 		.pipe($.uglify())

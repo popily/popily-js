@@ -153,11 +153,11 @@
       options = {};
     }
     // backward compatibility
-    if(options.filetrs && !options.transformations) {
+    if(options.filters && !options.transformations) {
       console.log('filetrs proprtty is deprecated, please rename it to transformations')
-      options.transformations = options.filetrs;
+      options.transformations = options.filters;
     }
-      
+    
     var chart = popily.chart.create(apiResponse);
     
     if(options.transformations) {

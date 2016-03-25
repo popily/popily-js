@@ -32,7 +32,7 @@
     'count_by_category_per_category',
     'count_per_category_by_category',
     'count_by_category_by_datetime_distinct',
-    'top_by_label'
+    'top_by_rowlabel'
   ];
 
 
