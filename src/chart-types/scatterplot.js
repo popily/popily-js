@@ -25,7 +25,7 @@
       columns.push(xValues);
       columns.push(yValues);
 
-      var tooltip = {
+      var tooltip = options.tooltip || {
           contents: function (d, defaultTitleFormat, defaultValueFormat, color) {
               var markup = '<div class="scatter-tooltip"><h3>'+xLabel+':&nbsp;<strong>' + d[0].x + '</strong>, '+yLabel+':&nbsp;<strong>' + d[0].value + '</strong></h3>';
               markup += '<div style="max-width: 350px;">';
@@ -49,7 +49,7 @@
               return markup;
           }
       };
-
+        
       return popilyChart.chartTypes.compare.render(element, options, columns, xs, xLabel, yLabel, tooltip);
   };
 

@@ -68,19 +68,21 @@
         .attr("height", height)
         .attr("class", "bubble");
 
-    var tip = d3.tip()
-        .attr('class', 'd3-tips')
-        .offset([-5, 0])
-        .html(function(d) {
-            var text = "<table class='c3-tooltip'><tr><th colspan='2'>" + d.category + "</th></tr>";
-            text += "<tr class='c3-tooltip-name-'>";
-            text += "<td class='name'><span style='background-color:" + color(d.category) + "'></span> " + xLabel + "</td>";
-            text += "<td class='value'>" + d.showValue + "</td>";
-            text += "</tr>";
-            return text + "</table>"; 
-        });
-    svg.call(tip);
-
+    if((_.isUndefined(options.tooltip)?true:options.tooltip)) {
+        var tip = d3.tip()
+            .attr('class', 'd3-tips')
+            .offset([-5, 0])
+            .html(function(d) {
+                var text = "<table class='c3-tooltip'><tr><th colspan='2'>" + d.category + "</th></tr>";
+                text += "<tr class='c3-tooltip-name-'>";
+                text += "<td class='name'><span style='background-color:" + color(d.category) + "'></span> " + xLabel + "</td>";
+                text += "<td class='value'>" + d.showValue + "</td>";
+                text += "</tr>";
+                return text + "</table>"; 
+            });
+        svg.call(tip);
+    }
+    
     var node = svg.selectAll(".node")
         .data(
             bubble.nodes(data)

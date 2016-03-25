@@ -41,14 +41,70 @@
       }
   };
 
+  var c3ifyMulti = function(xValues,yValues,zValues,z2Values) {
+    var zipped = _.zip(xValues,yValues,zValues,z2Values);
+    var sep = '___';
+    var names = {};
+
+    var columnMap = {};
+    _.each(zipped, function(group) {
+      var x = group[0];
+      var y = group[1];
+      var z = group[2];
+      var z2 = group[3];
+      var zz2 = z + sep + z2;
+
+      names[zz2] = z;
+
+      if(!columnMap[zz2]) {
+        columnMap[zz2] = {};
+      }
+      columnMap[zz2][x] = y;
+    });
+
+    var groups = [];
+    var orderedGroups = [];
+    _.each(_.uniq(z2Values), function(z2) {
+      orderedGroups.push(z2);
+      var group = [];
+      _.each(_.uniq(zValues), function(z) {
+        group.push(z + sep + z2);
+      });
+      groups.push(group);
+    });
+
+    var xLabels = _.unique(xValues);
+    var xLabelsDisplay = _.map(xLabels, function(xValue) {
+      return xValue + ' (' + orderedGroups.join(',') + ')';
+    });
+
+    var columns = [];
+
+    for(var column in columnMap) {
+      var col = [column];
+      _.each(xLabels, function(x) {
+        col.push(parseFloat(columnMap[column][x] || 0));
+      });
+      columns.push(col);
+    }
+    
+    return {
+        categories: xLabelsDisplay,
+        columns: columns,
+        groups: groups,
+        names: names
+    }
+  };
+
   var nan = -99999;
-  var cleanData = function(xValues,yValues,zValues) {
+  var cleanData = function(xValues,yValues,zValues,z2Values) {
       xValues = xValues || [];
       yValues = yValues || [];
       zValues = zValues || [];
+      z2Values = z2Values || [];
 
 
-      var tuples = _.zip(xValues,yValues,zValues);
+      var tuples = _.zip(xValues,yValues,zValues,z2Values);
 
       // Remove nan
       var cleaned = _.reject(tuples, function(t) {
@@ -101,8 +157,8 @@
       return null;
   }
 
-  var sortData = function(xYalues,yValues,zValues,limit, order) {
-      var tuples = _.zip(xYalues,yValues,zValues);
+  var sortData = function(xYalues,yValues,zValues,limit,order,z2Values) {
+      var tuples = _.zip(xYalues,yValues,zValues,z2Values);
           
       if(_.every(xYalues, function(x) { return !isNaN(x); })) {
           var sorted = _.sortBy(tuples, function(t){
@@ -185,6 +241,7 @@
       cleanData: cleanData,
       cleanNanToZero: cleanNanToZero,
       c3ify: c3ify,
+      c3ifyMulti: c3ifyMulti,
       checkIsDateStr: checkIsDateStr
   }
 

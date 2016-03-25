@@ -18,12 +18,25 @@
 <script >
 
 (function() {
-
+/*
 var chartOptions = {
-    dataDirectory: '/src/data'
+    dataDirectory: '/src/data',
+    transformations: [{ 
+      column: 'Voting Close Date',
+      op: 'countUnique',
+    }]
 };
 popily.chart.render('#my-chart-01', categoryDatetime, chartOptions);
+*/
 
+var chart = popily.chart.create(categoryDatetime);
+var ds = chart.dataset();
+
+chart.draw('#my-chart-01', {});
+
+setTimeout(function() {
+  ds.groupBy('Voting Close Date', popily.dataset.countUnique);
+}, 1000)
 
 })();
 </script>

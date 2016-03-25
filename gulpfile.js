@@ -77,6 +77,7 @@ gulp.task('min-scripts', ['scripts', ], function() {
 		.pipe(gulp.dest('./build'));
 });
 
+
 gulp.task('styles', function() {
   var sassOptions = {
     style: 'expanded'

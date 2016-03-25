@@ -114,7 +114,8 @@
           y: {
             show: true
           }
-        }
+        },
+        tooltip: (_.isUndefined(options.tooltip)?true:options.tooltip)
 
       }
     

@@ -48,7 +48,9 @@ Analyze data from the Popily API and prepare for rendering
         });
     };
 
-    var assignToAxis = function(columns, filters) {
+    var assignToAxis = function(columns, options) {
+        options = options || {};
+        var filters = options.filters;
         var axisAssignments = {};
         var filterRef = {};
 
@@ -86,14 +88,65 @@ Analyze data from the Popily API and prepare for rendering
             return false;
         };
 
+        
+        // Allow for user to set x,z. In order for this to be possible
+        // we need to ensure that these are the first columns we check.
+        var useColumns = [],
+            xColumn,
+            zColumn;
+
+        if(options.xColumn) {
+            xColumn = _.find(columns, function(column) {
+                return column.column_header === options.xColumn;
+            });
+            if(xColumn) {
+                useColumns.push(xColumn);
+            }
+        }
+        if(options.groupByColumn) {
+            zColumn = _.find(columns, function(column) {
+                return column.column_header === options.groupByColumn;
+            });
+            if(zColumn) {
+                useColumns.push(zColumn);
+            }
+        }
+
+        var usedHeaders = _.pluck(useColumns, 'column_header');
+        _.each(columns, function(column) {
+            if(!_(usedHeaders).contains(column.column_header)) {
+                useColumns.push(column);
+            }
+        });
+
+        if(useColumns.length < columns.length) {
+            useColumns = columns;
+        }
+
+        // Now that we have a definite column order, we can inspect
+        // the columns. 
         var column, dataType;
-        for (index = 0; index < columns.length; index++) {
-            column = columns[index];
+        for (index = 0; index < useColumns.length; index++) {
+            column = useColumns[index];
             dataType = column.data_type;
+
+            // Check user options
+            if(options.xColumn && column.column_header === options.xColumn) {
+                axisAssignments.x = column;
+                assigned.push('x');
+                continue;
+            }
+
+            if(options.groupByColumn && column.column_header === options.groupByColumn) {
+                axisAssignments.z = column;
+                assigned.push('z');
+                continue;
+            }
             
             // check filters
             if(filterRef.hasOwnProperty(column.column_header) && filterRef[column.column_header].length > 0) {
                 // if column has filter where and 1 value, it is z
+
                 if(hasSingleEquality(filterRef[column.column_header])) {
                     if(isAssigned('z')) {
                         axisAssignments.z2 = column;
@@ -184,11 +237,12 @@ Analyze data from the Popily API and prepare for rendering
                 }
             } 
         }
-
         return axisAssignments;
     };
 
     var determineType = function(columns, axisAssignments, calculation) {
+        //console.log(axisAssignments);
+
         var types = {
             countByCategory: 'count_by_category',
             averageByCategory: 'average_by_category',
@@ -249,7 +303,6 @@ Analyze data from the Popily API and prepare for rendering
             axisAssignments.hasOwnProperty('y') && 
             isNumeric(axisAssignments.y)) {
 
-            console.log(axisAssignments);
             if(columns.length === 3) {
                 return types.scatterplotByCategory;
             }
