@@ -166,10 +166,8 @@
             row[idx] = replacements[row[idx]];
         });
         
-        
         dataChanged();
         return this;
-        
       },
       
       getColumns: function(cb) {

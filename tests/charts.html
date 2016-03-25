@@ -70,7 +70,8 @@ var chartOptions = {
 
 var multiStackedOptions = {
     xColumn: 'Ballot Name',
-    groupByColumn: 'Group Name'
+    groupByColumn: 'Group Name',
+    title: true 
 }
 
 popily.chart.render('#multi-stacked', categoryCategoryCategory, multiStackedOptions);
@@ -78,14 +79,14 @@ popily.chart.render('#row-label', rowLabel, chartOptions);
 
 popily.chart.render('#stacked-area', categoryDatetime, chartOptions);
 
-popily.chart.render('#bar', categoryCategoryDatetime, {'filters': [{'column': 'Group Name', 'op': 'countUnique'}]});
+popily.chart.render('#bar', categoryCategoryDatetime, {title: true, 'filters': [{'column': 'Group Name', 'op': 'countUnique'}]});
 
 popily.chart.render('#map', coordinates, chartOptions);
 popily.chart.render('#choropleth', sumByCategory, chartOptions);
-popily.chart.render('#bar2', sumByCategory, {chartType: 'bar'});
-popily.chart.render('#scatterplot', scatterplot);
+popily.chart.render('#bar2', sumByCategory, {title: true, chartType: 'bar'});
+popily.chart.render('#scatterplot', scatterplot, {title: true});
 
-popily.chart.render('#bar3', countByValue);
+popily.chart.render('#bar3', countByValue, {title: true});
 
 popily.api.setToken('04d3355451dc557066bca149de2b83f3746f9102');
 popily.api.setURL('http://localhost:8000');

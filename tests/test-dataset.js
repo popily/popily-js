@@ -31,6 +31,19 @@ describe('Testing dataset filtering', function() {
         expect(yColumn.values[0]).to.be.equal(filteredYColumn.values[0]);
         expect(yColumn.values[1]).to.be.equal(filteredYColumn.values[1]);
     });
+    
+    it('should replace category values', function() {
+        var apiResponse = JSON.parse(JSON.stringify(categoryDatetime));
+        var xColumnHeader = 'Ballot Name';
+
+        var dataset = popily.dataset(apiResponse.columns);
+        var beforeReplacedColumn = dataset.getColumn(xColumnHeader);
+        dataset.replaceValues(xColumnHeader, {'PENDING PENDING PENDING': 'replaced value'});
+        var afterReplacedColumn = dataset.getColumn(xColumnHeader);
+        
+        expect(afterReplacedColumn.values.length).to.be.equal(beforeReplacedColumn.values.length);
+        expect(_.every(afterReplacedColumn.values, function(x) { return expect(x).to.be.not.equal('PENDING PENDING PENDING') }));
+    });
 
     it('should find distinct', function() {
         var apiResponse = JSON.parse(JSON.stringify(categoryCategoryDatetime));
