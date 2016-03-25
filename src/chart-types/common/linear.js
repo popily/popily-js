@@ -83,7 +83,7 @@
             }
         },
         color: {
-            pattern: options.color
+            pattern: options.colors
         },
         legend: {
             position: 'bottom',

@@ -64,7 +64,8 @@
 
 
 var chartOptions = {
-    dataDirectory: '/src/data'
+    dataDirectory: '/src/data',
+    title: true
 };
 
 var multiStackedOptions = {
@@ -73,7 +74,7 @@ var multiStackedOptions = {
 }
 
 popily.chart.render('#multi-stacked', categoryCategoryCategory, multiStackedOptions);
-popily.chart.render('#row-label', rowLabel, chartOptions);
+//popily.chart.render('#row-label', rowLabel, chartOptions);
 
 
 popily.chart.render('#stacked-area', categoryDatetime, chartOptions);

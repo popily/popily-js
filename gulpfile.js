@@ -53,6 +53,7 @@ gulp.task('scripts', ['api'], function() {
             'src/dataset.js',
             'src/format.js', 
             'src/utils.js',  
+            'src/label.js',  
             'src/chart-types/common/*.js', 
             'src/chart-types/*.js'])
 	  .pipe($.eslint())

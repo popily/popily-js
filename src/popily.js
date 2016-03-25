@@ -115,6 +115,8 @@
         var axisAssignments = popily.chart.analyze.assignToAxis(ds.getColumns(), options);
         var analysisType = popily.chart.analyze.determineType(ds.getColumns(), axisAssignments, calculation);
         var formattedData = popily.chart.utils.formatDataset(apiResponse, axisAssignments, analysisType);
+        
+        var labels = popily.chart.generateLabels(calculation, axisAssignments);
 
         var chartType = popily.chart.getChartForType(analysisType, options.chartType);
         var chartClass = popily.chart.chartTypes[chartType];
@@ -130,7 +132,7 @@
         if(options.title) {
           var titleElement = document.createElement("div");
           titleElement.classList.add('popily-title');
-          titleElement.appendChild(document.createTextNode(apiResponse.title));
+          titleElement.innerHTML = labels.title;
           element.appendChild(titleElement);
         }
 
@@ -232,7 +234,6 @@
     filters.forEach(function(filter) {
       // I think this countUnique should not be here!
       if(filter.op == 'distinct' || filter.op == 'countUnique') {
-        console.log('filter countUnique is DEPRECATED please dont use it, use "groupData" instead!');
         ds.countUnique();
       } else {
         ds.filter(filter.column, filter.op || 'eq', filter.values);
