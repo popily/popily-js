@@ -59,7 +59,9 @@ gulp.task('scripts', ['api'], function() {
 	  .pipe($.eslint())
     .pipe($.eslint.format())
     .pipe($.eslint.failAfterError())
+    .pipe($.sourcemaps.init())
 	  .pipe($.concat('popily.js'))
+    .pipe($.sourcemaps.write())
 	  /*
     .pipe($.browserify({
 		  insertGlobals : false,

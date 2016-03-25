@@ -174,7 +174,10 @@
     var serverOptions = {};
 
     var availableChartOptions = {
-      'chartType': 'chartType'
+      'chartType': 'chartType',
+      'title': 'title',
+      'filters': 'filters',
+      'transformations': 'transformations',
     };
 
     var availableServerOptions = {
