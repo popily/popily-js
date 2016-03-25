@@ -53,6 +53,10 @@
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
     });
 
+    if(options.height && options.height.toString().indexOf('%') > -1) {
+      console.error('Interactive map height must be supplied as pixel value, defaulting to 500');
+      options.height = 500;
+    }
     var height = options.height || 500;
     var mapContainer = document.createElement('div');
     var elId = "popily-id-" + (Math.floor(Math.random() * 90000) + 10000).toString();

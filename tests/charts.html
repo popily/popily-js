@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 
 <link href="../build/popily.css" rel="stylesheet" />
-<script src="../build/popily.min.js" ></script>
+<script src="../build/popily.js" ></script>
 <script src="./api-responses.js" ></script>
 </head>
 <body>
@@ -75,6 +75,7 @@ var multiStackedOptions = {
 popily.chart.render('#multi-stacked', categoryCategoryCategory, multiStackedOptions);
 popily.chart.render('#row-label', rowLabel, chartOptions);
 popily.chart.render('#stacked-area', categoryDatetime, chartOptions);
+
 popily.chart.render('#bar', categoryCategoryDatetime, {'filters': [{'column': 'Group Name', 'op': 'countUnique'}]});
 
 popily.chart.render('#map', coordinates, chartOptions);
@@ -98,6 +99,7 @@ params = {
 popily.api.getInsights(source, params, function(err, insights) {
     popily.chart.render('#count-unique-bar', insights, {'filters': [{'op': 'countUnique', 'column': 'Group Name'}]});
 });
+
 
 </script>
 

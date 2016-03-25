@@ -6,11 +6,12 @@ A JavaScript wrapper for the [Popily](https://popily.com) API.
 
 ## Quickstart
 
-First add `<meta charset="utf-8">` just after the `<head>` tag, then put `<script src="popily.min.js"></script>` wherever you want. 
+First add `<meta charset="utf-8">` and `<link href="popily.min.css" rel="stylesheet" />` just after the `<head>` tag, then put `<script src="popily.min.js"></script>` wherever you want. 
 
 ```html
 <head>
     <meta charset="utf-8">
+    <link href="popily.min.css" rel="stylesheet" />
     <!-- other stuff goes here -->
 </head>
 <body>
@@ -33,6 +34,14 @@ columns = [
     {
         'column_header': 'Favorite Color',
         'data_type': 'category'
+    },
+    {
+        'column_header': 'Birth Date',
+        'data_type': 'datetime'
+    },
+    {
+        'column_header': 'Favorite Hobby',
+        'data_type': 'category'
     }
 ]
 popily.addSource('http://ages-and-colors.csv', {columns:columns}, function(err, source) {
@@ -47,30 +56,55 @@ Once data is added, you can get back interactive visualizations about the relati
 ```
 
 ```javascript
-// Grab insight with slug age-favorite-color and render in my-chart div
-popily.chart.getAndRender('#my-chart', {insight: 'age-favorite-color'});
+// Grab an insight about the relationship between Age and Favorite Color
+popily.chart.getAndRender('#my-chart', {columns: ['Age', 'Favorite Color']});
 ```
 
-If you'd prefer to separate your API requests and chart rendering, that's cool too. 
+Now you can customize the output by tweaking what data is displayed and how the chart is presented.
 
 ```javascript
-var requestOptions = {
-    time_interval: 'day' // get output by day
-}
-
 var chartOptions = {
-    chartType: 'bar',
-    filters: [
+    // Get an insight about the relationship between Age and Favorite Color
+    columns: ['Age', 'Favorite Color'],
+    
+    // Calculate the average
+    calculation: 'average',
+    
+    // Limit the output to where Favorite Color was Red, Yellow or Blue
+    transformations: [
         {
-            op: 'countUnique',
-            column: 'Favorite Color'
+            column: 'Favorite Color',
+            op: 'eq',
+            values: ['Red', 'Yellow', 'Blue']
         }
-    ]
-}
+    ],
+    
+    // Charts are responsive by default, but you can specify the height and width
+    height: 500,
+    width: 1200,
 
-popily.api.getInsight('favorite-color-response-date', requestOptions, function(err, response) {
-    popily.chart.render('#my-chart', chartOptions); 
-});
+    // Rotate the output, so bar charts go from left to right instead of bottom to top
+    rotated: true,
+
+    // Manually set the x and y axes labels
+    xLabel: 'The Favorite Colors We Care About',
+    yLabel: 'Average Age Based on Favorite Color',
+
+    // For 3-dimensional charts like stacked bar charts, you can choose which 
+    // column goes along the x axis and which is used for grouping (the stacks 
+    // in the stacked bar)
+    xColumn: 'Favorite Color',
+    groupByColumn: 'Favorite Hobby',
+
+    // Include the title Popily auto generates. This is usually something 
+    // descriptive like Average Age by Favorite Color Grouped by Favorite Hobby
+    title: true,
+
+    // Set the x axis values to appear in reverse alphabetical order
+    xOrder: 'z-a'
+};
+
+popily.chart.getAndRender('#my-chart', chartOptions);
 ```
 
 From the here the world is your oyster. Connect directly to a database, customize how the insight is displayed (or just use the best-practice visualization we generate out of the box), filter the data displayed in the charts, and update your charts automatically whenever the data changes. Get more details about how to use the API at [developers.popily.com](http://developers.popily.com).

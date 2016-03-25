@@ -108,7 +108,7 @@
               hide: true
           },
           size: {
-              height: options.size.height
+              height: options.height
           },
           line: {
               connectNull: true

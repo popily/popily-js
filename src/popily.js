@@ -12,7 +12,7 @@
           style: 'detail',
           rotated: false,
           redrawOnResize: true,
-          color: [
+          colors: [
             '#54C88A', '#BBD442', '#85C4ED', '#FFC59C', '#4FB27A', '#741699', '#FF7364',
             '#F1C40F', '#DC8345', '#E74C3C', '#096C34', '#4D1567', '#98460C', '#DAF16B',
             '#F9D543', '#947700', '#188849', '#CC3A7F', '#A01507', '#F9D543', '#DB5C98',
@@ -115,7 +115,13 @@
         var chartType = popily.chart.getChartForType(analysisType, options.chartType);
         var chartClass = popily.chart.chartTypes[chartType];
 
-        options = _.extend(chartClass.defaults.options, options);
+        //options = _.extend(chartClass.defaults.options, options);
+
+        _.each(_.keys(popily.chart.baseChart.defaults.options), function(key) {
+          if(!options[key]) {
+            options[key] = popily.chart.baseChart.defaults.options[key];
+          }
+        });
 
         if(typeof element === "string") {
           element = document.querySelector(element);
@@ -143,9 +149,8 @@
   } 
 
   popily.chart.render = function(element, apiResponse, options) {
-    if(_.isUndefined(options)) {
-      options = {};
-    }
+    var that = this;
+    options = options || {};
     
     var chart = popily.chart.create(apiResponse);
     
@@ -177,12 +182,19 @@
       'xColumn': 'xColumn',
       'groupByColumn': 'groupByColumn',
       'height': 'height',
-      'width': 'width'
+      'width': 'width',
+      'rotated': 'rotated',
+      'title': 'title',
+      'xOrder': 'order',
+      'timeInterval': 'interval',
+      'time_interval': 'interval'
     };
 
     var availableServerOptions = {
       'columns': 'columns',
       'calculation': 'insight_action',
+      'timeInterval': 'time_interval',
+      'time_interval': 'time_interval',
       'insight_action': 'insight_action',
       'analysisType': 'insight_type'
     };

@@ -72,21 +72,21 @@
                   height: 130
               },
               label: {
-                 text: xLabel,
+                 text: options.xLabel || xLabel,
                  position: rotated?'outer-middle':'inner-right',
               }
           },
           y: {
               show: true,
               label: {
-                  text: yLabel,
+                  text: options.yLabel || yLabel,
                   position: rotated?'inner-right':'outer-middle'
               },
               tick: {
                   format: d3.format(",")
               }
           },
-          rotated: rotated
+          rotated: options.rotated || rotated
       },
       color: {
           pattern: options.colors
@@ -112,7 +112,7 @@
           grouped: false,
       },
       size: {
-          height: options.height || options.size.height
+          height: options.height
       },
       bar: {
         width: {

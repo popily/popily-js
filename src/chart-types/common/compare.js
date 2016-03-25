@@ -32,7 +32,7 @@
           },
           padding: chartPadding,
           size: {
-              height: options.size.height
+              height: options.height
           },
           point: {
               r: 4
@@ -40,7 +40,7 @@
           axis: {
               x: {
                   label: {
-                      text: xLabel,
+                      text: options.xLabel || xLabel,
                       position: 'outer-middle',
                   },
                   tick: {
@@ -50,7 +50,7 @@
               },
               y: {
                   label: {
-                      text: yLabel,
+                      text: options.yLabel || yLabel,
                       position: 'outer-middle'
                   },
                   tick: {
