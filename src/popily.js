@@ -7,10 +7,8 @@
   popily.chart.baseChart = {
     defaults: {
       options: {
-          size: {
-            width: '100%',
-            height: '100%'
-          },
+          width: '100%',
+          height: '100%',
           style: 'detail',
           rotated: false,
           redrawOnResize: true,
@@ -25,8 +23,6 @@
             '#C92918', '#FAA96F'
           ]
       },
-      categoryLimit: 100,
-      pieLimit: 20,
       barBubbleCutoff: 30,
       chartPadding: {right: 50, top: 10}
     },
@@ -145,8 +141,8 @@
     
     var chart = popily.chart.create(apiResponse);
     
-    if(options.filetrs && !options.transformations)
-      options.transformations = options.filetrs;
+    if(options.filters && !options.transformations)
+      options.transformations = options.filters;
       
     if(options.transformations) {
       var ds = chart.dataset();
@@ -162,7 +158,15 @@
     var serverOptions = {};
 
     var availableChartOptions = {
-      'chartType': 'chartType'
+      'chartType': 'chartType',
+      'colors': 'colors',
+      'transformations': 'transformations',
+      'xLabel': 'xLabel',
+      'yLabel': 'yLabel',
+      'xColumn': 'xColumn',
+      'groupByColumn': 'groupByColumn',
+      'height': 'height',
+      'width': 'width'
     };
 
     var availableServerOptions = {
