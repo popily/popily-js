@@ -116,7 +116,8 @@
 
         var chartType = popily.chart.getChartForType(analysisType, options.chartType);
         var chartClass = popily.chart.chartTypes[chartType];
-
+        var extraCss = '';
+        
         //options = _.extend(chartClass.defaults.options, options);
 
         _.each(_.keys(popily.chart.baseChart.defaults.options), function(key) {
@@ -138,8 +139,23 @@
           titleElement.classList.add('popily-title');
           titleElement.innerHTML = labels.title;
           element.appendChild(titleElement);
+          
+          var titleCss = '';
+          if(options.titleFontSize)
+            titleCss += 'font-size: '+options.titleFontSize+';';
+          if(options.titleFontFamily)
+            titleCss += 'font-family: '+options.titleFontFamily+';';
+          if(options.titleFontColor)
+            titleCss += 'color: '+options.titleFontColor+';';
+          if(titleCss)
+            extraCss = '.'+options.uniqueClassName+ ' .popily-title {'+titleCss+'}';
         }
-
+        
+        if(extraCss) {
+          var style = popily.chart.utils.createStyleElement(extraCss);
+          element.appendChild(style);
+        }
+  
         var chartElement = document.createElement("div");
         chartElement.classList.add('popily-chart');
         element.appendChild(chartElement);
@@ -193,7 +209,12 @@
       'xOrder': 'order',
       'timeInterval': 'interval',
       'time_interval': 'interval',
-      'sizes': 'sizes'
+      'barSize': 'barSize',
+      'lineSize': 'lineSize',
+      'pointSize': 'pointSize',
+      'titleFontFamily': 'titleFontFamily',
+      'titleFontSize': 'titleFontSize',
+      'titleFontColor': 'titleFontColor'
     };
 
     var availableServerOptions = {
