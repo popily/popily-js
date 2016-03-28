@@ -116,11 +116,10 @@
       },
       bar: {
         width: {
-          ratio: .9
+          ratio: (options.sizes.bar || 0.9)
         }
       }
     };
-
     return chartData;
   };
 

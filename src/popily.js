@@ -21,7 +21,8 @@
             '#BB7FD2', '#34618F', '#947700', '#FFE26C', '#92094A', '#BF6322', '#58ADE3',
             '#9FB921', '#0665A2', '#8333A2', '#0F3863', '#BC9805', '#FFE26C', '#E989B6',
             '#C92918', '#FAA96F'
-          ]
+          ],
+          sizes: {}
       },
       barBubbleCutoff: 30,
       chartPadding: {right: 50, top: 10}
@@ -190,7 +191,8 @@
       'title': 'title',
       'xOrder': 'order',
       'timeInterval': 'interval',
-      'time_interval': 'interval'
+      'time_interval': 'interval',
+      'sizes': 'sizes'
     };
 
     var availableServerOptions = {

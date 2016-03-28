@@ -85,6 +85,9 @@
         color: {
             pattern: options.colors
         },
+        point: {
+          r: (options.sizes.point || 2.5)
+        },
         legend: {
             position: 'bottom',
             show: false

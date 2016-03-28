@@ -103,7 +103,7 @@
           },
           color: {
               pattern: options.colors
-         },
+          },
           legend: {
               hide: true
           },
@@ -112,6 +112,9 @@
           },
           line: {
               connectNull: true
+          },
+          point: {
+            r: (options.sizes.point || 2.5)
           },
           grid: {
               x: {
