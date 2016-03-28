@@ -62,22 +62,21 @@
 
 <script >
 
-var sizes = {
-  bar: 0.1,
-  point: 10
-}
-
 var chartOptions = {
   dataDirectory: '/src/data',
   title: true,
-  sizes: sizes
+  pointSize: 10,
+  barSize: 0.1,
+  lineSize: 3
 };
 
 var multiStackedOptions = {
   xColumn: 'Ballot Name',
   groupByColumn: 'Group Name',
   title: true,
-  sizes: sizes
+  pointSize: 10,
+  barSize: 0.1,
+  lineSize: 3
 }
 
 popily.chart.render('#multi-stacked', categoryCategoryCategory, multiStackedOptions);
@@ -85,18 +84,28 @@ popily.chart.render('#row-label', rowLabel, chartOptions);
 
 popily.chart.render('#stacked-area', categoryDatetime, chartOptions);
 
-popily.chart.render('#bar', categoryCategoryDatetime, {title: true, 'filters': [{'column': 'Group Name', 'op': 'countUnique'}], sizes: sizes});
+popily.chart.render('#bar', categoryCategoryDatetime, {title: true, 'filters': [{'column': 'Group Name', 'op': 'countUnique'}], pointSize: 10,
+  barSize: 0.1,
+  lineSize: 3});
 
 popily.chart.render('#map', coordinates, chartOptions);
 popily.chart.render('#choropleth', sumByCategory, chartOptions);
-popily.chart.render('#bar2', sumByCategory, {title: true, chartType: 'bar', sizes: sizes});
-popily.chart.render('#scatterplot', scatterplot, {title: true,sizes: sizes});
+popily.chart.render('#bar2', sumByCategory, {title: true, chartType: 'bar', pointSize: 10,
+  barSize: 0.1,
+  lineSize: 3});
+popily.chart.render('#scatterplot', scatterplot, {title: true,pointSize: 10,
+  barSize: 0.1,
+  lineSize: 3});
 
-popily.chart.render('#bar3', countByValue, {title: true, sizes: sizes});
+popily.chart.render('#bar3', countByValue, {title: true, pointSize: 10,
+  barSize: 0.1,
+  lineSize: 3});
 
 popily.api.setToken('04d3355451dc557066bca149de2b83f3746f9102');
 popily.api.setURL('http://localhost:8000');
-popily.chart.getAndRender('#stacked-area-2', {insight:categoryDatetime.slug, sizes: sizes});
+popily.chart.getAndRender('#stacked-area-2', {insight:categoryDatetime.slug, pointSize: 10,
+  barSize: 0.1,
+  lineSize: 3});
 
 var source = 450;
 params = {
@@ -105,7 +114,9 @@ params = {
 };
 
 popily.api.getInsights(source, params, function(err, insights) {
-    popily.chart.render('#count-unique-bar', insights, {'filters': [{'op': 'countUnique', 'column': 'Group Name'}], sizes: sizes});
+    popily.chart.render('#count-unique-bar', insights, {'filters': [{'op': 'countUnique', 'column': 'Group Name'}], pointSize: 10,
+  barSize: 0.1,
+  lineSize: 3});
 });
 </script>
 

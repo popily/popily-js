@@ -35,7 +35,7 @@
               height: options.height
           },
           point: {
-            r: (options.sizes.point || 4)
+            r: (options.pointSize || 4)
           },
           axis: {
               x: {

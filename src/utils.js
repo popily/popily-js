@@ -125,10 +125,22 @@
 
       return newData;
   };
+  
+  var createStyleElement = function(css) {
+    var style = document.createElement('style');
+    style.type = 'text/css';
+    if (style.styleSheet) {
+      style.styleSheet.cssText = css;
+    } else {
+      style.appendChild(document.createTextNode(css));
+    }
+    return style;
+  }
 
   window.popily.chart.utils = {
-      chartSize: chartSize,
-      updateChart: updateChart,
-      formatDataset: formatDataset
+    chartSize: chartSize,
+    updateChart: updateChart,
+    formatDataset: formatDataset,
+    createStyleElement: createStyleElement
   };
 })(window);

@@ -65,6 +65,11 @@
       xValues.unshift('x');
 
       var chartPadding = {right: 10, top: 10};
+      
+      if(!_.isUndefined(options.lineSize)) {
+        var style = popily.chart.utils.createStyleElement('.'+options.uniqueClassName+' .c3-line { stroke-width: '+options.lineSize+'px; }')
+        element.parentNode.appendChild(style);
+      }
 
       var chartData = {
           bindto: element,
@@ -114,7 +119,7 @@
               connectNull: true
           },
           point: {
-            r: (options.sizes.point || 2.5)
+            r: (options.pointSize || 2.5)
           },
           grid: {
               x: {

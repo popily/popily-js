@@ -21,8 +21,7 @@
             '#BB7FD2', '#34618F', '#947700', '#FFE26C', '#92094A', '#BF6322', '#58ADE3',
             '#9FB921', '#0665A2', '#8333A2', '#0F3863', '#BC9805', '#FFE26C', '#E989B6',
             '#C92918', '#FAA96F'
-          ],
-          sizes: {}
+          ]
       },
       barBubbleCutoff: 30,
       chartPadding: {right: 50, top: 10}
@@ -125,12 +124,14 @@
             options[key] = popily.chart.baseChart.defaults.options[key];
           }
         });
+        options.uniqueClassName = 'popily-id-'+_.uniqueId();
 
         if(typeof element === "string") {
           element = document.querySelector(element);
         }
         
         element.classList.add('popily-box');
+        element.classList.add(options.uniqueClassName);
         element.innerHTML = '';
         if(options.title) {
           var titleElement = document.createElement("div");

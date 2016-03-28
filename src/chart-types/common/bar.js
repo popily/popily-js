@@ -116,7 +116,7 @@
       },
       bar: {
         width: {
-          ratio: (options.sizes.bar || 0.9)
+          ratio: (options.barSize || 0.9)
         }
       }
     };

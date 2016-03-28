@@ -68,7 +68,7 @@
         },
         bar: {
           width: {
-            ratio: (options.sizes.bar || 0.7)
+            ratio: (options.barSize || 0.7)
           }
         },
         axis: {

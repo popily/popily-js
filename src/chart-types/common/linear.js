@@ -86,7 +86,7 @@
             pattern: options.colors
         },
         point: {
-          r: (options.sizes.point || 2.5)
+          r: (options.pointSize || 2.5)
         },
         legend: {
             position: 'bottom',
@@ -181,6 +181,11 @@
               return true;
           }
       })();
+
+      if(!_.isUndefined(options.lineSize)) {
+        var style = popily.chart.utils.createStyleElement('.'+options.uniqueClassName+' .c3-line { stroke-width: '+options.lineSize+'px; }')
+        element.parentNode.appendChild(style);
+      }
 
       if(grouped) {
         chartData.data.type = 'area';
