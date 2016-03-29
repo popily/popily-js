@@ -112,7 +112,7 @@
         var analysisType = popily.chart.analyze.determineType(ds.getColumns(), axisAssignments, calculation);
         var formattedData = popily.chart.utils.formatDataset(apiResponse, axisAssignments, analysisType);
         
-        var labels = popily.chart.generateLabels(calculation, axisAssignments);
+        var labels = popily.chart.generateLabels(calculation, axisAssignments, options.transformations || {});
 
         var chartType = popily.chart.getChartForType(analysisType, options.chartType);
         var chartClass = popily.chart.chartTypes[chartType];
@@ -281,17 +281,15 @@
       values: [<array-of-values]>
     }, .. ]
   */
-  popily.chart.applyFilter = function(ds, filters) {
+  popily.chart.applyFilter = function(ds, filter) {
     
-    filters.forEach(function(filter) {
-      // I think this countUnique should not be here!
-      if(filter.op == 'distinct' || filter.op == 'countUnique') {
-        console.log('filter countUnique is deprecated please dont use it, use "groupData" instead!');
-        ds.countUnique();
-      } else {
-        ds.filter(filter.column, filter.op || 'eq', filter.values);
-      }
-    });
+    // I think this countUnique should not be here!
+    if(filter.op == 'distinct' || filter.op == 'countUnique') {
+      console.log('filter countUnique is deprecated please dont use it, use "groupData" instead!');
+      ds.countUnique();
+    } else {
+      ds.filter(filter.column, filter.op || 'eq', filter.value || filter.values);
+    }
     
     return ds;
   };

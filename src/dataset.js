@@ -71,23 +71,32 @@
         return this;
       },
       
-      filter: function(column, op, values) {
-        if(_.isUndefined(values)) {
-          values = op;
+      filter: function(column, op, value) {
+        if(_.isUndefined(value)) {
+          value = op;
           op = 'eq';
         }
         var idx = columnIdx(column);
         
         if(op == 'eq')
-          var testFunc = function(e) {return values.indexOf(e[idx])!==-1}
+          var testFunc = function(e) {return value.indexOf(e[idx])!==-1}
         else if(op == 'noteq')
-          var testFunc = function(e) {return values.indexOf(e[idx])===-1}
+          var testFunc = function(e) {return value.indexOf(e[idx])===-1}
+        else if(op == 'gt')
+          var testFunc = function(e) {return e[idx] > value}
+        else if(op == 'gte')
+          var testFunc = function(e) {return e[idx] >= value}
+        else if(op == 'lt')
+          var testFunc = function(e) { console.log(e[idx]); return e[idx] < value}
+        else if(op == 'lte')
+          var testFunc = function(e) {return e[idx] <= value}
         else {
           console.error('Unrecognized filter option: '+op);
           return this; 
         }
         
         table = _.filter(table, testFunc);
+        console.log(table);
         dataChanged();
         return this;
       },

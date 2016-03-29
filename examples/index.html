@@ -58,7 +58,19 @@ popily.chart.getAndRender('#my-chart-01', {
       replacements: {
         'Single' : 'replaced'
       }
-    }
+    },
+    {
+      op: 'eq',
+      column: 'category_1',
+      values: ['Married', 'Divorced', 'replaced']
+    },
+    {
+      op: 'lt',
+      column: 'number_1',
+      value: 12
+    },
+    
+    
   ]
 });
 
