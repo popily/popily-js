@@ -9,9 +9,7 @@
   
   
   window.popily.chart.generateLabels = function(calculation, axisAssignments) {
-    
-    console.log(axisAssignments);
-    
+        
     if(calculation == 'count') {
       if(axisAssignments.z) {
         return {

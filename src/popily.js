@@ -223,8 +223,7 @@
       'timeInterval': 'time_interval',
       'time_interval': 'time_interval',
       'insight_action': 'insight_action',
-      'analysisType': 'insight_type',
-      'source': 'source'
+      'analysisType': 'insight_type'
     };
 
     _.each(_.keys(availableChartOptions), function(option) {
@@ -240,15 +239,19 @@
     });
 
     serverOptions.full = true;
-
     if(options.hasOwnProperty('insight')) {
       popily.api.getInsight(options.insight, serverOptions, function(err, apiResponse) {
         popily.chart.render(element, apiResponse, chartOptions);
       });
     }
     else {
+      if(!options.hasOwnProperty('source')) {
+        console.warn('Either the insight or source property is required');
+        return false;
+      }
       serverOptions.single = true;
-      popily.api.getInsights(serverOptions, function(err, apiResponse) {
+      
+      popily.api.getInsights(options.source, serverOptions, function(err, apiResponse) {
         popily.chart.render(element, apiResponse, chartOptions);
       });
     }
