@@ -45,21 +45,4 @@ describe('Testing dataset filtering', function() {
         expect(_.every(afterReplacedColumn.values, function(x) { return expect(x).to.be.not.equal('PENDING PENDING PENDING') }));
     });
 
-    it('should find distinct', function() {
-        var apiResponse = JSON.parse(JSON.stringify(categoryCategoryDatetime));
-        var dataset = popily.dataset(apiResponse.columns);
-        //dataset.distinct('Ballot Name');
-        //dataset.distinct('Voting Close Date');
-        //dataset.distinctTogether(['Ballot Name', 'Voting Close Date', 'Group Name']);
-        //dataset.distinct('Group Name');
-        //window.testData = dataset;
-        //console.log(dataset.getColumns());
-        /*
-        console.log(_.countBy(dataset.getColumns()[2].values, function(col) {
-            return col;
-        }));
-        */
-        
-    });
-
 });

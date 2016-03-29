@@ -44,7 +44,9 @@ columns = [
         'data_type': 'category'
     }
 ]
-popily.addSource('http://ages-and-colors.csv', {columns:columns}, function(err, source) {
+
+var sourceOptions = {columns:columns, url: 'http://ages-and-colors.csv'};
+popily.api.addSource(sourceOptions, function(err, source) {
     console.log(source); 
 });
 ```
@@ -57,7 +59,8 @@ Once data is added, you can get back interactive visualizations about the relati
 
 ```javascript
 // Grab an insight about the relationship between Age and Favorite Color
-popily.chart.getAndRender('#my-chart', {columns: ['Age', 'Favorite Color']});
+var insightOptions = {source: source.slug, columns: ['Age', 'Favorite Color']};
+popily.chart.getAndRender('#my-chart', insightOptions);
 ```
 
 Now you can customize the output by tweaking what data is displayed and how the chart is presented.
