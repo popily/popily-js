@@ -199,7 +199,8 @@
       'timeInterval': 'time_interval',
       'time_interval': 'time_interval',
       'insight_action': 'insight_action',
-      'analysisType': 'insight_type'
+      'analysisType': 'insight_type',
+      'source': 'source'
     };
 
     _.each(_.keys(availableChartOptions), function(option) {

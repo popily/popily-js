@@ -32,21 +32,4 @@ describe('Testing dataset filtering', function() {
         expect(yColumn.values[1]).to.be.equal(filteredYColumn.values[1]);
     });
 
-    it('should find distinct', function() {
-        var apiResponse = JSON.parse(JSON.stringify(categoryCategoryDatetime));
-        var dataset = popily.dataset(apiResponse.columns);
-        //dataset.distinct('Ballot Name');
-        //dataset.distinct('Voting Close Date');
-        //dataset.distinctTogether(['Ballot Name', 'Voting Close Date', 'Group Name']);
-        //dataset.distinct('Group Name');
-        //window.testData = dataset;
-        //console.log(dataset.getColumns());
-        /*
-        console.log(_.countBy(dataset.getColumns()[2].values, function(col) {
-            return col;
-        }));
-        */
-        
-    });
-
 });
