@@ -125,7 +125,7 @@
             options[key] = popily.chart.baseChart.defaults.options[key];
           }
         });
-        options.uniqueClassName = 'popily-id-'+_.uniqueId();
+        options.uniqueClassName = _.uniqueId('popily-id-');
 
         if(typeof element === "string") {
           element = document.querySelector(element);
