@@ -57,6 +57,9 @@
 <h1>Count Unique Bar</h1>
 <div id="count-unique-bar"></div>
 
+<h1>Count Bar From Source</h1>
+<div id="count-bar-source"></div>
+
 <h1>Row Label</h1>
 <div id="row-label"></div>
 
@@ -121,6 +124,16 @@ popily.api.getInsights(source, params, function(err, insights) {
   barSize: 0.1,
   lineSize: 3});
 });
+
+popily.api.getInsights(source, params, function(err, insights) {
+    popily.chart.render('#count-unique-bar', insights, {'filters': [{'op': 'countUnique', 'column': 'Group Name'}]});
+});
+
+var insightOptions = {
+    columns: ['Ballot Subject', 'Group Name'],
+    source: 'ballot-metrics-1457674524'
+};
+popily.chart.getAndRender('#count-bar-source', insightOptions);
 </script>
 
 
