@@ -19,8 +19,7 @@
       var prefixes = [],
         sufixes = [];
       description = description || '';
-      
-      transformations.forEach(function(t) {
+      (transformations || []).forEach(function(t) {
         if(t.column==column.column_header) {
           if(t.op == 'eq')
             sufixes.push('equal '+ joinWithOr(t.values));
@@ -35,7 +34,7 @@
           else if(t.op == 'lte')
             prefixes.push('lower than or equal '+ t.value);
           else if(t.op == 'countUnique')
-            prefixes.push('number unique');
+            prefixes.push('number of unique');
         }
       });
       if(prefixes.length && !description)
@@ -48,12 +47,12 @@
     if(calculation == 'count') {
       if(axisAssignments.z) {
         return {
-          title: columnLabel(axisAssignments.z, 'number of each') + ' grouped by ' + columnLabel(axisAssignments.x)
+          title: columnLabel(axisAssignments.z, 'Number of each') + ' grouped by ' + columnLabel(axisAssignments.x)
         }
       }
       else {
         return {
-          title: columnLabel(axisAssignments.x, 'number of each')
+          title: columnLabel(axisAssignments.x, 'Number of each')
         }
       }
     }
@@ -111,10 +110,33 @@
         }
       }
     }
+    else if(calculation == 'top') {
+      // Top unique_row_label_1 Ranked by number_3
+      return {
+        title: '' + columnLabel(axisAssignments.x, 'Top') + ' Ranked by ' + columnLabel(axisAssignments.y)
+      }
+    }
+    else if(calculation == 'geo') {
+      if(axisAssignments.z) {
+        return {
+          title: columnLabel(axisAssignments.y, 'Number of') + ' for Each Location grouped by ' + columnLabel(axisAssignments.z)
+        }
+      }
+      else if(axisAssignments.y) {
+        return {
+          title: columnLabel(axisAssignments.y, 'Number of') + ' for Each Location'
+        }
+      }
+      else {
+        return {
+          title: 'Rowlabel for Each Location'
+        }
+      }
+    }
     
     
     return {
-      title: 'no title'
+      title: 'no title for '+calculation
     }
     
   }

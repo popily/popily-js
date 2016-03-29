@@ -112,7 +112,7 @@
         var analysisType = popily.chart.analyze.determineType(ds.getColumns(), axisAssignments, calculation);
         var formattedData = popily.chart.utils.formatDataset(apiResponse, axisAssignments, analysisType);
         
-        var labels = popily.chart.generateLabels(calculation, axisAssignments, options.transformations || {});
+        var labels = popily.chart.generateLabels(calculation, axisAssignments, options.transformations || []);
 
         var chartType = popily.chart.getChartForType(analysisType, options.chartType);
         var chartClass = popily.chart.chartTypes[chartType];

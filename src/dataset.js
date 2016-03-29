@@ -87,7 +87,7 @@
         else if(op == 'gte')
           var testFunc = function(e) {return e[idx] >= value}
         else if(op == 'lt')
-          var testFunc = function(e) { console.log(e[idx]); return e[idx] < value}
+          var testFunc = function(e) { return e[idx] < value}
         else if(op == 'lte')
           var testFunc = function(e) {return e[idx] <= value}
         else {

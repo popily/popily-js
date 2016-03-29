@@ -44,13 +44,14 @@ popily.api.setToken('04d3355451dc557066bca149de2b83f3746f9102');
 popily.api.setURL('http://local.popily.com');
 
 popily.chart.getAndRender('#my-chart-01', {
-  //insight: 6596,
+  insight: 6543,
   
+  title: true,
+  /*
   source: 'all-data-types1',
   columns: ['category_1', 'number_1'],
   calculation: 'average',
   
-  title: true,
   transformations: [
     {
       op: 'replace',
@@ -69,9 +70,8 @@ popily.chart.getAndRender('#my-chart-01', {
       column: 'number_1',
       value: 12
     },
-    
-    
   ]
+  */
 });
 
 })();
