@@ -219,11 +219,11 @@
 
     var availableServerOptions = {
       'columns': 'columns',
-      'calculation': 'insight_action',
+      'calculation': 'insight_actions',
       'timeInterval': 'time_interval',
       'time_interval': 'time_interval',
-      'insight_action': 'insight_action',
-      'analysisType': 'insight_type'
+      'insight_action': 'insight_actions',
+      'analysisType': 'insight_types'
     };
 
     _.each(_.keys(availableChartOptions), function(option) {
@@ -234,7 +234,10 @@
 
     _.each(_.keys(availableServerOptions), function(option) {
       if(options.hasOwnProperty(option)) {
-        serverOptions[availableServerOptions[option]] = options[option];
+        if(['calculation', 'insight_action', 'analysisType'].indexOf(option)!==-1)
+          serverOptions[availableServerOptions[option]] = [options[option]];
+        else
+          serverOptions[availableServerOptions[option]] = options[option];
       }
     });
 
