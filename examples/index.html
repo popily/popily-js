@@ -40,9 +40,20 @@ setTimeout(function() {
 }, 1000)
 */
 
-popily.api.setToken('04d3355451dc557066bca149de2b83f3746f9102');
-popily.api.setURL('http://local.popily.com');
+//popily.api.setToken('04d3355451dc557066bca149de2b83f3746f9102');
+//popily.api.setURL('http://local.popily.com');
 
+popily.api.setToken('d39c69f05c5fae5cbcbe6a3b6ebac693c6ffb807');
+
+var insightOptions = {
+    source: 'superstore-sales-csv-5',
+    columns: ['Order Date', 'Sales'],
+    //xOrder: 'z-a'
+};
+
+popily.chart.getAndRender('#my-chart-01', insightOptions);
+
+/*
 popily.chart.getAndRender('#my-chart-01', {
   insight: 6543,
   
@@ -71,8 +82,9 @@ popily.chart.getAndRender('#my-chart-01', {
       value: 12
     },
   ]
-  */
+  * /
 });
+*/
 
 })();
 </script>
