@@ -63,7 +63,7 @@
       var xValues = preppedData[0];
       var yValues = preppedData[1];
       var valueLookup = preppedData[2];
-      var dataDirectory = options.dataDirectory || '/data';
+      var dataDirectory = options.dataDirectory || popily.basePath + '/data/';
 
       var currentMousePos = { x: -1, y: -1 };
       var onMouseMove = function(event) {

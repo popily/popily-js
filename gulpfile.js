@@ -35,7 +35,7 @@ gulp.task('clean', function () {
   return $.del(['build/']);
 });
 
-gulp.task('scripts', ['api'], function() {
+gulp.task('scripts', ['api', 'data'], function() {
 //gulp.task('scripts', function() {
 	// Single entry point to browserify 
 	return gulp.src(['src/lib/d3.min.js',
@@ -71,8 +71,13 @@ gulp.task('scripts', ['api'], function() {
     */
     
 		.pipe(gulp.dest('./build'))
+		
 });
 
+gulp.task('data', function() {
+  return gulp.src(['src/data/**/*'])
+		.pipe(gulp.dest('build/data'));
+});
 
 gulp.task('min-scripts', ['scripts', ], function() {
 	return gulp.src(['build/popily.js'])
