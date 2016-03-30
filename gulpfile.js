@@ -28,25 +28,22 @@ gulp.task('default', ['clean'], function () {
   gulp.start('build');
 });
 
-gulp.task('build', ['api', 'scripts', 'styles']);
-gulp.task('deploy', ['api', 'min-scripts', 'min-styles']);
+gulp.task('build', ['api', 'scripts', 'geo', 'styles']);
+gulp.task('deploy', ['api', 'min-scripts', 'min-geo', 'min-styles']);
 
 gulp.task('clean', function () {
   return $.del(['build/']);
 });
 
-gulp.task('scripts', ['api', 'data'], function() {
+gulp.task('scripts', ['api'], function() {
 //gulp.task('scripts', function() {
 	// Single entry point to browserify 
 	return gulp.src(['src/lib/d3.min.js',
-            'src/lib/d3.geomap.dependencies.min.js',
-            'src/lib/d3.geomap.min.js',
             'src/lib/d3-tip.js',
             'src/lib/pathseg.js',
             'src/lib/c3.min.js',
             'src/lib/underscore.min.js',
             'src/lib/numeral.min.js',
-            'src/lib/leaflet.min.js',
             'build/popily-api.js',
             'src/popily.js',
             'src/analyze.js', 
@@ -56,7 +53,10 @@ gulp.task('scripts', ['api', 'data'], function() {
             'src/utils.js',  
             'src/label.js',  
             'src/chart-types/common/*.js', 
-            'src/chart-types/*.js'])
+            'src/chart-types/*.js',
+            '!src/chart-types/choropleth.js',
+            '!src/chart-types/interactive-map.js',
+            ])
 	  .pipe($.eslint())
     .pipe($.eslint.format())
     .pipe($.eslint.failAfterError())
@@ -74,13 +74,53 @@ gulp.task('scripts', ['api', 'data'], function() {
 		
 });
 
-gulp.task('data', function() {
-  return gulp.src(['src/data/**/*'])
-		.pipe(gulp.dest('build/data'));
+gulp.task('geo', function() {
+
+  var dataObjects = [];
+  return gulp.src([
+    'src/lib/d3.geomap.dependencies.min.js',
+    'src/lib/d3.geomap.min.js',
+    'src/lib/leaflet.min.js',
+    'src/chart-types/choropleth.js',
+    'src/chart-types/interactive-map.js',
+    //'src/data/**/*', // uncomment to include all countries
+    'src/data/world/*',
+    'src/data/countries/USA-abbr.json',
+    'src/data/countries/USA.json',
+    ])
+    .pipe($.if(/^d3.geomap.min.js$/, $.insert.transform(function(content, file) { 
+      return content.replace('d3.json', 'newD3Json = function(f, cb) {cb(null, f)}, newD3Json');
+    })))
+    .pipe($.if(/.json$/, $.insert.transform(function(content, file) {
+      var name = file.path.split('src/')[1].replace(/\//g, '.').replace(/-/g, '').slice(0, -5);
+      var newContent = '';
+      var prefix = 'window.popily.chart';
+      var path = '';
+      name.split('.').forEach(function(part) {
+        path = path +'.'+ part;
+        if(dataObjects.indexOf(path) === -1 && path != '.'+name) {
+          newContent +=  prefix + path + '={};\r\n';
+        }
+        dataObjects.push(path);
+      });
+      newContent += prefix +'.'+ name + '=' + content + ';\r\n';
+      return newContent;
+    })))
+    .pipe($.sourcemaps.init())
+	  .pipe($.concat('popily-geo.js'))
+    .pipe($.sourcemaps.write())
+		.pipe(gulp.dest('build'));
 });
 
 gulp.task('min-scripts', ['scripts', ], function() {
 	return gulp.src(['build/popily.js'])
+		.pipe($.uglify())
+		.pipe($.rename({suffix: '.min'}))
+		.pipe(gulp.dest('./build'));
+});
+
+gulp.task('min-geo', ['geo', ], function() {
+	return gulp.src(['build/popily-geo.js'])
 		.pipe($.uglify())
 		.pipe($.rename({suffix: '.min'}))
 		.pipe(gulp.dest('./build'));
@@ -137,13 +177,13 @@ gulp.task('api', function() {
 
 
 
-gulp.task('watch', ['scripts', 'styles'], function() {
+gulp.task('watch', ['scripts', 'geo', 'styles'], function() {
   browserSync.init({
     server: {
       baseDir: ["./", "./examples"] 
     }
   });
-  gulp.watch(['src/**/*.js'], ['scripts', browserSync.reload]);
+  gulp.watch(['src/**/*.js'], ['scripts', 'geo', browserSync.reload]);
   gulp.watch(['src/popily.scss'], ['styles', browserSync.reload]);
   gulp.watch(['examples/*.html', 'examples/*.js', 'tests/*.js', 'tests/*.html']).on('change', browserSync.reload);
 });

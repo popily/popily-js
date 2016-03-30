@@ -63,7 +63,7 @@
       var xValues = preppedData[0];
       var yValues = preppedData[1];
       var valueLookup = preppedData[2];
-      var dataDirectory = options.dataDirectory || popily.basePath + '/data/';
+      var dataDirectory = options.dataDirectory || popily.basePath + '/data';
 
       var currentMousePos = { x: -1, y: -1 };
       var onMouseMove = function(event) {
@@ -74,18 +74,18 @@
       document.onmousemove = onMouseMove;
 
       var insightType = rawData.analysisType;
-      var geoFile = dataDirectory + '/world/countries.json';
+      var geoJson = popilyChart.data.world.countries;
       var isState = false;
 
       if(insightType.indexOf('_state') > -1) {
-          geoFile = dataDirectory + '/countries/USA.json';
+          geoJson = popilyChart.data.countries.USA;
           isState = true;
 
           var lengths = _.map(xValues,function(x) { return x.length; });
           var totalLength = _.reduce(lengths,function(total, l) { return total + l });
 
           if(totalLength/xValues.length < 4) {
-              geoFile = dataDirectory + '/countries/USA-abbr.json';
+              geoJson = popilyChart.data.countries.USAabbr;
           }
       }
 
@@ -101,7 +101,7 @@
               .style("font-weight", "bold")
               .text("a simple tooltip");
 
-      var mapObj = d3.geomap.choropleth().geofile(geoFile);
+      var mapObj = d3.geomap.choropleth().geofile(geoJson);
 
       if(isState) {
           mapObj = mapObj.projection(d3.geo.albersUsa);

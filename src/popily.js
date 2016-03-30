@@ -1,8 +1,7 @@
 'use strict';
     
-(function(window, scripts) {
+(function(window) {
   var popily = window.popily || {};
-  popily.basePath = scripts[scripts.length-1].src.split('/').slice(0, -1).join('/');
   popily.chart = {};
   popily.chart.chartTypes = {};
   popily.chart.baseChart = {
@@ -353,4 +352,4 @@
       window.popily = popily;
   }
   
-})(window, document.getElementsByTagName("script"));
+})(window);
