@@ -80,6 +80,7 @@ gulp.task('geo', function() {
   return gulp.src([
     'src/lib/d3.geomap.dependencies.min.js',
     'src/lib/d3.geomap.min.js',
+    'src/lib/d3-tip.js',
     'src/lib/leaflet.min.js',
     'src/chart-types/choropleth.js',
     'src/chart-types/interactive-map.js',
