@@ -116,6 +116,14 @@
       size: {
           height: options.height
       },
+      grid: {
+        x: {
+          show: _.isUndefined(options.xGrid)?false:options.xGrid
+        },
+        y: {
+          show: _.isUndefined(options.yGrid)?true:options.yGrid
+        }
+      },
       bar: {
         width: {
           ratio: (options.barSize || 0.9)
@@ -128,7 +136,7 @@
   chart.updateSpecials = function(element, rotated, options) {
       if(options.rotated || rotated) {
         d3.selectAll('.'+options.uniqueClassName+" .c3-axis-y .tick text").attr("transform", "rotate(30)").attr("y", -1).attr("x", 0).style("text-anchor", "start").style("display", "block");
-        d3.selectAll('.'+options.uniqueClassName+" .c3-axis-y .tick tspan").attr("x", -20).attr("dy", "2em").attr("dx", 7.72)
+        d3.selectAll('.'+options.uniqueClassName+" .c3-axis-y .tick tspan").attr("x", -6).attr("dy", "1.4em").attr("dx", 7.72)
       }
   }
 

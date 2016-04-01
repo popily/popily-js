@@ -212,7 +212,9 @@
       'pointSize': 'pointSize',
       'titleFontFamily': 'titleFontFamily',
       'titleFontSize': 'titleFontSize',
-      'titleFontColor': 'titleFontColor'
+      'titleFontColor': 'titleFontColor',
+      'xGrid':'xGrid',
+      'yGrid':'yGrid'
     };
 
     var availableServerOptions = {
@@ -295,7 +297,7 @@
   /*
     groupData = {
       column: <column-name-to-group-by>,
-      aggregation: count|countUnique,
+      op: count|countUnique,
       groupInto: <new-column-with-aggregated-values>,
       customFunction: <optional-custom-aggregation-function>
       customDataType: <optional-custom-type-ofaggregations>

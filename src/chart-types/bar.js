@@ -109,10 +109,10 @@
         },
         grid: {
           x: {
-            show: false
+            show: _.isUndefined(options.xGrid)?false:options.xGrid
           },
           y: {
-            show: true
+            show: _.isUndefined(options.yGrid)?true:options.yGrid
           }
         },
         tooltip: (_.isUndefined(options.tooltip)?true:options.tooltip)

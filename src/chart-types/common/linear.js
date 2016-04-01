@@ -75,12 +75,12 @@
             }
         },
         grid: {
-            x: {
-                show: false
-            },
-            y: {
-                show: true
-            }
+          x: {
+            show: _.isUndefined(options.xGrid)?false:options.xGrid
+          },
+          y: {
+            show: _.isUndefined(options.yGrid)?true:options.yGrid
+          }
         },
         color: {
             pattern: options.colors
@@ -99,7 +99,6 @@
             height: options.height
         }
     }
-
     if(options.order == 'auto') {
       chartData.tooltip.format = {
         title: function(d) {
