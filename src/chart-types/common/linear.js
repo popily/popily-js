@@ -37,8 +37,10 @@
     var options = kwargs.options;
     var dateFormatStr = kwargs.dateFormatStr;
     var chartPadding = kwargs.chartPadding;
+    var interval = kwargs.interval;
+    var ticksValues = kwargs.ticksValues;
     var tickFormatStr = kwargs.tickFormatStr;
-
+    
     var chartData = {
         bindto: element,
         data: {
@@ -49,12 +51,14 @@
         padding: chartPadding,
         axis: {
             x: {
-                type: options.order == 'auto' ? 'timeseries' : 'category',
+                type: (!options.order || options.order == 'auto' ? 'timeseries' : 'category'),
                 tick: {
                     fit: false,
                     format: tickFormatStr,
                     rotate:30,
-                    centered: true
+                    centered: true,
+                    values: (!options.order || options.order == 'auto' ? ticksValues : null),
+                    count: ticksValues.length
                 },
                 label: {
                     text: options.xLabel || xLabel,
@@ -136,7 +140,8 @@
 
     return {
       dateFormatStr: dateFormatStr,
-      tickFormatStr: tickFormatStr
+      tickFormatStr: tickFormatStr,
+      ticksValues: ticksValues
     }
   };
 
@@ -148,16 +153,18 @@
       var zValues = preppedData[2];
       var xLabel = rawData.chartData.x.label;
       var yLabel = rawData.chartData.y.label;
+
+      options.interval = options.interval || rawData.insight_metadata.intervals[0];
     
       var yMin = that.getYMin(yValues);
-      yValues.unshift(yLabel);
-      
+            
       var data = popilyChart.chartData.c3ify(xValues,yValues,zValues);
       var dateData = that.formatDates(xValues, data, options);
 
+      data.columns[0][0] = yLabel;
       data.categories.unshift('x');
       data.columns.unshift(data.categories); 
-
+      
       var chartPadding = that.defaults.chartPadding;
       
       var kwargs = {
@@ -169,7 +176,8 @@
         options: options, 
         dateFormatStr: dateData.dateFormatStr,
         chartPadding: chartPadding,
-        tickFormatStr: dateData.tickFormatStr
+        tickFormatStr: dateData.tickFormatStr,
+        ticksValues: dateData.ticksValues
       };
       var chartData = that.getChartObject(kwargs);
       chartData.tooltip.grouped = (function() {

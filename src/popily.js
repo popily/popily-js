@@ -213,8 +213,8 @@
       'titleFontFamily': 'titleFontFamily',
       'titleFontSize': 'titleFontSize',
       'titleFontColor': 'titleFontColor',
-      'xGrid':'xGrid',
-      'yGrid':'yGrid'
+      'xGrid': 'xGrid',
+      'yGrid': 'yGrid',
     };
 
     var availableServerOptions = {
