@@ -55,6 +55,8 @@
     var options = kwargs.options;
     var rotated = kwargs.rotated;
 
+    rotated = options.rotated || rotated;
+        
     var chartData = {
       bindto: element,
       data: {
@@ -83,10 +85,10 @@
                   position: rotated?'inner-right':'outer-middle'
               },
               tick: {
-                  format: d3.format(",")
+                  format: d3.format(","),
               }
           },
-          rotated: options.rotated || rotated
+          rotated: rotated
       },
       color: {
           pattern: options.colors
@@ -122,6 +124,13 @@
     };
     return chartData;
   };
+
+  chart.updateSpecials = function(element, rotated, options) {
+      if(options.rotated || rotated) {
+        d3.selectAll('.'+options.uniqueClassName+" .c3-axis-y .tick text").attr("transform", "rotate(30)").attr("y", -1).attr("x", 0).style("text-anchor", "start").style("display", "block");
+        d3.selectAll('.'+options.uniqueClassName+" .c3-axis-y .tick tspan").attr("x", -20).attr("dy", "2em").attr("dx", 7.72)
+      }
+  }
 
   popilyChart.chartTypes.barCommon = chart;
 })(window);

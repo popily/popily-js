@@ -172,8 +172,6 @@
     var that = this;
     options = options || {};
     
-    var chart = popily.chart.create(apiResponse);
-    
     if(options.filters && !options.transformations) {
       console.log('filters proprtty is deprecated, please rename it to transformations')
       options.transformations = options.filters;

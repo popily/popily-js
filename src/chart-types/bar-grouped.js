@@ -43,6 +43,8 @@
 
       popily.chart.utils.updateChart(element, chart, chartData, that.defaults.chartPadding);
 
+      popilyChart.chartTypes.barCommon.updateSpecials(element, rotated, options);
+      
       return this.chart;
   };
 

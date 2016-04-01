@@ -19,16 +19,18 @@
 <script >
 
 (function() {
+
 /*
 var chartOptions = {
-    dataDirectory: '/src/data',
     transformations: [{ 
       column: 'Voting Close Date',
       op: 'countUnique',
-    }]
+    }],
+    width: 400,
+    height: 400
 };
 popily.chart.render('#my-chart-01', categoryDatetime, chartOptions);
-
+popily.chart.render('#my-chart-02', categoryDatetime, chartOptions);
 var chart = popily.chart.create(categoryDatetime);
 var ds = chart.dataset();
 
@@ -39,7 +41,7 @@ chart.draw('#my-chart-01', {
 setTimeout(function() {
   //ds.groupBy('Voting Close Date', popily.dataset.countUnique);
 }, 1000)
-*/
+//*/
 
 //popily.api.setToken('04d3355451dc557066bca149de2b83f3746f9102');
 //popily.api.setURL('http://local.popily.com');
@@ -48,13 +50,17 @@ popily.api.setToken('d39c69f05c5fae5cbcbe6a3b6ebac693c6ffb807');
 
 var insightOptions = {
   source: 'superstore-sales-csv-5',
-  columns: ['Product Category'],
-  calculation: 'count',
-  chartType: 'bubble'
+  columns: ['Sales', 'Product Category', 'Customer Segment'],
+  calculation: 'sum',
+  groupByColumn: 'Customer Segment',
+  rotated: true,
+  xColumn: 'Product Category'
 };
 
 
 popily.chart.getAndRender('#my-chart-01', insightOptions);
+
+//*/
 
 /*
 popily.chart.getAndRender('#my-chart-01', {
@@ -87,7 +93,7 @@ popily.chart.getAndRender('#my-chart-01', {
   ]
   * /
 });
-*/
+//*/
 
 })();
 </script>
