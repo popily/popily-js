@@ -31,6 +31,7 @@
   };
 
   chart.render = function(element, options, rawData) {
+    console.log(rawData);
     var preppedData = this.prepData(rawData, options);
     var coords = preppedData[0];
     var categories = preppedData[2];
@@ -71,10 +72,12 @@
         center: metadata.geo_center,
         zoom: radiusToZoom(metadata.geo_radius)
     });
-    var scale = d3.scale.linear().range([10, 500]);
+    var scale = d3.scale.linear();
     if(amounts.length > 0) {
-        scale.domain([_.min(amounts), _.max(amounts)]);
+      amounts = _.map(amounts, function(a) {return parseFloat(a);});
+      scale.domain([_.min(amounts), _.max(amounts)]);
     }
+    scale.range([metadata.geo_radius * 1, metadata.geo_radius * 250]);
 
     if(analysisType.indexOf('_category') > -1) {
         var categoryColorMap = {};
@@ -170,20 +173,23 @@
     }
     else {
         //var color = _.sample(color_pattern, 1)[0];
+        console.log(scale(-400));
+        console.log(scale(10));
         var color = options.colors[0];
         _.each(_.zip(coords,labels,amounts), function(coord) {
             var size = 20;
+            var popup = coord[1];
             if(amounts.length > 0) {
-                size = scale(coord[2]);
+              size = scale(coord[2]);
+              popup = coord[1]+ ': '+coord[2];
             }
-
             var marker = L.circle(coord[0], size, {
                 color: color,
                 fillColor: color,
                 fillOpacity: 0.5
             }).addTo(mapObj);
             if(labels.length == coords.length) {
-                marker.bindPopup(coord[1]);
+                marker.bindPopup(popup);
             }
         });
     }
