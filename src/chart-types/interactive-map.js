@@ -181,7 +181,7 @@
             var popup = coord[1];
             if(amounts.length > 0) {
               size = scale(coord[2]);
-              popup = coord[1]+ ': '+coord[2];
+              popup = coord[2];
             }
             var marker = L.circle(coord[0], size, {
                 color: color,
