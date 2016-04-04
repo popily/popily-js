@@ -669,3 +669,26 @@
       width: 10px;
       height: 10px;
       margin-right: 5px; }
+
+.popily-tooltip {
+  background-color: #fff;
+  padding: 0px 12px 10px 12px;
+  font-size: 14px;
+  border: 1px solid #eee; }
+  .popily-tooltip h3 {
+    font-weight: normal;
+    margin-top: 0px;
+    border-bottom: 1px solid #ddd;
+    margin-left: -12px;
+    padding-left: 12px;
+    padding-right: 12px;
+    margin-right: -12px;
+    font-size: 16px;
+    padding-bottom: 4px;
+    background: #efefef;
+    padding-top: 6px; }
+    .popily-tooltip h3 span {
+      display: inline-block;
+      height: 12px;
+      width: 12px;
+      margin-right: 5px; }

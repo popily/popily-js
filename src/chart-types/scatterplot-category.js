@@ -43,10 +43,9 @@
           columns.push(zs[z].ys);
       });
 
-
       var tooltip = options.tooltip || {
           contents: function (d, defaultTitleFormat, defaultValueFormat, color) {
-              var markup = '<div class="scatter-tooltip"><h3 ><span class="square" style="background-color:' + color(d[0].id) + '"></span> ' + xLabel + ':&nbsp;<strong>' + d[0].x + '</strong>, ' + yLabel + ':&nbsp;<strong>' + d[0].value + '</strong></h3>';
+              var markup = '<div class="popily-tooltip"><h3 ><span class="square" style="background-color:' + color(d[0].id) + '"></span> ' + xLabel + ':&nbsp;<strong>' + d[0].x + '</strong>, ' + yLabel + ':&nbsp;<strong>' + d[0].value + '</strong></h3>';
               markup += zLabel + ': <strong>';
               markup += d[0].name;
               markup += '</strong>';

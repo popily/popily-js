@@ -16,7 +16,9 @@
     cleanXValues = popilyChart.format.formatNumbers(cleanXValues);
     cleanYValues = popilyChart.format.formatNumbers(cleanYValues);
     var cleanZValues = cleanValues[2];
-
+    if(!rawData.columns.z && rawData.chartData.metadata && rawData.chartData.metadata.rowlabels) {
+      cleanZValues = rawData.chartData.metadata.rowlabels;
+    }
     return [cleanXValues, cleanYValues, cleanZValues];
   };
 
