@@ -189,6 +189,39 @@
     
   };
 
+  popily.chart.loadingMessage = function(element) {
+    if(typeof element === "string") {
+      element = document.querySelector(element);
+    }
+
+    var textElement = document.createElement("div");
+    textElement.classList.add('popily-loading');
+    textElement.innerHTML = 'We’re doing some calculations to make this chart possible. One moment...';
+    element.innerHTML = '';
+    element.appendChild(textElement);
+  };
+
+  var getThen = function(method, slug, serverOptions, poll, element, callback) {
+      popily.api[method](slug, serverOptions, function(err, apiResponse) {
+        if(apiResponse.hasOwnProperty('insight') && apiResponse.insight === 'not found') {
+          if(poll && apiResponse.hasOwnProperty('source_status') && apiResponse.source_status !== 'finished') {
+            // add waiting text to element
+            popily.chart.loadingMessage(element);
+
+            setTimeout(function() {
+              getThen(method, slug, serverOptions, poll, element, callback);
+            },1000);
+          }
+          else {
+            console.warn('No insight found for params ' + JSON.stringify(serverOptions));
+          }
+        }
+        else {
+          callback(err, apiResponse);
+        }
+      });
+  };
+
   popily.chart.getAndRender = function(element, options) {
     var chartOptions = {};
     var serverOptions = {};
@@ -207,8 +240,6 @@
       'rotated': 'rotated',
       'title': 'title',
       'xOrder': 'order',
-      'timeInterval': 'interval',
-      'time_interval': 'interval',
       'barSize': 'barSize',
       'lineSize': 'lineSize',
       'pointSize': 'pointSize',
@@ -242,10 +273,11 @@
     });
 
     serverOptions.full = true;
+    var slug, method;
+
     if(options.hasOwnProperty('insight')) {
-      popily.api.getInsight(options.insight, serverOptions, function(err, apiResponse) {
-        popily.chart.render(element, apiResponse, chartOptions);
-      });
+      slug = options.insight;
+      method = 'getInsight';
     }
     else {
       if(!options.hasOwnProperty('source')) {
@@ -253,11 +285,14 @@
         return false;
       }
       serverOptions.single = true;
-      
-      popily.api.getInsights(options.source, serverOptions, function(err, apiResponse) {
-        popily.chart.render(element, apiResponse, chartOptions);
-      });
+
+      slug = options.source;
+      method = 'getInsights';
     }
+
+    getThen(method, slug, serverOptions, options.poll, element, function(err, apiResponse) {
+        popily.chart.render(element, apiResponse, chartOptions);
+    });
   };
 
   popily.chart.applyTransformations = function(ds, transformations) {
