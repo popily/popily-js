@@ -59,12 +59,12 @@
               }
           },
           grid: {
-              x: {
-                  show: true
-              },
-              y: {
-                  show: true
-              }
+            x: {
+              show: _.isUndefined(options.xGrid)?true:options.xGrid
+            },
+            y: {
+              show: _.isUndefined(options.yGrid)?true:options.yGrid
+            }
           },
           color: {
               pattern: options.colors

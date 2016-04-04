@@ -109,10 +109,10 @@
         },
         grid: {
           x: {
-            show: false
+            show: _.isUndefined(options.xGrid)?false:options.xGrid
           },
           y: {
-            show: true
+            show: _.isUndefined(options.yGrid)?true:options.yGrid
           }
         },
         tooltip: (_.isUndefined(options.tooltip)?true:options.tooltip)
@@ -123,6 +123,7 @@
       var chart = c3.generate(chartData);
       this.chart = chart;
       popily.chart.utils.updateChart(element, chart, chartData, chartPadding);
+      popilyChart.chartTypes.barCommon.updateSpecials(element, rotated, options);
 
       return this.chart;
   };

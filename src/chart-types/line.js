@@ -124,15 +124,17 @@
             r: (options.pointSize || 2.5)
           },
           grid: {
-              x: {
-                  show: false
-              },
-              y: {
-                  show: true
-              }
+            x: {
+              show: _.isUndefined(options.xGrid)?false:options.xGrid
+            },
+            y: {
+              show: _.isUndefined(options.yGrid)?true:options.yGrid
+            }
           },
           tooltip: (_.isUndefined(options.tooltip)?true:options.tooltip)
       }
+      
+      console.log(options.xGrid);
 
       if(options.order == 'auto') {
         chartData.tooltip.format = {

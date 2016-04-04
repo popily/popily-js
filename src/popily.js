@@ -172,8 +172,6 @@
     var that = this;
     options = options || {};
     
-    var chart = popily.chart.create(apiResponse);
-    
     if(options.filters && !options.transformations) {
       console.log('filters proprtty is deprecated, please rename it to transformations')
       options.transformations = options.filters;
@@ -245,7 +243,9 @@
       'pointSize': 'pointSize',
       'titleFontFamily': 'titleFontFamily',
       'titleFontSize': 'titleFontSize',
-      'titleFontColor': 'titleFontColor'
+      'titleFontColor': 'titleFontColor',
+      'xGrid': 'xGrid',
+      'yGrid': 'yGrid',
     };
 
     var availableServerOptions = {
@@ -332,7 +332,7 @@
   /*
     groupData = {
       column: <column-name-to-group-by>,
-      aggregation: count|countUnique,
+      op: count|countUnique,
       groupInto: <new-column-with-aggregated-values>,
       customFunction: <optional-custom-aggregation-function>
       customDataType: <optional-custom-type-ofaggregations>

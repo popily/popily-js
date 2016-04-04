@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 
-<link href="../build/popily.min.css" rel="stylesheet" />
+<link href="../build/popily.css" rel="stylesheet" />
 <script src="../build/popily.js" ></script>
 <script src="../build/popily-geo.js" ></script>
 <script src="./api-responses.js" ></script>
@@ -75,7 +75,9 @@ var chartOptions = {
   titleFontSize: '30px',
   titleFontColor: '#ff0066',
   titleFontFamily: 'Georgia, sans-serif',
-  rotated: true
+  rotated: true,
+  xGrid: true,
+  yGrid: false
 };
 
 var multiStackedOptions = {
@@ -84,7 +86,9 @@ var multiStackedOptions = {
   title: true,
   pointSize: 10,
   //barSize: 0.1,
-  lineSize: 3
+  lineSize: 3,
+  xGrid: true,
+  yGrid: false
 }
 
 popily.chart.render('#multi-stacked', categoryCategoryCategory, multiStackedOptions);
@@ -94,7 +98,10 @@ popily.chart.render('#stacked-area', categoryDatetime, chartOptions);
 
 popily.chart.render('#bar', categoryCategoryDatetime, {title: true, 'filters': [{'column': 'Group Name', 'op': 'countUnique'}], pointSize: 10,
   barSize: 0.1,
-  lineSize: 3});
+  lineSize: 3,
+  xGrid: true,
+  yGrid: false
+  });
 
 popily.chart.render('#map', coordinates, chartOptions);
 popily.chart.render('#choropleth', sumByCategory, chartOptions);
@@ -103,7 +110,10 @@ popily.chart.render('#bar2', sumByCategory, {title: true, chartType: 'bar', poin
   lineSize: 3});
 popily.chart.render('#scatterplot', scatterplot, {title: true,pointSize: 10,
   barSize: 0.1,
-  lineSize: 3});
+  lineSize: 3,
+  xGrid: true,
+  yGrid: false
+});
 
 popily.chart.render('#bar3', countByValue, {title: true, pointSize: 10,
   barSize: 0.1,

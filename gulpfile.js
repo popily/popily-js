@@ -127,8 +127,12 @@ gulp.task('min-geo', ['geo', ], function() {
 		.pipe(gulp.dest('./build'));
 });
 
+gulp.task('libimages', function() {
+  return gulp.src('src/lib/images/**/*')
+    .pipe(gulp.dest('build/images'))
+});
 
-gulp.task('styles', function() {
+gulp.task('styles', ['libimages'], function() {
   var sassOptions = {
     style: 'expanded'
   };
