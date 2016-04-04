@@ -197,6 +197,8 @@
       if(grouped) {
         chartData.data.type = 'area';
         chartData.data.groups = [data.groups];
+        if(data.groups.length < 5)
+          chartData.tooltip.grouped = true;
       }
       
       var chart = c3.generate(chartData);

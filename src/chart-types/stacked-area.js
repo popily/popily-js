@@ -7,7 +7,9 @@
     'ratio_by_datetime',
     'sum_per_category_by_datetime',
     'sum_by_category_by_datetime',
-    'count_by_category_by_datetime'
+    'count_by_category_by_datetime',
+    'count_by_datetime_by_state',
+    'count_by_datetime_by_country'
   ];
   chart.accepts = [
     'count_by_datetime',
