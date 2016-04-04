@@ -44,7 +44,7 @@
       var dayDiff = popily.chart.format.daysDiff(xValues); 
       var tickFormatStr = popily.chart.format.formatFromDayDiff(dayDiff);
       
-      var interval = options.interval;
+      var interval = options.interval || rawData.insight_metadata.intervals[0];
 
       var dateFormatStr = popily.chart.format.formatFromInterval(interval);
       if(_.isUndefined(interval)) {

@@ -155,7 +155,6 @@
       var yLabel = rawData.chartData.y.label;
 
       options.interval = options.interval || rawData.insight_metadata.intervals[0];
-    
       var yMin = that.getYMin(yValues);
             
       var data = popilyChart.chartData.c3ify(xValues,yValues,zValues);

@@ -246,6 +246,8 @@
       'titleFontColor': 'titleFontColor',
       'xGrid': 'xGrid',
       'yGrid': 'yGrid',
+      'timeInterval': 'interval',
+      'time_interval': 'interval',
     };
 
     var availableServerOptions = {
