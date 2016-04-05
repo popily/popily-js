@@ -143,7 +143,10 @@
     if(!options.skipAnimation) {
       chartData.data.columns = [];
       endingValues.forEach(function(c) {
-        chartData.data.columns.push(c.slice(0).fill(0, 1))
+        if(chartData.data.xs)
+          chartData.data.columns.push([c[0]]);
+        else
+          chartData.data.columns.push(c.slice(0).fill(0, 1));
       });
     }
     

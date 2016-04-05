@@ -78,12 +78,14 @@
           tooltip: tooltip
       };
 
+      var animation = popily.chart.utils.initialAnimation(chartData, options)
       var chart = c3.generate(chartData);
       chartData.bindto = element;
-      this.chart = chart;
-      popily.chart.utils.updateChart(element, chart, chartData, chartPadding);
 
-      return this.chart;
+      chart = popily.chart.utils.updateChart(element, chart, chartData, chartPadding);
+      animation.start(chart);
+      
+      return chart;
   };
 
   popilyChart.chartTypes.compare = chart;
