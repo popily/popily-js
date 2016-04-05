@@ -38,12 +38,13 @@
       };
       var chartData = popilyChart.chartTypes.barCommon.getChartObject(kwargs);
 
+      var animation = popily.chart.utils.initialAnimation(chartData, options);
+
       var chart = c3.generate(chartData);
-      this.chart = chart;
 
-      popily.chart.utils.updateChart(element, chart, chartData, that.defaults.chartPadding);
-
+      chart = popily.chart.utils.updateChart(element, chart, chartData, that.defaults.chartPadding);
       popilyChart.chartTypes.barCommon.updateSpecials(element, rotated, options);
+      animation.start(chart);
       
       return this.chart;
   };

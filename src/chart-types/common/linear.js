@@ -200,8 +200,13 @@
           chartData.tooltip.grouped = true;
       }
       
+      
+      animation = popily.chart.utils.initialAnimation(chartData, options);
       var chart = c3.generate(chartData);
-      popily.chart.utils.updateChart(element, chart, chartData, chartPadding);
+      chart = popily.chart.utils.updateChart(element, chart, chartData, chartPadding);
+      
+      animation.start(chart);
+      
       return chart;
   };
 

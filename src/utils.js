@@ -97,6 +97,7 @@
           chart.destroy();
           chart = c3.generate(chartData);
       }
+      return chart;
   };    
 
   var formatDataset = function(apiResponse, axisAssignments, analysisType) {
@@ -136,11 +137,31 @@
     }
     return style;
   }
+  
+  var initialAnimation = function(chartData, options) {
+    var endingValues = chartData.data.columns;
+    if(!options.skipAnimation) {
+      chartData.data.columns = [];
+      endingValues.forEach(function(c) {
+        chartData.data.columns.push(c.slice(0).fill(0, 1))
+      });
+    }
+    
+    return {
+      start: function(chart) {
+        if(!options.skipAnimation) {
+          chart.load({
+            columns: endingValues
+          });
+        }
+      }
+    }
+  }
 
   window.popily.chart.utils = {
     chartSize: chartSize,
     updateChart: updateChart,
     formatDataset: formatDataset,
-    createStyleElement: createStyleElement
-  };
+    createStyleElement: createStyleElement,
+    initialAnimation: initialAnimation };
 })(window);

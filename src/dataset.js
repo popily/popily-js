@@ -96,7 +96,6 @@
         }
         
         table = _.filter(table, testFunc);
-        console.log(table);
         dataChanged();
         return this;
       },

@@ -49,10 +49,13 @@
           },
           tooltip: (_.isUndefined(options.tooltip)?true:options.tooltip)
       };
+      
+      
+      var animation = popily.chart.utils.initialAnimation(chartData, options);
       var chart = c3.generate(chartData); 
+      animation.start(chart);
 
-      this.chart = chart;
-      return this.chart;
+      return chart;
   };
 
   popilyChart.chartTypes.pie = pie;

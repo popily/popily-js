@@ -134,8 +134,6 @@
           tooltip: (_.isUndefined(options.tooltip)?true:options.tooltip)
       }
       
-      console.log(options.xGrid);
-
       if(options.order == 'auto') {
         chartData.tooltip.format = {
           title: function(d) {
@@ -146,12 +144,13 @@
         chartData.axis.x.tick.values = ticksValues;
       }
 
+      var animation = initialAnimation(chartData, options);
       var chart = c3.generate(chartData);
-      this.chart = chart;
 
       popily.chart.utils.updateChart(element, chart, chartData, chartPadding);
-
-      return this.chart;
+      animation.start(chart);
+      
+      return chart;
   };
 
   popilyChart.chartTypes.line = chart;

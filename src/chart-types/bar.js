@@ -58,7 +58,7 @@
 
       var yLabel = rawData.chartData.y.label;
       yValues.unshift(yLabel);
-
+      
       var chartPadding = that.defaults.chartPadding;
 
       var chartData = {
@@ -120,12 +120,15 @@
       }
     
       chartData.bindto = element;
+      var animation = popily.chart.utils.initialAnimation(chartData, options);
+      
       var chart = c3.generate(chartData);
-      this.chart = chart;
-      popily.chart.utils.updateChart(element, chart, chartData, chartPadding);
+      chart = popily.chart.utils.updateChart(element, chart, chartData, chartPadding);
       popilyChart.chartTypes.barCommon.updateSpecials(element, rotated, options);
 
-      return this.chart;
+      animation.start(chart);
+      
+      return chart;
   };
 
   popilyChart.chartTypes.bar = bar;
