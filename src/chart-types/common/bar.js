@@ -69,9 +69,8 @@
               type: 'category',
               categories: data.categories,
               tick: {
-                  rotate: 30,
-                  multiline: false,
-                  height: 130
+                  rotate: 45,
+                  multiline: false
               },
               label: {
                  text: options.xLabel || xLabel,
@@ -128,6 +127,9 @@
         width: {
           ratio: (options.barSize || 0.9)
         }
+      },
+      onresized: function() {
+        console.log(1);
       }
     };
     return chartData;
@@ -135,8 +137,9 @@
 
   chart.updateSpecials = function(element, rotated, options) {
       if(options.rotated || rotated) {
-        d3.selectAll('.'+options.uniqueClassName+" .c3-axis-y .tick text").attr("transform", "rotate(30)").attr("y", -1).attr("x", 0).style("text-anchor", "start").style("display", "block");
-        d3.selectAll('.'+options.uniqueClassName+" .c3-axis-y .tick tspan").attr("x", -6).attr("dy", "1.4em").attr("dx", 7.72)
+        d3.selectAll('.'+options.uniqueClassName+" .c3-axis-y .tick text").attr("transform", "rotate(45)").attr("y", -1).attr("x", 0).style("text-anchor", "start").style("display", "block");
+        d3.selectAll('.'+options.uniqueClassName+" .c3-axis-y .tick tspan").attr("x", -6).attr("dy", "1.4em").attr("dx", 7.72);
+        
       }
   }
 

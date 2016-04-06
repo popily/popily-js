@@ -44,7 +44,7 @@
 
       var chart;
         
-      var rotated = false;
+      var rotated = options.rotated || false;
       //if(insight.options_rotate)
       //  rotated = true;
       if(yValues.length > 40) {
@@ -71,6 +71,7 @@
             ratio: (options.barSize || 0.7)
           }
         },
+        padding: that.defaults.chartPadding,
         axis: {
           x: {
             type: 'category',
@@ -78,7 +79,6 @@
             tick: {
               rotate: 45,
               multiline: false,
-              height: 130,
               fit: true
             },
             label: {
@@ -115,18 +115,22 @@
             show: _.isUndefined(options.yGrid)?true:options.yGrid
           }
         },
-        tooltip: (_.isUndefined(options.tooltip)?true:options.tooltip)
-
+        tooltip: (_.isUndefined(options.tooltip)?true:options.tooltip),
+        onresized: function() {
+          popilyChart.chartTypes.barCommon.updateSpecials(element, rotated, options);
+        }
       }
     
       chartData.bindto = element;
       var animation = popily.chart.utils.initialAnimation(chartData, options);
       
+      element.parentNode.appendChild(popily.chart.utils.createStyleElement('.'+options.uniqueClassName+' .c3-axis-y .tick text {line-height: 100px!important;}'));
+      
       var chart = c3.generate(chartData);
-      chart = popily.chart.utils.updateChart(element, chart, chartData, chartPadding);
-      popilyChart.chartTypes.barCommon.updateSpecials(element, rotated, options);
-
-      animation.start(chart);
+      //chart = popily.chart.utils.updateChart(element, chart, chartData, chartPadding);
+      animation.start(chart, function() {
+        popilyChart.chartTypes.barCommon.updateSpecials(element, rotated, options);
+      });
       
       return chart;
   };

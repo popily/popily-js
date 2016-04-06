@@ -77,14 +77,18 @@
         chartData.data.colors = colors;
       }
 
+      chartData.onresized = function() {
+        popilyChart.chartTypes.barCommon.updateSpecials(element, rotated, options);
+      };
+      
+      var animation = popily.chart.utils.initialAnimation(chartData, options);
       var chart = c3.generate(chartData);
-      this.chart = chart;
-
-      popily.chart.utils.updateChart(element, chart, chartData, that.defaults.chartPadding);
       
-      popilyChart.chartTypes.barCommon.updateSpecials(element, rotated, options);
+      animation.start(chart, function() {
+        popilyChart.chartTypes.barCommon.updateSpecials(element, rotated, options);
+      });
       
-      return this.chart;
+      return chart;
   };
 
   popilyChart.chartTypes.barStacked = chart;

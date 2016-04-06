@@ -16,6 +16,7 @@
   };
 
   var updateChart = function(element, chart, chartData, chartPadding, rotated) {
+      return chart;
       // x axis label height
       var xLabel = element.querySelector('.c3-axis-x-label');
       var xLabelHeight = Math.ceil(xLabel.getBBox().height);
@@ -61,9 +62,10 @@
               var paddingLeft = Math.abs(chartAreaWidth - (chartBoxWidth + yLabelsBoxWidth));
               chartPadding.left = paddingLeft;
           }
-          chart.destroy();
+          chartPadding.left = 500;
+          chart = chart.destroy();
           chart = c3.generate(chartData);
-
+          
           // move x axis label on the bottom of the x axis labels box        
           var dyAttr = xLabel.getAttribute('dy');           
           var dyAttrValue = dyAttr.slice(0,-2);        
@@ -151,10 +153,14 @@
     }
     
     return {
-      start: function(chart) {
+      start: function(chart, cb) {
         if(!options.skipAnimation) {
+          cb = cb || function() {};
           chart.load({
-            columns: endingValues
+            columns: endingValues,
+            done: function() {
+              setTimeout(cb, 350);
+            }
           });
         }
       }

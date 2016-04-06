@@ -36,10 +36,11 @@
               }
           }
       };
+      var animation = popily.chart.utils.initialAnimation(chartData, options)
       var chart = c3.generate(chartData); 
+      animation.start(chart);
 
-      this.chart = chart;
-      return this.chart;
+      return chart;
   };
 
   popilyChart.chartTypes.gauge = chart;

@@ -26,8 +26,9 @@
       barBubbleCutoff: 30,
       chartPadding: {right: 50, top: 10}
     },
-    resize: function(width, height) {
-      this.chart.resize(width, height);
+    resize: function(chartObj, width, height) {
+      console.log(1);
+      chartObj.resize(width, height);
     },
     cleanData: function(rawData) {
       var xValues = rawData.chartData.x.values;
@@ -388,5 +389,20 @@
   } else {
       window.popily = popily;
   }
+  
+  function c3Customizations() {
+    c3.chart.internal.fn.oldGetHorizontalAxisHeight = c3.chart.internal.fn.getHorizontalAxisHeight;
+    c3.chart.internal.fn.getHorizontalAxisHeight = function(axisId) {
+      var $$ = this, config = this.config;
+      var h = $$.oldGetHorizontalAxisHeight(axisId);
+      
+      if (axisId === 'y' && config.axis_rotated && config.axis_x_tick_rotate) {
+        h = 30 + $$.axis.getMaxTickWidth(axisId) * Math.cos(Math.PI * (90 - config.axis_x_tick_rotate) / 180);
+      }
+      return h;
+    }
+  }
+  
+  c3Customizations();
   
 })(window);

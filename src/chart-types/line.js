@@ -85,9 +85,9 @@
                   tick: {
                       fit: false,
                       format: tickFormatStr,
-                      rotate:30,
+                      rotate:45,
                       multiline: false,
-                      height: 130,
+                      //height: 130,
                       values: (!options.order || options.order == 'auto' ? ticksValues : null),
                       count: xValues.length-1
                   },
