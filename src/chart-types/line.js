@@ -64,8 +64,6 @@
           
       xValues.unshift('x');
 
-      var chartPadding = {right: 10, top: 10};
-      
       if(!_.isUndefined(options.lineSize)) {
         var style = popily.chart.utils.createStyleElement('.'+options.uniqueClassName+' .c3-line { stroke-width: '+options.lineSize+'px; }')
         element.parentNode.appendChild(style);
@@ -78,7 +76,7 @@
               xFormat: dateFormatStr, // 'xFormat' can be used as custom format of 'x'
               columns: [xValues,yValues]
           },
-          padding: chartPadding,
+          padding: chart.defaults.chartPadding(),
           axis: {
               x: {
                   type: (!options.order || options.order == 'auto' ? 'timeseries' : 'category'),
@@ -147,7 +145,6 @@
       var animation = initialAnimation(chartData, options);
       var chart = c3.generate(chartData);
 
-      popily.chart.utils.updateChart(element, chart, chartData, chartPadding);
       animation.start(chart);
       
       return chart;

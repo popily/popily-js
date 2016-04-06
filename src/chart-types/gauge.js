@@ -9,7 +9,6 @@
 
   chart.render = function(element, options, rawData) {
       var that = this;
-      var chartPadding = that.defaults.chartPadding;
       var yValues = rawData.chartData.y.values;
 
       var chartData = {

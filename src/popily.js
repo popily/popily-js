@@ -24,7 +24,7 @@
           ]
       },
       barBubbleCutoff: 30,
-      chartPadding: {right: 50, top: 10}
+      chartPadding: function() { return {right: 0, top: 0 }; }
     },
     resize: function(chartObj, width, height) {
       console.log(1);
@@ -382,14 +382,6 @@
     popily.chart.chartMap = chartMap;
   };
 
-  if (typeof define === 'function' && define.amd) {
-      define("popily", [], function () { return c3; });
-  } else if ('undefined' !== typeof exports && 'undefined' !== typeof module) {
-      module.exports = popily;
-  } else {
-      window.popily = popily;
-  }
-  
   function c3Customizations() {
     c3.chart.internal.fn.oldGetHorizontalAxisHeight = c3.chart.internal.fn.getHorizontalAxisHeight;
     c3.chart.internal.fn.getHorizontalAxisHeight = function(axisId) {
@@ -401,8 +393,21 @@
       }
       return h;
     }
+    c3.chart.internal.fn.oldgetAxisWidthByAxisId = c3.chart.internal.fn.getAxisWidthByAxisId;
+    c3.chart.internal.fn.getAxisWidthByAxisId = function(axisId) {
+      var $$ = this, config = this.config;
+      return $$.oldgetAxisWidthByAxisId(axisId)-14;
+    };
   }
   
   c3Customizations();
-  
+
+  if (typeof define === 'function' && define.amd) {
+      define("popily", [], function () { return c3; });
+  } else if ('undefined' !== typeof exports && 'undefined' !== typeof module) {
+      module.exports = popily;
+  } else {
+      window.popily = popily;
+  }
+    
 })(window);

@@ -26,7 +26,6 @@
 
   pie.render = function(element, options, rawData) {
       var that = this;
-      var chartPadding = that.defaults.chartPadding;
       var preppedData = this.prepData(rawData, options);
       var columns = _.zip(preppedData[0],preppedData[1]);
 

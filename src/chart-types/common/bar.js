@@ -63,7 +63,7 @@
           columns: data.columns,
           type: 'bar'
       },
-      padding: that.defaults.chartPadding,
+      padding: that.defaults.chartPadding(),
       axis: {
           x: {
               type: 'category',

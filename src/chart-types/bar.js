@@ -59,8 +59,6 @@
       var yLabel = rawData.chartData.y.label;
       yValues.unshift(yLabel);
       
-      var chartPadding = that.defaults.chartPadding;
-
       var chartData = {
         data: {
           columns: [yValues],
@@ -71,7 +69,7 @@
             ratio: (options.barSize || 0.7)
           }
         },
-        padding: that.defaults.chartPadding,
+        padding: that.defaults.chartPadding(),
         axis: {
           x: {
             type: 'category',
@@ -124,10 +122,8 @@
       chartData.bindto = element;
       var animation = popily.chart.utils.initialAnimation(chartData, options);
       
-      element.parentNode.appendChild(popily.chart.utils.createStyleElement('.'+options.uniqueClassName+' .c3-axis-y .tick text {line-height: 100px!important;}'));
-      
       var chart = c3.generate(chartData);
-      //chart = popily.chart.utils.updateChart(element, chart, chartData, chartPadding);
+
       animation.start(chart, function() {
         popilyChart.chartTypes.barCommon.updateSpecials(element, rotated, options);
       });
