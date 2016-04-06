@@ -64,8 +64,6 @@
           
       xValues.unshift('x');
 
-      var chartPadding = {right: 10, top: 10};
-      
       if(!_.isUndefined(options.lineSize)) {
         var style = popily.chart.utils.createStyleElement('.'+options.uniqueClassName+' .c3-line { stroke-width: '+options.lineSize+'px; }')
         element.parentNode.appendChild(style);
@@ -78,16 +76,16 @@
               xFormat: dateFormatStr, // 'xFormat' can be used as custom format of 'x'
               columns: [xValues,yValues]
           },
-          padding: chartPadding,
+          padding: chart.defaults.chartPadding(),
           axis: {
               x: {
                   type: (!options.order || options.order == 'auto' ? 'timeseries' : 'category'),
                   tick: {
                       fit: false,
                       format: tickFormatStr,
-                      rotate:30,
+                      rotate:45,
                       multiline: false,
-                      height: 130,
+                      //height: 130,
                       values: (!options.order || options.order == 'auto' ? ticksValues : null),
                       count: xValues.length-1
                   },
@@ -134,8 +132,6 @@
           tooltip: (_.isUndefined(options.tooltip)?true:options.tooltip)
       }
       
-      console.log(options.xGrid);
-
       if(options.order == 'auto') {
         chartData.tooltip.format = {
           title: function(d) {
@@ -146,12 +142,12 @@
         chartData.axis.x.tick.values = ticksValues;
       }
 
+      var animation = initialAnimation(chartData, options);
       var chart = c3.generate(chartData);
-      this.chart = chart;
 
-      popily.chart.utils.updateChart(element, chart, chartData, chartPadding);
-
-      return this.chart;
+      animation.start(chart);
+      
+      return chart;
   };
 
   popilyChart.chartTypes.line = chart;

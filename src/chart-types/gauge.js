@@ -9,7 +9,6 @@
 
   chart.render = function(element, options, rawData) {
       var that = this;
-      var chartPadding = that.defaults.chartPadding;
       var yValues = rawData.chartData.y.values;
 
       var chartData = {
@@ -36,10 +35,11 @@
               }
           }
       };
+      var animation = popily.chart.utils.initialAnimation(chartData, options)
       var chart = c3.generate(chartData); 
+      animation.start(chart);
 
-      this.chart = chart;
-      return this.chart;
+      return chart;
   };
 
   popilyChart.chartTypes.gauge = chart;

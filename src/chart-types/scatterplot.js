@@ -24,7 +24,6 @@
       xs[yLabel] = xLabel;
       columns.push(xValues);
       columns.push(yValues);
-      console.log(columns);
 
       var tooltip = options.tooltip || {
           contents: function (d, defaultTitleFormat, defaultValueFormat, color) {

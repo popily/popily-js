@@ -26,7 +26,6 @@
 
   pie.render = function(element, options, rawData) {
       var that = this;
-      var chartPadding = that.defaults.chartPadding;
       var preppedData = this.prepData(rawData, options);
       var columns = _.zip(preppedData[0],preppedData[1]);
 
@@ -49,10 +48,13 @@
           },
           tooltip: (_.isUndefined(options.tooltip)?true:options.tooltip)
       };
+      
+      
+      var animation = popily.chart.utils.initialAnimation(chartData, options);
       var chart = c3.generate(chartData); 
+      animation.start(chart);
 
-      this.chart = chart;
-      return this.chart;
+      return chart;
   };
 
   popilyChart.chartTypes.pie = pie;

@@ -14,7 +14,7 @@
 
 <div id="my-chart-01">asdasdasd</div>
 <div id="my-chart-02"></div>
-<div id="my-chart-04"></div>
+<div id="my-chart-03"></div>
 
 <script >
 
@@ -51,12 +51,13 @@ popily.api.setToken('d39c69f05c5fae5cbcbe6a3b6ebac693c6ffb807');
 
 var insightOptions = {
     source: 'superstore-sales-csv-5',
-    columns: ['Sales', 'Profit', "Order Priority"],
-    xColumn: 'Sales',
+    columns: ['Order Priority'],
+    calculation: 'count',
+    chartType: 'bubble'
 };
 
 popily.chart.getAndRender('#my-chart-01', insightOptions);
-popily.api.getSource(2551, function(err, source) {console.log(source);});
+//popily.api.getSource(2551, function(err, source) {console.log(source);});
 
 //*/
 
