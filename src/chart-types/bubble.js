@@ -57,6 +57,9 @@
     var size = popilyChart.utils.chartSize();
     height = size['height'];
     
+    var transitionDuration = 350;
+    if(options.skipAnimation)
+      transitionDuration = 0;
 
     var bubble = d3.layout.pack()
         .sort(null)
@@ -108,16 +111,21 @@
         });
   
     node.append("circle")
-        .attr("r", function(d) { return d.r; })
-        .style("fill", function(d) { return color(d.category); });
+        .style("fill", function(d) { return color(d.category); })
+        .attr("r", 0)
+        .transition().duration(transitionDuration)
+        .attr("r", function(d) { return d.r; });
         
     node.append("text")
         .attr("dy", ".3em")
         .style("text-anchor", "middle")
-        .text(function(d) { 
+        .style("opacity", 0)
+        .text(function(d) {
             if (d.r / 3 > 3) return d.category.substring(0, d.r / 3); 
             else return '';
         })
+        .transition().duration(transitionDuration)
+        .style("opacity", 1)
         .attr("pointer-events", "none");
 
     var onResize = function() {
