@@ -31,7 +31,6 @@
   };
 
   chart.render = function(element, options, rawData) {
-    console.log(rawData);
     var preppedData = this.prepData(rawData, options);
     var coords = preppedData[0];
     var categories = preppedData[2];
@@ -173,8 +172,6 @@
     }
     else {
         //var color = _.sample(color_pattern, 1)[0];
-        console.log(scale(-400));
-        console.log(scale(10));
         var color = options.colors[0];
         _.each(_.zip(coords,labels,amounts), function(coord) {
             var size = 20;

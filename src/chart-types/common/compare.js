@@ -32,7 +32,7 @@
               columns: columns,
               type: 'scatter'
           },
-          padding: chart.defaults.chartPadding(),
+          padding: this.defaults.chartPadding(),
           size: {
               height: options.height
           },

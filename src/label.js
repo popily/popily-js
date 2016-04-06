@@ -14,7 +14,8 @@
         
   
     var columnLabel = function(column, description) {
-    
+      if(!('column_header' in column))
+        console.log(column);
       var label = '<span class="popily-title-variable" >'+ column.column_header + '</span>';
       var prefixes = [],
         sufixes = [];
@@ -119,7 +120,7 @@
     else if(calculation == 'geo') {
       if(axisAssignments.z) {
         return {
-          title: columnLabel(axisAssignments.y, 'Number of') + ' for Each Location grouped by ' + columnLabel(axisAssignments.z)
+          title: columnLabel(axisAssignments.x, 'Number of') + ' for Each Location grouped by ' + columnLabel(axisAssignments.z)
         }
       }
       else if(axisAssignments.y) {

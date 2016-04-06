@@ -76,7 +76,7 @@
               xFormat: dateFormatStr, // 'xFormat' can be used as custom format of 'x'
               columns: [xValues,yValues]
           },
-          padding: chart.defaults.chartPadding(),
+          padding: this.defaults.chartPadding(),
           axis: {
               x: {
                   type: (!options.order || options.order == 'auto' ? 'timeseries' : 'category'),
@@ -142,7 +142,7 @@
         chartData.axis.x.tick.values = ticksValues;
       }
 
-      var animation = initialAnimation(chartData, options);
+      var animation = popily.chart.utils.initialAnimation(chartData, options);
       var chart = c3.generate(chartData);
 
       animation.start(chart);

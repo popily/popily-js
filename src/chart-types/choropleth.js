@@ -64,13 +64,13 @@
       var yValues = preppedData[1];
       var valueLookup = preppedData[2];
 
-      var currentMousePos = { x: -1, y: -1 };
+      /*var currentMousePos = { x: -1, y: -1 };
       var onMouseMove = function(event) {
         currentMousePos.x = event.pageX;
         currentMousePos.y = event.pageY
       };
 
-      document.onmousemove = onMouseMove;
+      element.onmousemove = onMouseMove;*/
 
       var insightType = rawData.analysisType;
       var geoJson = popilyChart.data.world.countries;
@@ -90,7 +90,7 @@
 
       var tooltip = d3.select("body")
               .append("div")
-              .style("position", "absolute")
+              .style("position", "fixed")
               .style("z-index", "10")
               .style("top", "0px")
               .style("visibility", "hidden")
@@ -145,39 +145,38 @@
     var format = function(d) {
         return d3.format(',.2f')(d);
     }
-    var animationDuration = 350;
-    if(options.skipAnimation)
-        animationDuration = 0;
-      
+    
     mapObj = mapObj
         .colors(colorbrewer[mapColor][9])
         .column('yValue')
         .unitId('xValue')
         .format(format)
-        .duration(animationDuration)
+        .duration(options.skipAnimation ? 0 : 350)
         .legend(true)
         .scale(scale)
         .postUpdate(function(m) { 
+            wHeight = window.innerHeight;
+            wWidth = window.innerWidth;
             var paths = d3.select('.'+options.uniqueClassName+' g.units').selectAll('path');
-            
-            paths.on("mouseover", function(d) {
-                var selected = d3.select(this);
-                var unitName = selected.attr('class').split('unit-')[1].trim();
+            if(_.isUndefined(options.tooltip) || options.tooltip) {
+                paths.on("mouseover", function(d) {
+                    var selected = d3.select(this);
+                    var unitName = selected.attr('class').split('unit-')[1].trim();
 
-                selected.classed("active", true );
-
-                var label = that.getVal(unitName,valueLookup);
-                tooltip.text(label['name'] + ": " + label['value'])
-                  .style("visibility", "visible");
-              })
-            .on("mousemove", function(){
-              tooltip.style("top", Math.min((currentMousePos.y-10), wHeight-30)+"px").style("left",(currentMousePos.x+10)+"px");
-            })
-            .on("mouseout",  function(d) {
-              d3.select(this).classed("active", false)
-              tooltip.style("top", "0px").style('visibility', 'hidden');
-            })
-            
+                    selected.classed("active", true );
+                    var label = that.getVal(unitName,valueLookup);
+                    tooltip.text(label['name'] + ": " + label['value'])
+                      .style("visibility", "visible");
+                    return false;
+                  })
+                .on("mousemove", function(){
+                  tooltip.style("top", Math.min((d3.event.y-10), wHeight-30)+"px").style("left",(d3.event.x+10)+"px");
+                })
+                .on("mouseout",  function(d) {
+                  d3.select(this).classed("active", false)
+                  tooltip.style("top", "0px").style('visibility', 'hidden');
+                })
+            }
         });
 
     var data = _.map(_.zip(xValues,yValues), function(arr) { 
