@@ -48,12 +48,9 @@ setTimeout(function() {
 
 popily.api.setToken('d39c69f05c5fae5cbcbe6a3b6ebac693c6ffb807');
 
-
 var insightOptions = {
     source: 'superstore-sales-csv-5',
-    columns: ['Order Priority'],
-    calculation: 'count',
-    chartType: 'bubble'
+    columns: ['State', 'Sales'],
 };
 
 popily.chart.getAndRender('#my-chart-01', insightOptions);

@@ -145,16 +145,21 @@
     var format = function(d) {
         return d3.format(',.2f')(d);
     }
-
+    var animationDuration = 350;
+    if(options.skipAnimation)
+        animationDuration = 0;
+      
     mapObj = mapObj
         .colors(colorbrewer[mapColor][9])
         .column('yValue')
         .unitId('xValue')
         .format(format)
+        .duration(animationDuration)
         .legend(true)
         .scale(scale)
         .postUpdate(function(m) { 
-            var paths = d3.select('g.units').selectAll('path');
+            var paths = d3.select('.'+options.uniqueClassName+' g.units').selectAll('path');
+            
             paths.on("mouseover", function(d) {
                 var selected = d3.select(this);
                 var unitName = selected.attr('class').split('unit-')[1].trim();
@@ -184,7 +189,6 @@
     d3.select(element)
         .datum(data)
         .call(mapObj.draw, mapObj);
-
 
     if(options.showLegend === false) {
       element.classList.add('hide-legend');
