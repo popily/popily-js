@@ -25,7 +25,6 @@
       var categories = _.uniq(_.map(groupings, function(group) { return group[0]; }));
       var valuePairs = _.map(groupings, function(group) { return [group[1],group[2]] });
       var labels = _.uniq(_.map(groupings, function(group) { return group[1] }));
-
       var values;
       _.each(labels, function(label) {
           values = _.map(_.filter(valuePairs, function(vp) {

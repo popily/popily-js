@@ -160,7 +160,6 @@
           data_type: 'numeric',
           values: _(counts).values()
         };
-
         initialize([valColumn,countColumn]);
         dataChanged();
         return this;

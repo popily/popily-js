@@ -160,10 +160,8 @@
       var data = popilyChart.chartData.c3ify(xValues,yValues,zValues);
       var dateData = that.formatDates(xValues, data, options);
 
-      data.columns[0][0] = yLabel;
       data.categories.unshift('x');
       data.columns.unshift(data.categories); 
-      
       var chartPadding = that.defaults.chartPadding;
       
       var kwargs = {

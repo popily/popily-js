@@ -100,7 +100,6 @@
   popily.chart.create = function(apiResponse) {
   
     var ds = popily.dataset(apiResponse.columns);
-    
     return {
       dataset : function() {
         return ds;
