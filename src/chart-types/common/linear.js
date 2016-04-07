@@ -118,15 +118,15 @@
 
   chart.formatDates = function(xValues, data, options) {
     var dayDiff = popily.chart.format.daysDiff(xValues); 
-    var tickFormatStr = popily.chart.format.formatFromDayDiff(dayDiff);
     
-    var interval = options.interval;
+    var interval = options.timeInterval;
 
     var dateFormatStr = popily.chart.format.formatFromInterval(interval);
     if(_.isUndefined(interval)) {
       dateFormatStr = popily.chart.format.formatFromInspection(xValues);
     }
-    
+
+    var tickFormatStr = dateFormatStr;
     var dateFormat = d3.time.format(dateFormatStr);
     var tickFormat = d3.time.format(tickFormatStr);
     var fullFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
@@ -137,6 +137,9 @@
       data.categories = _.map(data.categories, function(d) {
                   return dateFormat(fullFormat.parse(d.split('.')[0]));
       });
+
+    console.log(dateFormatStr);
+    console.log(tickFormatStr);
 
     return {
       dateFormatStr: dateFormatStr,
