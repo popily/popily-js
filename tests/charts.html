@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 
 <link href="../build/popily.css" rel="stylesheet" />
-<script src="../build/popily.js" ></script>
+<script src="../build/popily.min.js" ></script>
 <script src="../build/popily-geo.js" ></script>
 <script src="./api-responses.js" ></script>
 </head>
@@ -121,10 +121,10 @@ popily.chart.render('#bar3', countByValue, {title: true, pointSize: 10,
 
 popily.api.setToken('04d3355451dc557066bca149de2b83f3746f9102');
 
-popily.api.setURL('http://localhost:8001');
-popily.chart.getAndRender('#stacked-area-2', {insight:categoryDatetime.slug, pointSize: 10,
-  barSize: 0.1,
-  lineSize: 3});
+popily.api.setURL('http://localhost:8000');
+popily.chart.getAndRender('#stacked-area-2', {insight:categoryDatetime.slug,
+  timeInterval: 'week'});
+
 
 var source = 450;
 params = {
@@ -147,6 +147,7 @@ var insightOptions = {
     source: 'ballot-metrics-1457674524'
 };
 popily.chart.getAndRender('#count-bar-source', insightOptions);
+
 </script>
 
 
