@@ -13,98 +13,98 @@
   -ms-user-select: none;
       user-select: none; }
 
-.c3-legend-item-tile,
-.c3-xgrid-focus,
-.c3-ygrid,
-.c3-event-rect,
-.c3-bars path {
+.popily-legend-item-tile,
+.popily-xgrid-focus,
+.popily-ygrid,
+.popily-event-rect,
+.popily-bars path {
   shape-rendering: crispEdges; }
 
-.c3-chart-arc path {
+.popily-chart-arc path {
   stroke: #fff; }
 
-.c3-chart-arc text {
+.popily-chart-arc text {
   fill: #fff;
   font-size: 13px; }
 
 /*-- Axis --*/
 /*-- Grid --*/
-.c3-grid line {
+.popily-grid line {
   stroke: #aaa; }
 
-.c3-grid text {
+.popily-grid text {
   fill: #aaa; }
 
-.c3-xgrid, .c3-ygrid {
+.popily-xgrid, .popily-ygrid {
   stroke-dasharray: 3 3; }
 
 /*-- Text on Chart --*/
-.c3-text.c3-empty {
+.popily-text.popily-empty {
   fill: #808080;
   font-size: 2em; }
 
 /*-- Line --*/
-.c3-line {
+.popily-line {
   stroke-width: 1px; }
 
 /*-- Point --*/
-.c3-circle._expanded_ {
+.popily-circle._expanded_ {
   stroke-width: 1px;
   stroke: white; }
 
-.c3-selected-circle {
+.popily-selected-circle {
   fill: white;
   stroke-width: 2px; }
 
 /*-- Bar --*/
-.c3-bar {
+.popily-bar {
   stroke-width: 0; }
 
-.c3-bar._expanded_ {
+.popily-bar._expanded_ {
   fill-opacity: 0.75; }
 
 /*-- Focus --*/
-.c3-target.c3-focused {
+.popily-target.popily-focused {
   opacity: 1; }
 
-.c3-target.c3-focused path.c3-line, .c3-target.c3-focused path.c3-step {
+.popily-target.popily-focused path.popily-line, .popily-target.popily-focused path.popily-step {
   stroke-width: 2px; }
 
-.c3-target.c3-defocused {
+.popily-target.popily-defocused {
   opacity: 0.3 !important; }
 
 /*-- Region --*/
-.c3-region {
+.popily-region {
   fill: steelblue;
   fill-opacity: .1; }
 
 /*-- Brush --*/
-.c3-brush .extent {
+.popily-brush .extent {
   fill-opacity: .1; }
 
 /*-- Select - Drag --*/
 /*-- Legend --*/
-.c3-legend-item {
+.popily-legend-item {
   font-size: 12px; }
 
-.c3-legend-item-hidden {
+.popily-legend-item-hidden {
   opacity: 0.15; }
 
-.c3-legend-background {
+.popily-legend-background {
   opacity: 0.75;
   fill: white;
   stroke: lightgray;
   stroke-width: 1; }
 
 /*-- Title --*/
-.c3-title {
+.popily-title {
   font: 14px sans-serif; }
 
 /*-- Tooltip --*/
-.c3-tooltip-container {
+.popily-tooltip-container {
   z-index: 10; }
 
-.c3-tooltip {
+.popily-tooltip {
   border-collapse: collapse;
   border-spacing: 0;
   background-color: #fff;
@@ -112,56 +112,56 @@
   box-shadow: 7px 7px 12px -9px #777777;
   opacity: 0.9; }
 
-.c3-tooltip tr {
+.popily-tooltip tr {
   border: 1px solid #CCC; }
 
-.c3-tooltip th {
+.popily-tooltip th {
   background-color: #aaa;
   font-size: 14px;
   padding: 2px 5px;
   text-align: left;
   color: #FFF; }
 
-.c3-tooltip td {
+.popily-tooltip td {
   font-size: 13px;
   padding: 3px 6px;
   background-color: #fff;
   border-left: 1px dotted #999; }
 
-.c3-tooltip td > span {
+.popily-tooltip td > span {
   display: inline-block;
   width: 10px;
   height: 10px;
   margin-right: 6px; }
 
-.c3-tooltip td.value {
+.popily-tooltip td.value {
   text-align: right; }
 
 /*-- Area --*/
-.c3-area {
+.popily-area {
   stroke-width: 0;
   opacity: 0.2; }
 
 /*-- Arc --*/
-.c3-chart-arcs-title {
+.popily-chart-arcs-title {
   dominant-baseline: middle;
   font-size: 1.3em; }
 
-.c3-chart-arcs .c3-chart-arcs-background {
+.popily-chart-arcs .popily-chart-arcs-background {
   fill: #e0e0e0;
   stroke: none; }
 
-.c3-chart-arcs .c3-chart-arcs-gauge-unit {
+.popily-chart-arcs .popily-chart-arcs-gauge-unit {
   fill: #000;
   font-size: 16px; }
 
-.c3-chart-arcs .c3-chart-arcs-gauge-max {
+.popily-chart-arcs .popily-chart-arcs-gauge-max {
   fill: #777; }
 
-.c3-chart-arcs .c3-chart-arcs-gauge-min {
+.popily-chart-arcs .popily-chart-arcs-gauge-min {
   fill: #777; }
 
-.c3-chart-arc .c3-gauge-value {
+.popily-chart-arc .popily-gauge-value {
   fill: #000;
   /*  font-size: 28px !important;*/ }
 
