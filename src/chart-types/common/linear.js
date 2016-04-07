@@ -96,20 +96,20 @@
             position: 'bottom',
             show: false
         },
-        tooltip: {
-            show: (_.isUndefined(options.tooltip)?true:options.tooltip)
-        },
+        tooltip: tooltip,
         size: {
             height: options.height
         }
     }
-    if(options.order == 'auto') {
+    
+    var tooltip = (_.isUndefined(options.tooltip)?true:options.tooltip);
+    if(tooltip && (!options.order || options.order == 'auto') ) {
+      var dateFormat = d3.time.format(dateFormatStr);
       chartData.tooltip.format = {
         title: function(d) {
           return dateFormat(d);
         } 
       }
-
       chartData.axis.x.tick.values = ticksValues;
     }
 

@@ -88,17 +88,12 @@
           }
       }
 
-      var tooltip = d3.select("body")
+      var tooltip = d3.select(element)
               .append("div")
+              .classed("popily-tooltip-container", true)
               .style("position", "fixed")
-              .style("z-index", "10")
               .style("top", "0px")
               .style("visibility", "hidden")
-              .style("background", "white")
-              .style("padding", "4px 8px")
-              .style("font-color", "#444")
-              .style("font-weight", "bold")
-              .text("a simple tooltip");
 
       var mapObj = d3.geomap.choropleth().geofile(geoJson);
 
@@ -158,6 +153,7 @@
             wHeight = window.innerHeight;
             wWidth = window.innerWidth;
             var paths = d3.select('.'+options.uniqueClassName+' g.units').selectAll('path');
+            paths.selectAll('title').remove();
             if(_.isUndefined(options.tooltip) || options.tooltip) {
                 paths.on("mouseover", function(d) {
                     var selected = d3.select(this);
@@ -165,7 +161,14 @@
 
                     selected.classed("active", true );
                     var label = that.getVal(unitName,valueLookup);
-                    tooltip.text(label['name'] + ": " + label['value'])
+                    
+                    var markup = '<table class="popily-tooltip"><tbody>';
+                    
+                    markup += '<tr class="popily-tooltip-name"><td class="name"><span style="background: '+selected.style('fill')+'"></span>'+label['name']+'</td><td class="value">'+label['value']+'</td></tr>';
+                    
+                    markup += '</tbody></table>'
+                    
+                    tooltip.html(markup)
                       .style("visibility", "visible");
                     return false;
                   })

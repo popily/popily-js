@@ -131,13 +131,17 @@
           element = document.querySelector(element);
         }
         
-        element.classList.add('popily-box');
+        element.classList.add('popily');
         element.classList.add(options.uniqueClassName);
         element.innerHTML = '';
         if(options.title) {
           var titleElement = document.createElement("div");
           titleElement.classList.add('popily-title');
-          titleElement.innerHTML = labels.title;
+          if(options.title === true)
+            titleElement.innerHTML = labels.title;
+          else
+            titleElement.innerHTML = options.title;
+            
           element.appendChild(titleElement);
           
           var titleCss = '';
@@ -397,6 +401,11 @@
       var $$ = this, config = this.config;
       return $$.oldgetAxisWidthByAxisId(axisId)-14;
     };
+    
+    for (var k in c3.chart.internal.fn.CLASS) {
+      c3.chart.internal.fn.CLASS[k] = c3.chart.internal.fn.CLASS[k].replace('c3', 'popily');
+    };
+    
   }
   
   c3Customizations();

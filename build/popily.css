@@ -1,110 +1,110 @@
 /*-- Chart --*/
-.c3 svg {
+.popily .c3 svg {
   font: 10px sans-serif;
   -webkit-tap-highlight-color: transparent; }
 
-.c3 path, .c3 line {
+.popily .c3 path, .popily .c3 line {
   fill: none;
   stroke: #000; }
 
-.c3 text {
+.popily .c3 text {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
       user-select: none; }
 
-.c3-legend-item-tile,
-.c3-xgrid-focus,
-.c3-ygrid,
-.c3-event-rect,
-.c3-bars path {
+.popily-legend-item-tile,
+.popily-xgrid-focus,
+.popily-ygrid,
+.popily-event-rect,
+.popily-bars path {
   shape-rendering: crispEdges; }
 
-.c3-chart-arc path {
+.popily-chart-arc path {
   stroke: #fff; }
 
-.c3-chart-arc text {
+.popily-chart-arc text {
   fill: #fff;
   font-size: 13px; }
 
 /*-- Axis --*/
 /*-- Grid --*/
-.c3-grid line {
+.popily-grid line {
   stroke: #aaa; }
 
-.c3-grid text {
+.popily-grid text {
   fill: #aaa; }
 
-.c3-xgrid, .c3-ygrid {
+.popily-xgrid, .popily-ygrid {
   stroke-dasharray: 3 3; }
 
 /*-- Text on Chart --*/
-.c3-text.c3-empty {
+.popily-text.popily-empty {
   fill: #808080;
   font-size: 2em; }
 
 /*-- Line --*/
-.c3-line {
+.popily-line {
   stroke-width: 1px; }
 
 /*-- Point --*/
-.c3-circle._expanded_ {
+.popily-circle._expanded_ {
   stroke-width: 1px;
   stroke: white; }
 
-.c3-selected-circle {
+.popily-selected-circle {
   fill: white;
   stroke-width: 2px; }
 
 /*-- Bar --*/
-.c3-bar {
+.popily-bar {
   stroke-width: 0; }
 
-.c3-bar._expanded_ {
+.popily-bar._expanded_ {
   fill-opacity: 0.75; }
 
 /*-- Focus --*/
-.c3-target.c3-focused {
+.popily-target.popily-focused {
   opacity: 1; }
 
-.c3-target.c3-focused path.c3-line, .c3-target.c3-focused path.c3-step {
+.popily-target.popily-focused path.popily-line, .popily-target.popily-focused path.popily-step {
   stroke-width: 2px; }
 
-.c3-target.c3-defocused {
+.popily-target.popily-defocused {
   opacity: 0.3 !important; }
 
 /*-- Region --*/
-.c3-region {
+.popily-region {
   fill: steelblue;
   fill-opacity: .1; }
 
 /*-- Brush --*/
-.c3-brush .extent {
+.popily-brush .extent {
   fill-opacity: .1; }
 
 /*-- Select - Drag --*/
 /*-- Legend --*/
-.c3-legend-item {
+.popily-legend-item {
   font-size: 12px; }
 
-.c3-legend-item-hidden {
+.popily-legend-item-hidden {
   opacity: 0.15; }
 
-.c3-legend-background {
+.popily-legend-background {
   opacity: 0.75;
   fill: white;
   stroke: lightgray;
   stroke-width: 1; }
 
 /*-- Title --*/
-.c3-title {
+.popily-title {
   font: 14px sans-serif; }
 
 /*-- Tooltip --*/
-.c3-tooltip-container {
+.popily-tooltip-container {
   z-index: 10; }
 
-.c3-tooltip {
+.popily-tooltip {
   border-collapse: collapse;
   border-spacing: 0;
   background-color: #fff;
@@ -112,56 +112,56 @@
   box-shadow: 7px 7px 12px -9px #777777;
   opacity: 0.9; }
 
-.c3-tooltip tr {
+.popily-tooltip tr {
   border: 1px solid #CCC; }
 
-.c3-tooltip th {
+.popily-tooltip th {
   background-color: #aaa;
   font-size: 14px;
   padding: 2px 5px;
   text-align: left;
   color: #FFF; }
 
-.c3-tooltip td {
+.popily-tooltip td {
   font-size: 13px;
   padding: 3px 6px;
   background-color: #fff;
   border-left: 1px dotted #999; }
 
-.c3-tooltip td > span {
+.popily-tooltip td > span {
   display: inline-block;
   width: 10px;
   height: 10px;
   margin-right: 6px; }
 
-.c3-tooltip td.value {
+.popily-tooltip td.value {
   text-align: right; }
 
 /*-- Area --*/
-.c3-area {
+.popily-area {
   stroke-width: 0;
   opacity: 0.2; }
 
 /*-- Arc --*/
-.c3-chart-arcs-title {
+.popily-chart-arcs-title {
   dominant-baseline: middle;
   font-size: 1.3em; }
 
-.c3-chart-arcs .c3-chart-arcs-background {
+.popily-chart-arcs .popily-chart-arcs-background {
   fill: #e0e0e0;
   stroke: none; }
 
-.c3-chart-arcs .c3-chart-arcs-gauge-unit {
+.popily-chart-arcs .popily-chart-arcs-gauge-unit {
   fill: #000;
   font-size: 16px; }
 
-.c3-chart-arcs .c3-chart-arcs-gauge-max {
+.popily-chart-arcs .popily-chart-arcs-gauge-max {
   fill: #777; }
 
-.c3-chart-arcs .c3-chart-arcs-gauge-min {
+.popily-chart-arcs .popily-chart-arcs-gauge-min {
   fill: #777; }
 
-.c3-chart-arc .c3-gauge-value {
+.popily-chart-arc .popily-gauge-value {
   fill: #000;
   /*  font-size: 28px !important;*/ }
 
@@ -603,92 +603,89 @@
   background: #fff;
   border: 1px solid #666; }
 
+.popily-font, .popily-title, .popily-chart, .popily-tooltip-container {
+  font-family: sans-serif; }
+
 .popily-title {
   text-align: center;
-  font-family: sans-serif;
   font-size: 20px; }
   .popily-title-variable {
     font-weight: bold; }
 
-.popily-chart {
-  font-family: sans-serif; }
-  .popily-chart .unit {
-    cursor: pointer;
-    fill: #333;
-    stroke: #000;
-    stroke-width: .4px; }
-  .popily-chart .legend-bg {
-    fill: #fff;
-    fill-opacity: .8; }
-  .popily-chart .legend-bar {
-    stroke: #222;
-    stroke-width: 1px; }
-  .popily-chart .unit {
-    stroke: #555;
-    stroke-opacity: .3;
-    opacity: .8;
-    fill: #ccc; }
-  .popily-chart .unit.active {
-    stroke-opacity: .9;
-    stroke-width: 3;
-    -webkit-transition: 300ms;
-    transition: 300ms;
-    opacity: 1; }
-  .popily-chart .background {
-    fill: none;
-    pointer-events: all; }
-  .popily-chart text {
-    fill: #333;
-    font-size: 12px; }
-  .popily-chart.hide-legend .legend {
-    display: None; }
-  .popily-chart .legend-color:hover {
-    cursor: pointer;
-    opacity: 1; }
-  .popily-chart .legend-color {
-    opacity: .8;
-    -webkit-transition: 300ms;
-    transition: 300ms; }
-  .popily-chart path.leaflet-clickable {
-    -webkit-transition: 300ms;
-    transition: 300ms; }
-  .popily-chart .category-legend {
-    margin-bottom: 12px;
-    margin-top: 12px; }
-    .popily-chart .category-legend div {
-      display: inline-block;
-      font-size: 12px;
-      margin-left: 10px; }
-  .popily-chart .legend-color {
-    opacity: .8;
-    -webkit-transition: 300ms;
-    transition: 300ms; }
-    .popily-chart .legend-color span {
-      background-color: #2475B0;
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      margin-right: 5px; }
+.popily-chart .unit {
+  cursor: pointer;
+  fill: #333;
+  stroke: #000;
+  stroke-width: .4px; }
+  .popily-chart .unit title {
+    display: none !important; }
 
-.popily-tooltip {
-  background-color: #fff;
-  padding: 0px 12px 10px 12px;
-  font-size: 14px;
-  border: 1px solid #eee; }
-  .popily-tooltip h3 {
-    font-weight: normal;
-    margin-top: 0px;
-    border-bottom: 1px solid #ddd;
-    margin-left: -12px;
-    padding-left: 12px;
-    padding-right: 12px;
-    margin-right: -12px;
-    font-size: 16px;
-    padding-bottom: 4px;
-    background: #efefef;
-    padding-top: 6px; }
-    .popily-tooltip h3 span {
-      display: inline-block;
-      height: 12px;
-      width: 12px;
-      margin-right: 5px; }
+.popily-chart .legend-bg {
+  fill: #fff;
+  fill-opacity: .8; }
+
+.popily-chart .legend-bar {
+  stroke: #222;
+  stroke-width: 1px; }
+
+.popily-chart .unit {
+  stroke: #555;
+  stroke-opacity: .3;
+  opacity: .8;
+  fill: #ccc; }
+
+.popily-chart .unit.active {
+  stroke-opacity: .9;
+  stroke-width: 3;
+  -webkit-transition: 300ms;
+  transition: 300ms;
+  opacity: 1; }
+
+.popily-chart .background {
+  fill: none;
+  pointer-events: all; }
+
+.popily-chart text {
+  fill: #333;
+  font-size: 12px; }
+
+.popily-chart.hide-legend .legend {
+  display: None; }
+
+.popily-chart .legend-color:hover {
+  cursor: pointer;
+  opacity: 1; }
+
+.popily-chart .legend-color {
+  opacity: .8;
+  -webkit-transition: 300ms;
+  transition: 300ms; }
+
+.popily-chart path.leaflet-clickable {
+  -webkit-transition: 300ms;
+  transition: 300ms; }
+
+.popily-chart .category-legend {
+  margin-bottom: 12px;
+  margin-top: 12px; }
+  .popily-chart .category-legend div {
+    display: inline-block;
+    font-size: 12px;
+    margin-left: 10px; }
+
+.popily-chart .legend-color {
+  opacity: .8;
+  -webkit-transition: 300ms;
+  transition: 300ms; }
+  .popily-chart .legend-color span {
+    background-color: #2475B0;
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 5px; }
+
+.popily-tooltip th > span {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 6px; }

@@ -69,6 +69,15 @@
         element.parentNode.appendChild(style);
       }
 
+      var tooltip = (_.isUndefined(options.tooltip)?true:options.tooltip);
+      if(tooltip && (!options.order || options.order == 'auto') ) {
+        tooltip = {
+          title: function (d) {
+            return dateFormat(d);
+          }
+        }
+      }
+
       var chartData = {
           bindto: element,
           data: {
@@ -129,18 +138,19 @@
               show: _.isUndefined(options.yGrid)?true:options.yGrid
             }
           },
-          tooltip: (_.isUndefined(options.tooltip)?true:options.tooltip)
+          tooltip: tooltip
       }
       
-      if(options.order == 'auto') {
+      var tooltip = (_.isUndefined(options.tooltip)?true:options.tooltip);
+      if(tooltip && (!options.order || options.order == 'auto') ) {
         chartData.tooltip.format = {
           title: function(d) {
             return dateFormat(d);
           } 
         }
-
         chartData.axis.x.tick.values = ticksValues;
       }
+
 
       var animation = popily.chart.utils.initialAnimation(chartData, options);
       var chart = c3.generate(chartData);

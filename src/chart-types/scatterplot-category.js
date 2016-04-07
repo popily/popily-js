@@ -45,11 +45,15 @@
 
       var tooltip = options.tooltip || {
           contents: function (d, defaultTitleFormat, defaultValueFormat, color) {
-              var markup = '<div class="popily-tooltip"><h3 ><span class="square" style="background-color:' + color(d[0].id) + '"></span> ' + xLabel + ':&nbsp;<strong>' + d[0].x + '</strong>, ' + yLabel + ':&nbsp;<strong>' + d[0].value + '</strong></h3>';
-              markup += zLabel + ': <strong>';
-              markup += d[0].name;
-              markup += '</strong>';
-              markup += '</div>';
+
+              var markup = '<table class="popily-tooltip"><tbody>';
+              if(!_.isUndefined(zValues[d[0].index]))
+                markup += '<tr><th colspan="2"><span style="background-color:'+color(d[0].id)+'"></span> </th></tr>';
+              
+              markup += '<tr class="popily-tooltip-name"><td class="name">'+xLabel+'</td><td class="value">'+d[0].x+'</td></tr>';
+              markup += '<tr class="popily-tooltip-name"><td class="name">'+yLabel+'</td><td class="value">'+d[0].value+'</td></tr>';
+              
+              markup += '</tbody></table>'
               return markup;
           }
       };

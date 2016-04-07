@@ -73,11 +73,11 @@
 
     if((_.isUndefined(options.tooltip)?true:options.tooltip)) {
         var tip = d3.tip()
-            .attr('class', 'd3-tips')
+            .attr('class', 'popily-tooltip-container')
             .offset([-5, 0])
             .html(function(d) {
-                var text = "<table class='c3-tooltip'><tr><th colspan='2'>" + d.category + "</th></tr>";
-                text += "<tr class='c3-tooltip-name-'>";
+                var text = "<table class='popily-tooltip'><tr><th colspan='2'>" + d.category + "</th></tr>";
+                text += "<tr class='popily-tooltip-name-'>";
                 text += "<td class='name'><span style='background-color:" + color(d.category) + "'></span> " + xLabel + "</td>";
                 text += "<td class='value'>" + d.showValue + "</td>";
                 text += "</tr>";
