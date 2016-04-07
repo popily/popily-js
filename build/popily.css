@@ -1,110 +1,110 @@
 /*-- Chart --*/
-.popily .c3 svg {
+.c3 svg {
   font: 10px sans-serif;
   -webkit-tap-highlight-color: transparent; }
 
-.popily .c3 path, .popily .c3 line {
+.c3 path, .c3 line {
   fill: none;
   stroke: #000; }
 
-.popily .c3 text {
+.c3 text {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
       user-select: none; }
 
-.popily-legend-item-tile,
-.popily-xgrid-focus,
-.popily-ygrid,
-.popily-event-rect,
-.popily-bars path {
+.c3-legend-item-tile,
+.c3-xgrid-focus,
+.c3-ygrid,
+.c3-event-rect,
+.c3-bars path {
   shape-rendering: crispEdges; }
 
-.popily-chart-arc path {
+.c3-chart-arc path {
   stroke: #fff; }
 
-.popily-chart-arc text {
+.c3-chart-arc text {
   fill: #fff;
   font-size: 13px; }
 
 /*-- Axis --*/
 /*-- Grid --*/
-.popily-grid line {
+.c3-grid line {
   stroke: #aaa; }
 
-.popily-grid text {
+.c3-grid text {
   fill: #aaa; }
 
-.popily-xgrid, .popily-ygrid {
+.c3-xgrid, .c3-ygrid {
   stroke-dasharray: 3 3; }
 
 /*-- Text on Chart --*/
-.popily-text.popily-empty {
+.c3-text.c3-empty {
   fill: #808080;
   font-size: 2em; }
 
 /*-- Line --*/
-.popily-line {
+.c3-line {
   stroke-width: 1px; }
 
 /*-- Point --*/
-.popily-circle._expanded_ {
+.c3-circle._expanded_ {
   stroke-width: 1px;
   stroke: white; }
 
-.popily-selected-circle {
+.c3-selected-circle {
   fill: white;
   stroke-width: 2px; }
 
 /*-- Bar --*/
-.popily-bar {
+.c3-bar {
   stroke-width: 0; }
 
-.popily-bar._expanded_ {
+.c3-bar._expanded_ {
   fill-opacity: 0.75; }
 
 /*-- Focus --*/
-.popily-target.popily-focused {
+.c3-target.c3-focused {
   opacity: 1; }
 
-.popily-target.popily-focused path.popily-line, .popily-target.popily-focused path.popily-step {
+.c3-target.c3-focused path.c3-line, .c3-target.c3-focused path.c3-step {
   stroke-width: 2px; }
 
-.popily-target.popily-defocused {
+.c3-target.c3-defocused {
   opacity: 0.3 !important; }
 
 /*-- Region --*/
-.popily-region {
+.c3-region {
   fill: steelblue;
   fill-opacity: .1; }
 
 /*-- Brush --*/
-.popily-brush .extent {
+.c3-brush .extent {
   fill-opacity: .1; }
 
 /*-- Select - Drag --*/
 /*-- Legend --*/
-.popily-legend-item {
+.c3-legend-item {
   font-size: 12px; }
 
-.popily-legend-item-hidden {
+.c3-legend-item-hidden {
   opacity: 0.15; }
 
-.popily-legend-background {
+.c3-legend-background {
   opacity: 0.75;
   fill: white;
   stroke: lightgray;
   stroke-width: 1; }
 
 /*-- Title --*/
-.popily-title {
+.c3-title {
   font: 14px sans-serif; }
 
 /*-- Tooltip --*/
-.popily-tooltip-container {
+.c3-tooltip-container {
   z-index: 10; }
 
-.popily-tooltip {
+.c3-tooltip {
   border-collapse: collapse;
   border-spacing: 0;
   background-color: #fff;
@@ -112,56 +112,56 @@
   box-shadow: 7px 7px 12px -9px #777777;
   opacity: 0.9; }
 
-.popily-tooltip tr {
+.c3-tooltip tr {
   border: 1px solid #CCC; }
 
-.popily-tooltip th {
+.c3-tooltip th {
   background-color: #aaa;
   font-size: 14px;
   padding: 2px 5px;
   text-align: left;
   color: #FFF; }
 
-.popily-tooltip td {
+.c3-tooltip td {
   font-size: 13px;
   padding: 3px 6px;
   background-color: #fff;
   border-left: 1px dotted #999; }
 
-.popily-tooltip td > span {
+.c3-tooltip td > span {
   display: inline-block;
   width: 10px;
   height: 10px;
   margin-right: 6px; }
 
-.popily-tooltip td.value {
+.c3-tooltip td.value {
   text-align: right; }
 
 /*-- Area --*/
-.popily-area {
+.c3-area {
   stroke-width: 0;
   opacity: 0.2; }
 
 /*-- Arc --*/
-.popily-chart-arcs-title {
+.c3-chart-arcs-title {
   dominant-baseline: middle;
   font-size: 1.3em; }
 
-.popily-chart-arcs .popily-chart-arcs-background {
+.c3-chart-arcs .c3-chart-arcs-background {
   fill: #e0e0e0;
   stroke: none; }
 
-.popily-chart-arcs .popily-chart-arcs-gauge-unit {
+.c3-chart-arcs .c3-chart-arcs-gauge-unit {
   fill: #000;
   font-size: 16px; }
 
-.popily-chart-arcs .popily-chart-arcs-gauge-max {
+.c3-chart-arcs .c3-chart-arcs-gauge-max {
   fill: #777; }
 
-.popily-chart-arcs .popily-chart-arcs-gauge-min {
+.c3-chart-arcs .c3-chart-arcs-gauge-min {
   fill: #777; }
 
-.popily-chart-arc .popily-gauge-value {
+.c3-chart-arc .c3-gauge-value {
   fill: #000;
   /*  font-size: 28px !important;*/ }
 

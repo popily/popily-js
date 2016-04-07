@@ -185,8 +185,9 @@
                 fillColor: color,
                 fillOpacity: 0.5
             }).addTo(mapObj);
+            
             if(labels.length == coords.length) {
-                marker.bindPopup(popup);
+                marker.bindPopup(popup, {className: 'popily-tooltip'});
             }
         });
     }
