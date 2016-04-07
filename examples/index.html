@@ -50,10 +50,11 @@ popily.api.setToken('d39c69f05c5fae5cbcbe6a3b6ebac693c6ffb807');
 
 var insightOptions = {
     source: 'superstore-sales-csv-5',
-    columns: ['Order Date','Customer Segment'],
-    timeInterval: 'week'
+    columns: ['Sales', 'Product Category','Customer Segment'],
+    calculation: 'sum',
+    //xColumn: 'Product Category',
+    //groupByColumn: 'Customer Segment'
 };
-
 popily.chart.getAndRender('#my-chart-01', insightOptions);
 //popily.api.getSource(2551, function(err, source) {console.log(source);});
 

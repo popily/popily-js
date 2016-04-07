@@ -74,7 +74,10 @@
 
     var xLabels = _.unique(xValues);
     var xLabelsDisplay = _.map(xLabels, function(xValue) {
-      return xValue + ' (' + orderedGroups.join(',') + ')';
+      if(orderedGroups.join(','))
+        return xValue + ' (' + orderedGroups.join(',') + ')';
+      else 
+        return xValue;
     });
 
     var columns = [];
