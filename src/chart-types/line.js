@@ -51,7 +51,6 @@
         dateFormatStr = popily.chart.format.formatFromInspection(xValues);
       }
       
-      console.log(dateFormatStr);
       var dateFormat = d3.time.format(dateFormatStr);
       var tickFormat = d3.time.format(tickFormatStr);
       var fullFormat = d3.time.format('%Y-%m-%d %H:%M:%S');

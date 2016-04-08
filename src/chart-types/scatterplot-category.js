@@ -45,10 +45,9 @@
 
       var tooltip = options.tooltip || {
           contents: function (d, defaultTitleFormat, defaultValueFormat, color) {
-
               var markup = '<table class="popily-tooltip"><tbody>';
               if(!_.isUndefined(zValues[d[0].index]))
-                markup += '<tr><th colspan="2"><span style="background-color:'+color(d[0].id)+'"></span> </th></tr>';
+                markup += '<tr><th colspan="2"><span style="background-color:'+color(d[0].id)+'"></span> '+zValues[d[0].index]+'</th></tr>';
               
               markup += '<tr class="popily-tooltip-name"><td class="name">'+xLabel+'</td><td class="value">'+d[0].x+'</td></tr>';
               markup += '<tr class="popily-tooltip-name"><td class="name">'+yLabel+'</td><td class="value">'+d[0].value+'</td></tr>';

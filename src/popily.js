@@ -24,7 +24,7 @@
           ],
       },
       barBubbleCutoff: 30,
-      chartPadding: function() { return {right: 0, top: 0 }; }
+      chartPadding: function() { return {lefright: 0, top: 0 }; }
     },
     resize: function(chartObj, width, height) {
       console.log(1);
@@ -412,7 +412,7 @@
     c3.chart.internal.fn.oldgetAxisWidthByAxisId = c3.chart.internal.fn.getAxisWidthByAxisId;
     c3.chart.internal.fn.getAxisWidthByAxisId = function(axisId) {
       var $$ = this, config = this.config;
-      return $$.oldgetAxisWidthByAxisId(axisId)-14;
+      return $$.oldgetAxisWidthByAxisId(axisId)-8;
     };
     
     for (var k in c3.chart.internal.fn.CLASS) {
