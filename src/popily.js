@@ -21,7 +21,7 @@
             '#BB7FD2', '#34618F', '#947700', '#FFE26C', '#92094A', '#BF6322', '#58ADE3',
             '#9FB921', '#0665A2', '#8333A2', '#0F3863', '#BC9805', '#FFE26C', '#E989B6',
             '#C92918', '#FAA96F'
-          ]
+          ],
       },
       barBubbleCutoff: 30,
       chartPadding: function() { return {right: 0, top: 0 }; }
@@ -155,6 +155,16 @@
             extraCss = '.'+options.uniqueClassName+ ' .popily-title {'+titleCss+'}';
         }
         
+        var chartCss = '';
+        if(options.chartFontSize)
+          chartCss += 'font-size: '+options.chartFontSize+';';
+        if(options.chartFontFamily)
+          chartCss += 'font-family: '+options.chartFontFamily+';';
+        if(options.chartFontColor)
+          chartCss += 'fill: '+options.chartFontColor+';';
+        if(chartCss)
+          extraCss = '.'+options.uniqueClassName+ ' text {'+chartCss+'}';
+          
         if(extraCss) {
           var style = popily.chart.utils.createStyleElement(extraCss);
           element.appendChild(style);
@@ -248,6 +258,9 @@
       'titleFontFamily': 'titleFontFamily',
       'titleFontSize': 'titleFontSize',
       'titleFontColor': 'titleFontColor',
+      'chartFontFamily': 'chartFontFamily',
+      'chartFontSize': 'chartFontSize',
+      'chartFontColor': 'chartFontColor',
       'xGrid': 'xGrid',
       'yGrid': 'yGrid',
       'timeInterval': 'interval',
