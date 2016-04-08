@@ -103,7 +103,7 @@
     
     var tooltip = (_.isUndefined(options.tooltip)?true:options.tooltip);
     if(tooltip && (!options.order || options.order == 'auto') ) {
-      var dateFormat = d3.time.format(dateFormatStr);
+      var dateFormat = d3.time.format(tickFormatStr);
       chartData.tooltip = {
         show: true,
         format: {
@@ -133,7 +133,6 @@
     var tickFormat = d3.time.format(tickFormatStr);
     var fullFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
 
-    console.log(xValues, tickFormatStr, dateFormat)
     var ticksValues = popily.chart.format.tickFormatValues(xValues, tickFormatStr, dateFormat);
     
     if(dateFormat != fullFormat)
@@ -166,7 +165,6 @@
       data.categories.unshift('x');
       data.columns.unshift(data.categories); 
       var chartPadding = that.defaults.chartPadding;
-      
       var kwargs = {
         element: element,
         data: data,
