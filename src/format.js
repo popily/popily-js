@@ -75,7 +75,7 @@
         var stepFunc = stepInterval(tickFormatStr);
         if(!stepFunc)
             return null;
-            
+        
         var dates = _.map(categories, function(d) { return new Date(d); });
         var minDate = _.min(dates);
         var maxDate = _.max(dates);
