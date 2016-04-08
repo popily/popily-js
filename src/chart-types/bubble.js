@@ -13,7 +13,10 @@
     'average_by_category_per_category',
     'count_by_category_per_category',
     'count_per_category_by_category',
-    'top_by_rowlabel'
+    'top_by_rowlabel',
+    'count_by_state',
+    'average_by_state',
+    'total_by_state'
   ];
 
   chart.prepData = function(rawData, options) {
