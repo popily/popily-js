@@ -96,7 +96,6 @@
             position: 'bottom',
             show: false
         },
-        tooltip: tooltip,
         size: {
             height: options.height
         }
@@ -105,10 +104,13 @@
     var tooltip = (_.isUndefined(options.tooltip)?true:options.tooltip);
     if(tooltip && (!options.order || options.order == 'auto') ) {
       var dateFormat = d3.time.format(dateFormatStr);
-      chartData.tooltip.format = {
-        title: function(d) {
-          return dateFormat(d);
-        } 
+      chartData.tooltip = {
+        show: true,
+        format: {
+          title: function(d) {
+            return dateFormat(d);
+          } 
+        }
       }
       chartData.axis.x.tick.values = ticksValues;
     }
@@ -135,11 +137,8 @@
     
     if(dateFormat != fullFormat)
       data.categories = _.map(data.categories, function(d) {
-                  return dateFormat(fullFormat.parse(d.split('.')[0]));
+          return dateFormat(fullFormat.parse(d.split('.')[0]));
       });
-
-    console.log(dateFormatStr);
-    console.log(tickFormatStr);
 
     return {
       dateFormatStr: dateFormatStr,
