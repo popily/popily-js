@@ -60,7 +60,7 @@
     else if(calculation == 'sum' ) {
       if(axisAssignments.z) {
         return {
-          title: columnLabel(axisAssignments.z, 'Total of') + ' by ' + columnLabel(axisAssignments.x) + ' grouped by ' + columnLabel(axisAssignments.x)
+          title: columnLabel(axisAssignments.z, 'Total of') + ' grouped by ' + columnLabel(axisAssignments.x) + ' grouped by ' + columnLabel(axisAssignments.x)
         }
       } else if(axisAssignments.y) {
         return {
@@ -75,7 +75,7 @@
     else if(calculation == 'average') {
       if(axisAssignments.z) {
         return {
-          title: columnLabel(axisAssignments.z, 'Average of') + ' by ' + columnLabel(axisAssignments.x) + ' grouped by ' + columnLabel(axisAssignments.x)
+          title: columnLabel(axisAssignments.z, 'Average of') + ' grouped by ' + columnLabel(axisAssignments.x) + ' grouped by ' + columnLabel(axisAssignments.x)
         }
       } else if(axisAssignments.y) {
         return {
@@ -103,7 +103,7 @@
     else if(calculation == 'comparison') {
       if(axisAssignments.z) {
         return {
-          title: '' + columnLabel(axisAssignments.z) + ' compared to ' + columnLabel(axisAssignments.x) + ' by ' + columnLabel(axisAssignments.x)
+          title: '' + columnLabel(axisAssignments.z) + ' compared to ' + columnLabel(axisAssignments.x) + ' grouped by ' + columnLabel(axisAssignments.x)
         }
       } else {
         return {

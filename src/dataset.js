@@ -78,6 +78,11 @@
         }
         var idx = columnIdx(column);
         
+        if(dataTypes[idx] == 'datetime' && !value instanceof Date)
+          value = new Date(value);
+        if(value instanceof Date)
+          value = value.toISOString().replace('T', 0).slice(0, 19);
+        
         if(op == 'eq')
           var testFunc = function(e) {return value.indexOf(e[idx])!==-1}
         else if(op == 'noteq')
@@ -87,14 +92,13 @@
         else if(op == 'gte')
           var testFunc = function(e) {return e[idx] >= value}
         else if(op == 'lt')
-          var testFunc = function(e) { return e[idx] < value}
+          var testFunc = function(e) {return e[idx] < value}
         else if(op == 'lte')
           var testFunc = function(e) {return e[idx] <= value}
         else {
           console.error('Unrecognized filter option: '+op);
           return this; 
         }
-        
         table = _.filter(table, testFunc);
         dataChanged();
         return this;
