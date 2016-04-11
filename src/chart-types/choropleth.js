@@ -132,17 +132,14 @@
 
     var mapColors = options.colors;
     if(_.difference(options.colors, popilyChart.baseChart.defaults.options.colors).length == 0) {
-      mapColors = ['Greens'];
+      var mapColors = colorbrewer.Greens[9];
     }
     
-    var mapColor = mapColors[_.random(0, mapColors.length - 1)]; 
-
     var format = function(d) {
         return d3.format(',.2f')(d);
     }
-    
     mapObj = mapObj
-        .colors(colorbrewer[mapColor][9])
+        .colors(mapColors)
         .column('yValue')
         .unitId('xValue')
         .format(format)

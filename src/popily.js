@@ -405,15 +405,18 @@
       var $$ = this, config = this.config;
       var h = $$.oldGetHorizontalAxisHeight(axisId);
       
+      console.log((axisId));
+      console.log($$.axis);
+      
       if (axisId === 'y' && config.axis_rotated && config.axis_x_tick_rotate) {
         h = 30 + $$.axis.getMaxTickWidth(axisId) * Math.cos(Math.PI * (90 - config.axis_x_tick_rotate) / 180);
       }
       return h;
     }
     c3.chart.internal.fn.oldgetAxisWidthByAxisId = c3.chart.internal.fn.getAxisWidthByAxisId;
-    c3.chart.internal.fn.getAxisWidthByAxisId = function(axisId) {
+    c3.chart.internal.fn.getAxisWidthByAxisId = function(id, withoutRecompute) {
       var $$ = this, config = this.config;
-      return $$.oldgetAxisWidthByAxisId(axisId)-8;
+      return $$.oldgetAxisWidthByAxisId(id, withoutRecompute)-8;
     };
     
     for (var k in c3.chart.internal.fn.CLASS) {
