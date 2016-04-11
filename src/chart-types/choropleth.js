@@ -138,17 +138,33 @@
     var format = function(d) {
         return d3.format(',.2f')(d);
     }
+    //mapObj.properties.colors = mapColors.slice(5);
+    //console.log(mapObj.properties);
+
     mapObj = mapObj
-        .colors(mapColors)
         .column('yValue')
         .unitId('xValue')
         .format(format)
         .duration(options.skipAnimation ? 0 : 350)
         .legend(_.isUndefined(options.legend) || options.legend)
+        .colors(mapColors)
         .scale(scale)
         .postUpdate(function(m) { 
             wHeight = window.innerHeight;
             wWidth = window.innerWidth;
+            
+            var legend = d3.select('.'+options.uniqueClassName+' g.legend');
+            var textsCount = mapColors.length+1;
+            var maxTextsCount = legend.attr('height') / 15;
+            
+            var texts = d3.selectAll('.'+options.uniqueClassName+' g.legend text');
+            texts
+              .each(function(d, i) {
+                console.log(i % Math.ceil(textsCount/maxTextsCount));
+                if(i+1 != texts.size() && (i+1) % Math.ceil(textsCount/maxTextsCount) != 0 )
+                  d3.select(this).style('display', 'none');
+              });
+            
             var paths = d3.select('.'+options.uniqueClassName+' g.units').selectAll('path');
             paths.selectAll('title').remove();
             if(_.isUndefined(options.tooltip) || options.tooltip) {
@@ -178,6 +194,8 @@
                 })
             }
         });
+
+    console.log(mapObj.properties);
 
     var data = _.map(_.zip(xValues,yValues), function(arr) { 
                         return  {
