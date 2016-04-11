@@ -94,7 +94,7 @@
         },
         legend: {
             position: 'bottom',
-            show: false
+            show: !_.isUndefined(options.legend) && options.legend
         },
         size: {
             height: options.height

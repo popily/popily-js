@@ -21,7 +21,7 @@
               pattern: options.colors
           },              
           legend: {
-              hide: true
+              show: !_.isUndefined(options.legend) && options.legend
           },
           size: {
             height: options.height

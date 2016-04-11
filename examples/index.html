@@ -49,16 +49,10 @@ setTimeout(function() {
 popily.api.setToken('d39c69f05c5fae5cbcbe6a3b6ebac693c6ffb807');
 var insightOptions = {
     source: 'superstore-sales-csv-5',
-    columns: ['Order Date'],
-    time_interval: 'month',
-    transformations : [
-      {
-        column: 'Order Date',
-        op: 'lte',
-        value: '2011-4-15'
-      }
-    ]
+    columns: ['Order Date','Customer Segment'],
+    //legend: true
 };
+
 
 popily.chart.getAndRender('#my-chart-01', insightOptions);
 

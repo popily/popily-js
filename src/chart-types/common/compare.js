@@ -72,8 +72,8 @@
               pattern: options.colors
           },
           legend: {
+              show: _.isUndefined(options.legend) || options.legend,
               position: 'outer-bottom',
-              hide: true
           },
           tooltip: tooltip
       };

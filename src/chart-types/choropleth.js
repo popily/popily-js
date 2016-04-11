@@ -147,7 +147,7 @@
         .unitId('xValue')
         .format(format)
         .duration(options.skipAnimation ? 0 : 350)
-        .legend(true)
+        .legend(_.isUndefined(options.legend) || options.legend)
         .scale(scale)
         .postUpdate(function(m) { 
             wHeight = window.innerHeight;

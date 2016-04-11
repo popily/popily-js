@@ -100,7 +100,7 @@
           pattern: options.colors
         },       
         legend: {
-          show: false
+          show: !_.isUndefined(options.legend) && options.legend,
         },
         size: {
           height: options.height

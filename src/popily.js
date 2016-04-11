@@ -265,6 +265,7 @@
       'yGrid': 'yGrid',
       'timeInterval': 'interval',
       'time_interval': 'interval',
+      'legend': 'legend',
     };
 
     var availableServerOptions = {

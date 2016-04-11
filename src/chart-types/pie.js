@@ -41,7 +41,7 @@
           },
           legend: {
               position: 'bottom',
-              show: preppedData[0].length < 20 ? true : false
+              show: preppedData[0].length < 20 ? _.isUndefined(options.legend) || options.legend : false
           },
           size: {
             height: options.height

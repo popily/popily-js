@@ -94,19 +94,15 @@
       },
       legend: {
           position: 'bottom',
-          show: (function() {
-            if(options.showLegend) {
-              return true;
-            }
+          show: (!_.isUndefined(options.legend) ? options.legend : (function() {
             if(z2Values && z2Values.length > 0) {
               return true;
             }
             if(zValues.length < 50) {
               return true; 
             }
-
             return false;
-          })()
+          })())
       },
       tooltip: {
           show: (_.isUndefined(options.tooltip)?true:options.tooltip),
