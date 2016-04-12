@@ -603,7 +603,7 @@
   background: #fff;
   border: 1px solid #666; }
 
-.popily-font, .popily-title, .popily-chart, .popily-tooltip-container, .popily-loading {
+.popily-font, .popily-title, .popily-chartarea, .popily-tooltip-container, .popily-loading {
   font-family: sans-serif; }
 
 .popily-title {
@@ -612,72 +612,72 @@
   .popily-title-variable {
     font-weight: bold; }
 
-.popily-chart .unit {
+.popily-chartarea .unit {
   cursor: pointer;
   fill: #333;
   stroke: #000;
   stroke-width: .4px; }
-  .popily-chart .unit title {
+  .popily-chartarea .unit title {
     display: none !important; }
 
-.popily-chart .legend-bg {
+.popily-chartarea .legend-bg {
   fill: #fff;
   fill-opacity: .8; }
 
-.popily-chart .legend-bar {
+.popily-chartarea .legend-bar {
   stroke: #222;
   stroke-width: 1px; }
 
-.popily-chart .unit {
+.popily-chartarea .unit {
   stroke: #555;
   stroke-opacity: .3;
   opacity: .8;
   fill: #ccc; }
 
-.popily-chart .unit.active {
+.popily-chartarea .unit.active {
   stroke-opacity: .9;
   stroke-width: 3;
   -webkit-transition: 300ms;
   transition: 300ms;
   opacity: 1; }
 
-.popily-chart .background {
+.popily-chartarea .background {
   fill: none;
   pointer-events: all; }
 
-.popily-chart text {
+.popily-chartarea text {
   fill: #333;
   font-size: 12px; }
 
-.popily-chart.hide-legend .legend {
+.popily-chartarea.hide-legend .legend {
   display: None; }
 
-.popily-chart .legend-color:hover {
+.popily-chartarea .legend-color:hover {
   cursor: pointer;
   opacity: 1; }
 
-.popily-chart .legend-color {
+.popily-chartarea .legend-color {
   opacity: .8;
   -webkit-transition: 300ms;
   transition: 300ms; }
 
-.popily-chart path.leaflet-clickable {
+.popily-chartarea path.leaflet-clickable {
   -webkit-transition: 300ms;
   transition: 300ms; }
 
-.popily-chart .category-legend {
+.popily-chartarea .category-legend {
   margin-bottom: 12px;
   margin-top: 12px; }
-  .popily-chart .category-legend div {
+  .popily-chartarea .category-legend div {
     display: inline-block;
     font-size: 12px;
     margin-left: 10px; }
 
-.popily-chart .legend-color {
+.popily-chartarea .legend-color {
   opacity: .8;
   -webkit-transition: 300ms;
   transition: 300ms; }
-  .popily-chart .legend-color span {
+  .popily-chartarea .legend-color span {
     background-color: #2475B0;
     display: inline-block;
     width: 10px;

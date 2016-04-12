@@ -152,18 +152,23 @@
           if(options.titleFontColor)
             titleCss += 'color: '+options.titleFontColor+';';
           if(titleCss)
-            extraCss = '.'+options.uniqueClassName+ ' .popily-title {'+titleCss+'}';
+            extraCss += '.'+options.uniqueClassName+ ' .popily-title {'+titleCss+'}';
         }
         
-        var chartCss = '';
+        var chartTextCss = '';
         if(options.chartFontSize)
-          chartCss += 'font-size: '+options.chartFontSize+';';
+          chartTextCss += 'font-size: '+options.chartFontSize+';';
         if(options.chartFontFamily)
-          chartCss += 'font-family: '+options.chartFontFamily+';';
+          chartTextCss += 'font-family: '+options.chartFontFamily+';';
         if(options.chartFontColor)
-          chartCss += 'fill: '+options.chartFontColor+';';
-        if(chartCss)
-          extraCss = '.'+options.uniqueClassName+ ' text {'+chartCss+'}';
+          chartTextCss += 'fill: '+options.chartFontColor+';';
+        if(chartTextCss)
+          extraCss += '.'+options.uniqueClassName+ ' text {'+chartTextCss+'}';
+
+        if(options.chartBackgroundColor) {
+          chartCss = 'fill: '+options.chartBackgroundColor+';';
+          extraCss += '.'+options.uniqueClassName+ ' .popily-chart {'+chartCss+'}';
+        }
           
         if(extraCss) {
           var style = popily.chart.utils.createStyleElement(extraCss);
@@ -171,7 +176,7 @@
         }
   
         var chartElement = document.createElement("div");
-        chartElement.classList.add('popily-chart');
+        chartElement.classList.add('popily-chartarea');
         element.appendChild(chartElement);
         
         var chart = chartClass.render(chartElement, options, formattedData);
@@ -246,9 +251,9 @@
 
   var getThen = function(method, slug, serverOptions, poll, element, callback) {
       popily.api[method](slug, serverOptions, function(err, apiResponse) {
-        if(0) {//apiResponse.hasOwnProperty('insight') && apiResponse.insight === 'not found') {
+        if(apiResponse.hasOwnProperty('insight') && apiResponse.insight === 'not found') {
           
-          if(poll) {// && apiResponse.hasOwnProperty('source_status') && apiResponse.source_status !== 'finished') {
+          if(poll && apiResponse.hasOwnProperty('source_status') && apiResponse.source_status !== 'finished') {
             // add waiting text to element
 
             setTimeout(function() {
@@ -292,6 +297,7 @@
       'chartFontFamily': 'chartFontFamily',
       'chartFontSize': 'chartFontSize',
       'chartFontColor': 'chartFontColor',
+      'chartBackgroundColor': 'chartBackgroundColor',
       'xGrid': 'xGrid',
       'yGrid': 'yGrid',
       'timeInterval': 'interval',
@@ -463,6 +469,11 @@
     
     for (var k in c3.chart.internal.fn.CLASS) {
       c3.chart.internal.fn.CLASS[k] = c3.chart.internal.fn.CLASS[k].replace('c3', 'popily');
+    };
+    
+    c3.chart.internal.fn.afterInit = function(config) {
+      console.log('asd');
+      
     };
     
   }
