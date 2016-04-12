@@ -49,7 +49,11 @@ setTimeout(function() {
 popily.api.setToken('d39c69f05c5fae5cbcbe6a3b6ebac693c6ffb807');
 var insightOptions = {
     source: 'superstore-sales-csv-5',
-    columns: ['State', 'Sales'],
+    columns: ['Sales', 'Product Category'],
+    calculation: 'average',
+    title: true,
+    poll: true,
+    height: 500
 };
 
 

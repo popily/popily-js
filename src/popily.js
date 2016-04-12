@@ -201,27 +201,58 @@
     
   };
 
-  popily.chart.loadingMessage = function(element) {
+  popily.chart.loadingMessage = function(element, options) {
     if(typeof element === "string") {
       element = document.querySelector(element);
     }
+    var height = (options.height || 320);
 
-    var textElement = document.createElement("div");
-    textElement.classList.add('popily-loading');
-    textElement.innerHTML = 'We’re doing some calculations to make this chart possible. One moment...';
+    var loaderBox = document.createElement("div");
+    loaderBox.classList.add('popily-loading');
+    loaderBox.style.cssText = 'height: '+height+'px; line-height: '+height+'px';
+
+
+    var innerElement = document.createElement("div");
+    innerElement.classList.add('popily-loading-inner');
+    
+    var svgElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svgElement.classList.add('popily-spinner');
+    svgElement.setAttribute('width', '65px');
+    svgElement.setAttribute('height', '65px');
+    svgElement.setAttribute('viewBox', '0 0 66 66');
+    
+    var circleElement = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    circleElement.setAttribute('class', 'popily-spinner-path');
+    circleElement.setAttribute('fill', 'none');
+    circleElement.setAttribute('stroke-width', '6');
+    circleElement.setAttribute('stroke-linecap', 'round');
+    circleElement.setAttribute('cx', '33');
+    circleElement.setAttribute('cy', '33');
+    circleElement.setAttribute('r', '30');
+    svgElement.appendChild(circleElement);
+    innerElement.appendChild(svgElement);
+    
+    if(options.poll) {
+      var textElement = document.createElement("div");
+      textElement.setAttribute('class', 'popily-loading-text');
+      textElement.innerHTML = 'We’re doing some calculations to make this chart possible. One moment...';
+      innerElement.appendChild(textElement);
+    }
+      
+    loaderBox.appendChild(innerElement);
     element.innerHTML = '';
-    element.appendChild(textElement);
+    element.appendChild(loaderBox);
   };
 
   var getThen = function(method, slug, serverOptions, poll, element, callback) {
       popily.api[method](slug, serverOptions, function(err, apiResponse) {
-        if(apiResponse.hasOwnProperty('insight') && apiResponse.insight === 'not found') {
-          if(poll && apiResponse.hasOwnProperty('source_status') && apiResponse.source_status !== 'finished') {
+        if(0) {//apiResponse.hasOwnProperty('insight') && apiResponse.insight === 'not found') {
+          
+          if(poll) {// && apiResponse.hasOwnProperty('source_status') && apiResponse.source_status !== 'finished') {
             // add waiting text to element
-            popily.chart.loadingMessage(element);
 
             setTimeout(function() {
-              getThen(method, slug, serverOptions, poll, element, callback);
+              //getThen(method, slug, serverOptions, poll, element, callback);
             },1000);
           }
           else {
@@ -251,7 +282,7 @@
       'width': 'width',
       'rotated': 'rotated',
       'title': 'title',
-      'xOrder': 'order',
+      //'xOrder': 'order',
       'barSize': 'barSize',
       'lineSize': 'lineSize',
       'pointSize': 'pointSize',
@@ -276,6 +307,10 @@
       'insight_action': 'insight_actions',
       'analysisType': 'insight_types'
     };
+    
+    if(options.hasOwnProperty('xOrder')) {
+      console.log('xOrder property is not valid any more, please use transformation with op "order"');
+    }
 
     _.each(_.keys(availableChartOptions), function(option) {
       if(options.hasOwnProperty(option)) {
@@ -310,6 +345,8 @@
       method = 'getInsights';
     }
 
+    popily.chart.loadingMessage(element, options);
+    
     getThen(method, slug, serverOptions, options.poll, element, function(err, apiResponse) {
         popily.chart.render(element, apiResponse, chartOptions);
     });
@@ -322,6 +359,14 @@
       }
       else if('replace' == transformation.op) {
         ds.replaceValues(transformation.column, transformation.replacements);
+      }
+      else if('order' == transformation.op) {
+        var value = transformation.value || transformation.values;
+        var type = value;
+        
+        if(type && type != 'asc' && type != 'desc')
+          type = function(e, idx) { var i = value.indexOf(e[idx]); return i>=0 ? i : 9999; }
+        ds.orderBy(transformation.column, type);
       }
       else {
         popily.chart.applyFilter(ds, transformation);
@@ -404,9 +449,6 @@
     c3.chart.internal.fn.getHorizontalAxisHeight = function(axisId) {
       var $$ = this, config = this.config;
       var h = $$.oldGetHorizontalAxisHeight(axisId);
-      
-      console.log((axisId));
-      console.log($$.axis);
       
       if (axisId === 'y' && config.axis_rotated && config.axis_x_tick_rotate) {
         h = 30 + $$.axis.getMaxTickWidth(axisId) * Math.cos(Math.PI * (90 - config.axis_x_tick_rotate) / 180);

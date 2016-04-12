@@ -20,6 +20,8 @@
       _.each(columns, function(column) {
         labels.push(column.column_header);
         dataTypes.push(column.data_type);
+        if(column.data_type == 'numeric')
+          column.values = _.map(column.values, function(v) {return parseInt(v)});
         data.push(column.values);
       });
       return _.zip.apply(null, data);
@@ -56,11 +58,19 @@
     
     return {
     
-      orderBy: function(column) {
+      orderBy: function(column, type) {
         var idx = columnIdx(column);
+        
+        if(!type || type == 'asc' || type == 'desc')
+          orderTest = function(e, idx) { return e[idx]; }
+        else
+          orderTest = type;
+        
         table = _.sortBy(table, function(e) {
-          return e[idx];
+          return orderTest(e, idx);
         });
+        if(type == 'desc')
+          table.reverse();
         dataChanged();
         return this;
       },

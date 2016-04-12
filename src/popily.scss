@@ -1,6 +1,7 @@
 @import '../node_modules/c3/src/scss/main';
 @import '../src/lib/leaflet';
 
+
 .popily {
   
 }
@@ -17,6 +18,7 @@
     font-weight: bold;
   }
 }
+
 
 .popily-chart {
   @extend .popily-font;
@@ -112,3 +114,56 @@
   margin-right: 6px;
 }
 
+
+
+
+.popily-loading {
+  @extend .popily-font;
+  color: #aaa;
+  text-align: center;
+  position: relative;
+  &-inner {
+    line-height: 100%;
+    display: inline-block;
+    vertical-align: middle;
+    text-align: center;
+  }
+  &-text {
+    margin-top: 10px;
+  }
+}
+
+$offset: 187;
+$duration: 1.4s;
+
+.popily-spinner {
+  animation: rotator $duration linear infinite;
+  width: 65px;
+  height: 65px;
+
+  &-path {
+    stroke-dasharray: $offset;
+    stroke-dashoffset: 0;
+    transform-origin: center;
+    stroke: #ccc;
+    animation:
+      dash $duration ease-in-out infinite, 
+  }
+}
+
+@keyframes rotator {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(270deg); }
+}
+
+@keyframes dash {
+ 0% { stroke-dashoffset: $offset; }
+ 50% {
+   stroke-dashoffset: $offset/4;
+   transform:rotate(135deg);
+ }
+ 100% {
+   stroke-dashoffset: $offset;
+   transform:rotate(450deg);
+ }
+}

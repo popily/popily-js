@@ -138,8 +138,6 @@
     var format = function(d) {
         return d3.format(',.2f')(d);
     }
-    //mapObj.properties.colors = mapColors.slice(5);
-    //console.log(mapObj.properties);
 
     mapObj = mapObj
         .column('yValue')
@@ -160,7 +158,6 @@
             var texts = d3.selectAll('.'+options.uniqueClassName+' g.legend text');
             texts
               .each(function(d, i) {
-                console.log(i % Math.ceil(textsCount/maxTextsCount));
                 if(i+1 != texts.size() && (i+1) % Math.ceil(textsCount/maxTextsCount) != 0 )
                   d3.select(this).style('display', 'none');
               });
@@ -194,8 +191,6 @@
                 })
             }
         });
-
-    console.log(mapObj.properties);
 
     var data = _.map(_.zip(xValues,yValues), function(arr) { 
                         return  {
