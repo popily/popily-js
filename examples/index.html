@@ -51,10 +51,13 @@ var insightOptions = {
     source: 'superstore-sales-csv-5',
     columns: ['Sales', 'Product Category'],
     calculation: 'average',
-    title: true,
-    poll: true,
-    height: 500,
-    chartBackgroundColor: '#f00'
+    transformations: [
+        {
+            column: 'Product Category',
+            op: 'eq',
+            values: ['Office Supplies', 'Technology']
+        }
+    ],
 };
 
 
@@ -62,8 +65,8 @@ popily.chart.getAndRender('#my-chart-01', insightOptions);
 
 var insightOptions = {
     source: 'superstore-sales-csv-5',
-    columns: ['Sales'],
-    calculation: 'count'
+    columns: ['Sales', 'Product Category'],
+    calculation: 'average',
 };
 popily.chart.getAndRender('#my-chart-02', insightOptions);
 

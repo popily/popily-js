@@ -132,11 +132,7 @@
   };
 
   chart.updateSpecials = function(element, rotated, options) {
-      if(options.rotated || rotated) {
-        d3.selectAll('.'+options.uniqueClassName+" .popily-axis-y .tick text").attr("transform", "rotate(45)").attr("y", -1).attr("x", 0).style("text-anchor", "start").style("display", "block");
-        d3.selectAll('.'+options.uniqueClassName+" .popily-axis-y .tick tspan").attr("x", -6).attr("dy", "1.4em").attr("dx", 7.72);
-        
-      }
+      
   }
 
   popilyChart.chartTypes.barCommon = chart;

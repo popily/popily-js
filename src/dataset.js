@@ -21,7 +21,7 @@
         labels.push(column.column_header);
         dataTypes.push(column.data_type);
         if(column.data_type == 'numeric')
-          column.values = _.map(column.values, function(v) {return parseInt(v)});
+          column.values = _.map(column.values, function(v) {return parseFloat(v)});
         data.push(column.values);
       });
       return _.zip.apply(null, data);
