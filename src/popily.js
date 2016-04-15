@@ -454,6 +454,46 @@
     c3.chart.internal.fn.oldGetHorizontalAxisHeight = c3.chart.internal.fn.getHorizontalAxisHeight;
     c3.chart.internal.fn.getHorizontalAxisHeight = function(axisId) {
       var $$ = this, config = this.config;
+      
+      if(axisId === 'x' && $$.svg && $$.x(0)) {
+        var targetsToShow = $$.filterTargetsToShow($$.data.targets);
+        if(!config.axis_x_tick_rotate_original)
+          config.axis_x_tick_rotate_original = config.axis_x_tick_rotate;
+        else
+          config.axis_x_tick_rotate = config.axis_x_tick_rotate_original;
+        
+        var wtf = $$.getXDomain(targetsToShow);
+        wtf[1] += 2;
+        var scale = $$.x.copy().domain(wtf);
+        
+        var dummy = $$.d3.select('body').append('div').classed('c3', true).classed('popily-chartarea', true);
+        var svg = dummy.append("svg")
+            .style('visibility', 'visible')
+            .style('position', 'fixed')
+            .style('top', 0).style('left', 0);
+        var test = 1;
+        while(test && test < 10) {
+          var axis = $$.axis.getXAxis(scale, $$.xOrient, $$.xAxisTickFormat, 
+                                $$.xAxisTickValues, false, true, false);
+          $$.axis.updateXAxisTickValues(targetsToShow, axis);
+          var g = svg.append('g');
+          g.call(axis);
+          // ? $$.updateScales();
+          var axisWidth = g[0][0].getBoundingClientRect().width;
+          var maxAxisWidth = g.select('path')[0][0].getBoundingClientRect().width;
+        
+          if(axisWidth > maxAxisWidth + 2) {
+            config.axis_x_tick_rotate = Math.min(config.axis_x_tick_rotate+5, 90);
+            test = test + 1;
+            g.remove();
+          }
+          else
+            test = 0; 
+            
+        }
+        dummy.remove();
+      }
+
       var h = $$.oldGetHorizontalAxisHeight(axisId);
       
       if (axisId === 'y' && config.axis_rotated && config.axis_x_tick_rotate) {
@@ -472,8 +512,6 @@
     };
     
     c3.chart.internal.fn.afterInit = function(config) {
-      console.log('asd');
-      
     };
     
   }
