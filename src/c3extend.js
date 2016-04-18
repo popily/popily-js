@@ -91,7 +91,6 @@
       if (id === 'y' && config.axis_y_tick_rotate) {
         var position = $$.axis.getLabelPositionById(id);
         w = $$.axis.getMaxTickWidth(id, withoutRecompute) * Math.sin(Math.PI * (90 - config.axis_y_tick_rotate) / 180);
-        console.log(w);
         w = w + (position.isInner ? 20 : 40);
       }
 
@@ -137,8 +136,7 @@
       
       if ($$.config.axis_y_tick_rotate) {
         var tickWidth = this.getMaxTickWidth('y');
-        var w = position.isInner ? "1.2em" : -10 - ($$.config.axis_y_inner ? 0 : (tickWidth*Math.sin(Math.PI * (90 - $$.config.axis_y_tick_rotate) / 180) + 10));
-        return w;
+        return position.isInner ? "1.2em" : -10 - ($$.config.axis_y_inner ? 0 : (tickWidth*Math.sin(Math.PI * (90 - $$.config.axis_y_tick_rotate) / 180) + 10));
       } else {
         return this.oldDyForYAxisLabel();
       }
