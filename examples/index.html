@@ -100,6 +100,23 @@ popily.chart.getAndRender('#my-chart-01', {
 });
 //*/
 
+popily.api.setToken('54450aa49c331d9245cccdf0a606ea5bf8478968');
+popily.api.setURL('http://localhost:8000');
+
+var insightOptions = {
+    source: 'example-csv',
+    columns: ['Transation Date', 'First Donation','Employer'],
+    title: true,
+    calculations: [
+      {
+        column: 'First Donation',
+        calculation: 'sum'
+      }
+    ]
+};
+popily.chart.getAndRender('#my-chart-02', insightOptions);
+
+
 })();
 </script>
 

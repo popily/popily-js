@@ -3,21 +3,46 @@
   
   var chart = _.clone(popilyChart.baseChart);
 
-  chart.prepData = function(rawData, options) {
+  chart.assignAxis = function(columns, calculation, options) {
+      var axis = {};
+
+      _.each(columns, function(column) {
+          if(column.data_type === 'category') {
+            axis.z = column;
+          }
+          else if(!axis.y) {
+            axis.y = column;
+          }
+          else {
+            axis.x = column;
+          }
+      });
+
+      return axis;
+  };
+
+  chart.prepData = function(formattedData, options) {
     var that = this;
     var limit = that.defaults.categoryLimit;
-    var cleanValues = that.cleanData(rawData);
+    var chartData = formattedData.chartData;
+    var xValues = chartData.x.values;
+    var yValues = chartData.y.values;
+    var zValues = [];
+
+    if(!_.isUndefined(chartData.z)) {
+      zValues = chartData.z.values;
+    }
 
     var order = options.order || 'auto';
-    cleanValues = _.unzip(_.zip(cleanValues).slice(0,5000))[0];
+    cleanValues = _.unzip(_.zip([xValues,yValues,zValues]).slice(0,5000))[0];
     var cleanXValues = popilyChart.format.toNumber(cleanValues[0]);
     var cleanYValues = popilyChart.format.toNumber(cleanValues[1]);
 
     cleanXValues = popilyChart.format.formatNumbers(cleanXValues);
     cleanYValues = popilyChart.format.formatNumbers(cleanYValues);
     var cleanZValues = cleanValues[2];
-    if(!rawData.columns.z && rawData.chartData.metadata && rawData.chartData.metadata.rowlabels) {
-      cleanZValues = rawData.chartData.metadata.rowlabels;
+    if(zValues.length === 0 && chartData.metadata && chartData.metadata.rowlabels) {
+      cleanZValues = chartData.metadata.rowlabels;
     }
     return [cleanXValues, cleanYValues, cleanZValues];
   };

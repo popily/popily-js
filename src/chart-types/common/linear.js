@@ -2,14 +2,21 @@
   var popilyChart = window.popily.chart;
   var chart = _.clone(popilyChart.baseChart);
 
-  chart.prepData = function(rawData, options) {
+  chart.prepData = function(formattedData, options) {
     var that = this;
     var limit = that.defaults.categoryLimit;
-    rawData.chartData.y.values = popily.chart.chartData.cleanNanToZero(rawData.chartData.y.values)
-    var cleanValues = that.cleanData(rawData);
+    var chartData = formattedData.chartData;
+    var xValues = chartData.x.values;
+    var yValues = chartData.y.values;
+    var zValues = [];
+    if(chartData.hasOwnProperty('z')) {
+        zValues = chartData.z.values;
+    }
+
+    yValues = popily.chart.chartData.cleanNanToZero(yValues)
 
     var order = options.order || 'auto';
-    cleanValues = popilyChart.chartData.sortData(cleanValues[0],cleanValues[1],cleanValues[2],0,order);
+    cleanValues = popilyChart.chartData.sortData(xValues,yValues,zValues,0,order);
 
     var cleanXValues = cleanValues[0];
     var cleanYValues = popilyChart.format.formatNumbers(cleanValues[1]);
@@ -148,16 +155,16 @@
     }
   };
 
-  chart.render = function(element, options, rawData, grouped) {
+  chart.render = function(element, options, formattedData, grouped) {
       var that = this;
-      var preppedData = that.prepData(rawData, options);
+      var preppedData = that.prepData(formattedData, options);
       var xValues = preppedData[0];
       var yValues = preppedData[1];
       var zValues = preppedData[2];
-      var xLabel = rawData.chartData.x.label;
-      var yLabel = rawData.chartData.y.label;
+      var xLabel = formattedData.chartData.x.label;
+      var yLabel = formattedData.chartData.y.label;
 
-      options.interval = options.interval || rawData.insight_metadata.intervals[0];
+      options.interval = options.interval || formattedData.chartData.metadata.intervals[0];
       var yMin = that.getYMin(yValues);
             
       var data = popilyChart.chartData.c3ify(xValues,yValues,zValues);

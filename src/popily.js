@@ -27,79 +27,43 @@
       chartPadding: function() { return {lefright: 0, top: 0 }; }
     },
     resize: function(chartObj, width, height) {
-      console.log(1);
+      //console.log(1);
       chartObj.resize(width, height);
     },
-    cleanData: function(rawData) {
-      var xValues = rawData.chartData.x.values;
-      var yValues = rawData.chartData.y.values;
-      var zValues = [];
-      var z2Values = [];
+    formatChartData: function(axisAssignments, apiResponse) {
+      var newData = {};
+      var possibleAxis = ['x','y','z'];
 
-      if(rawData.chartData.z) {
-        var zValues = rawData.chartData.z.values;
-      }
+      newData.chartData = {};
+      newData.chartData.metadata = {};
 
-      if(rawData.chartData.z2) {
-        var z2Values = rawData.chartData.z2.values;
-      }
+      _.each(possibleAxis, function(axis) {
+        if(axisAssignments.hasOwnProperty(axis)) {
+          var values = axisAssignments[axis].values;
+          if(axisAssignments[axis].data_type === 'coordinate') {
+            values = _.map(values, JSON.parse);
+          }
 
-      var cleanValues = popily.chart.chartData.cleanData(xValues,yValues,zValues,z2Values);
-
-      return cleanValues;
-    }
-  };
-
-  popily.chart.getChartForType = function(analysisType, chartType) {
-    if(_.isUndefined(popily.chart.chartMap)) {
-      _buildChartMap();
-    }
-
-    var toComplex = {
-      'bar': ['barStacked', 'barGrouped'],
-      'scatterplot': ['scatterplotCategory'],
-      'line': ['multiLine']
-    }
-
-    if(analysisType in popily.chart.chartMap) {
-        if(!_.isUndefined(chartType)) {
-            if(_(popily.chart.chartMap[analysisType].allowed).contains(chartType)) {
-                return chartType;
-            }
-            else if(popily.chart.chartMap[analysisType].defaultChart === chartType) {
-              return chartType;
-            }
-            else if(toComplex.hasOwnProperty(chartType)) {
-              var toReturn;
-              _.each(toComplex[chartType], function(complexChartType) {
-                if(_(popily.chart.chartMap[analysisType].allowed).contains(complexChartType)) {
-                  toReturn = complexChartType;
-                }
-                else if(popily.chart.chartMap[analysisType].defaultChart === complexChartType) {
-                  toReturn = complexChartType;
-                }
-              });
-              
-              if(!_.isUndefined(toReturn)) {
-                return toReturn;
-              }
-
-              console.error(chartType + ' not possible for ' + analysisType);
-            }
-            else {
-                console.error(chartType + ' not possible for ' + analysisType);
-            }
+          newData.chartData[axis] = {
+            values: values,
+            label: axisAssignments[axis].column_header,
+            dataType: axisAssignments[axis].data_type,
+            possibleDataTypes: axisAssignments[axis].possible_data_types
+          }
         }
-        return popily.chart.chartMap[analysisType].defaultChart;
-    }
-    else {
-        console.error('No chart for ' + analysisType);
+      });
+
+      if(apiResponse.insight_metadata) {
+        newData.chartData.metadata = apiResponse.insight_metadata;
+      }
+
+      return newData;
     }
   };
 
   popily.chart.create = function(apiResponse) {
   
-    var ds = popily.dataset(apiResponse.columns);
+    var ds = popily.dataset(apiResponse);
     return {
       dataset : function() {
         return ds;
@@ -108,18 +72,24 @@
       draw: function(element, options) {
         var that = this;
         var calculation = apiResponse.calculation;
-        var axisAssignments = popily.chart.analyze.assignToAxis(ds.getColumns(), options);
-        var analysisType = popily.chart.analyze.determineType(ds.getColumns(), axisAssignments, calculation);
-        var formattedData = popily.chart.utils.formatDataset(apiResponse, axisAssignments, analysisType);
-        
-        var labels = popily.chart.generateLabels(calculation, axisAssignments, options.transformations || []);
 
-        var chartType = popily.chart.getChartForType(analysisType, options.chartType);
+        // Determine the chart type based on the data
+        var chartType = popily.chart.analyze.chartTypeForData(ds.getColumns(), calculation, options);
         var chartClass = popily.chart.chartTypes[chartType];
+        
+        console.log(chartType);
+        console.log(ds.getColumns());
+        // Assign the data to axis (potentially modifying its structure) 
+        // and manipulate the format expected by charting functions
+        var axisAssignments = chartClass.assignAxis(ds.getColumns(), calculation, options);
+        var formattedData = popily.chart.baseChart.formatChartData(axisAssignments, apiResponse);
+        
+        // Build a title
+        var labels = popily.chart.generateLabels(calculation, axisAssignments, options.transformations || []);
+        
+        // Add custom CSS if requested by user
         var extraCss = '';
         
-        //options = _.extend(chartClass.defaults.options, options);
-
         _.each(_.keys(popily.chart.baseChart.defaults.options), function(key) {
           if(!options[key]) {
             options[key] = popily.chart.baseChart.defaults.options[key];
@@ -179,6 +149,7 @@
         chartElement.classList.add('popily-chartarea');
         element.appendChild(chartElement);
         
+        // Render the chart
         var chart = chartClass.render(chartElement, options, formattedData);
         return chart;
       },
@@ -314,7 +285,8 @@
       'timeInterval': 'time_interval',
       'time_interval': 'time_interval',
       'insight_action': 'insight_actions',
-      'analysisType': 'insight_types'
+      'analysisType': 'insight_types',
+      'calculations': 'calculations'
     };
     
     if(options.hasOwnProperty('xOrder')) {
@@ -403,15 +375,6 @@
     return ds;
   };
   
-  /*
-    groupData = {
-      column: <column-name-to-group-by>,
-      op: count|countUnique,
-      groupInto: <new-column-with-aggregated-values>,
-      customFunction: <optional-custom-aggregation-function>
-      customDataType: <optional-custom-type-ofaggregations>
-    }
-  */
   popily.chart.applyGroupData = function(ds, groupData) {
     
     if(groupData.customFunction) {
@@ -421,36 +384,13 @@
       var groupFunc = popily.dataset[groupData.op]
     }
     else {
-      console.error('Unrecognizer grouping agregation function');
+      console.error('Unrecognized grouping function');
       return ds;
     }
     
     ds.groupBy(groupData.column, groupFunc, groupData.customDataType || groupFunc.dataType, groupData.groupInto || groupFunc.columnLabel);
     
     return ds;
-  };
-  
-  
-  var _buildChartMap = function() {
-    var chartMap = {};
-
-    for(var chartType in popily.chart.chartTypes) {
-      var chartObj = popily.chart.chartTypes[chartType];
-      _.each(chartObj.defaultFor, function(analysisType) {
-        chartMap[analysisType] = chartMap[analysisType] || {};
-        chartMap[analysisType].allowed = chartMap[analysisType].allowed || [];
-        chartMap[analysisType].defaultChart = chartType;
-        chartMap[analysisType].allowed.push(chartType);
-      });
-
-      _.each(chartObj.accepts, function(analysisType) {
-        chartMap[analysisType] = chartMap[analysisType] || {};
-        chartMap[analysisType].allowed = chartMap[analysisType].allowed || [];
-        chartMap[analysisType].allowed.push(chartType);
-      });
-    }
-
-    popily.chart.chartMap = chartMap;
   };
 
   function c3Customizations() {
