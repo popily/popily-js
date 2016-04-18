@@ -2,15 +2,21 @@
   var popilyChart = window.popily.chart;
 
   var chart = _.clone(popilyChart.baseChart);
-  chart.defaultFor = [
-    'average_by_state',
-    'sum_by_state',
-    'sum_by_country',
-    'average_by_country',
-    'count_by_country',
-    'count_by_state'
-  ];
-  chart.accepts = [];
+
+  chart.assignAxis = function(columns, calculation, options) {
+      var axis = {};
+
+      _.each(columns, function(column) {
+          if(column.data_type === 'numeric') {
+            axis.y = column;
+          }
+          else {
+            axis.x = column;
+          }
+      });
+
+      return axis;
+  };
 
   chart.getVal = function(unitName, valueLookup) {
       if(valueLookup[unitName]) {
@@ -28,24 +34,26 @@
       return {'name':name, 'value': 'n/a'};
   };
 
-  chart.prepData = function(rawData, options) {
+  chart.prepData = function(formattedData, options) {
     var that = this;
     var limit = that.defaults.categoryLimit;
-    var cleanValues = that.cleanData(rawData);
+    var chartData = formattedData.chartData;
+    var xValues = chartData.x.values;
+    var yValues = chartData.y.values;
 
     var order = options.order || 'auto';
-    cleanValues = popilyChart.chartData.sortData(cleanValues[0],popilyChart.format.toNumber(cleanValues[1]));
+    cleanValues = popilyChart.chartData.sortData(xValues,popilyChart.format.toNumber(yValues));
 
     var cleanXValues = cleanValues[0];
     var cleanYValues = popilyChart.format.formatNumbers(cleanValues[1]);
 
-    var cleanXValuesSlugified = _.map(cleanXValues, popilyChart.format.slugify);
-    var valueLookup = _.object(cleanXValuesSlugified, cleanXValues);
+    var cleanXValuesSlugified = _.map(xValues, popilyChart.format.slugify);
+    var valueLookup = _.object(cleanXValuesSlugified, xValues);
     valueLookup = _.mapObject(valueLookup, function(val, key) { 
       return {'name': val};
     });
 
-    _.each(_.zip(cleanXValuesSlugified,cleanYValues), function(arr) {
+    _.each(_.zip(cleanXValuesSlugified,yValues), function(arr) {
         if(arr[1]) {
             valueLookup[arr[0]]['value'] = numeral(arr[1]).format('0,0');
         }
@@ -54,12 +62,12 @@
         }
     });
 
-    return [cleanXValuesSlugified, cleanYValues, valueLookup];
+    return [cleanXValuesSlugified, yValues, valueLookup];
   };
 
-  chart.render = function(element, options, rawData) {
+  chart.render = function(element, options, formattedData) {
       var that = this;
-      var preppedData = that.prepData(rawData, options);
+      var preppedData = that.prepData(formattedData, options);
       var xValues = preppedData[0];
       var yValues = preppedData[1];
       var valueLookup = preppedData[2];
@@ -72,11 +80,10 @@
 
       element.onmousemove = onMouseMove;*/
 
-      var insightType = rawData.analysisType;
       var geoJson = popilyChart.data.world.countries;
       var isState = false;
 
-      if(insightType.indexOf('_state') > -1) {
+      if(_.contains(formattedData.chartData.x.possibleDataTypes,'state')) {
           geoJson = popilyChart.data.countries.USA;
           isState = true;
 

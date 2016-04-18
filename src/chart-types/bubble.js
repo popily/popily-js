@@ -2,32 +2,51 @@
   var popilyChart = window.popily.chart;
   
   var chart = _.clone(popilyChart.baseChart);
-  chart.defaultFor = [];
-  chart.accepts = [
-    'count_by_value',
-    'count_by_category',
-    'average_by_category',
-    'sum_by_category',
-    'sum_sum_by_category',
-    'sum_by_category_per_category',
-    'average_by_category_per_category',
-    'count_by_category_per_category',
-    'count_per_category_by_category',
-    'top_by_rowlabel'
-  ];
 
-  chart.prepData = function(rawData, options) {
-    var that = this;
-    var limit = that.defaults.categoryLimit;
-    var cleanValues = that.cleanData(rawData);
+  chart.assignAxis = function(columns, calculation, options) {
+      var axis = {};
+      var typePattern = popilyChart.analyze.getTypePattern(columns);
 
-    var cleanXValues = cleanValues[0];
-    var cleanYValues = popilyChart.format.formatNumbers(cleanValues[1]);
+      if(typePattern === 'numeric,numeric') {
+        axis.y = {
+            column_header: calculation.charAt(0).toUpperCase() + calculation.slice(1).toLowerCase(),
+            values: _.map(columns, function(column) { return column.values[0] }),
+            data_type: 'numeric'
+        }
+        axis.x = {
+            column_header: 'Columns',
+            values: _.map(columns, function(column) { return column.column_header }),
+            data_type: 'category'
+        }
+      }
+      else {
+        _.each(columns, function(column) {
+            if(column.data_type === 'numeric') {
+              axis.y = column;
+            }
+            else {
+              axis.x = column;
+            }
+        });
+      }
 
-    return [cleanXValues, cleanYValues];
+      return axis;
   };
 
-  chart.render = function(element, options, rawData) {
+  chart.prepData = function(formattedData, options) {
+    var that = this;
+    var limit = that.defaults.categoryLimit;
+
+    var chartData = formattedData.chartData;
+    var xValues = chartData.x.values;
+    var yValues = chartData.y.values;
+
+    yValues = popilyChart.format.formatNumbers(yValues);
+
+    return [xValues, yValues];
+  };
+
+  chart.render = function(element, options, formattedData) {
       var width = options.width,
         height = options.height,
         format = d3.format(",d"),
@@ -41,10 +60,10 @@
         window.chartSize = function() { return {'height': width}; };
     }
         
-    var preppedData = this.prepData(rawData, options);
+    var preppedData = this.prepData(formattedData, options);
     var xValues = preppedData[0];
     var yValues = preppedData[1];
-    var xLabel = rawData.chartData.x.label;
+    var xLabel = formattedData.chartData.x.label;
     
     _.each(_.first(yValues,200), function(yValue,i) {
         if(yValue>0)

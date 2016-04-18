@@ -60,7 +60,7 @@
     else if(calculation == 'sum' ) {
       if(axisAssignments.z) {
         return {
-          title: columnLabel(axisAssignments.z, 'Total of') + ' grouped by ' + columnLabel(axisAssignments.x) + ' grouped by ' + columnLabel(axisAssignments.x)
+          title: columnLabel(axisAssignments.y, 'Total of') + ' grouped by ' + columnLabel(axisAssignments.x) + ' for each ' + columnLabel(axisAssignments.z)
         }
       } else if(axisAssignments.y) {
         return {
@@ -75,7 +75,7 @@
     else if(calculation == 'average') {
       if(axisAssignments.z) {
         return {
-          title: columnLabel(axisAssignments.z, 'Average of') + ' grouped by ' + columnLabel(axisAssignments.x) + ' grouped by ' + columnLabel(axisAssignments.x)
+          title: columnLabel(axisAssignments.y, 'Average of') + ' grouped by ' + columnLabel(axisAssignments.x) + ' for each ' + columnLabel(axisAssignments.z)
         }
       } else if(axisAssignments.y) {
         return {
@@ -103,7 +103,7 @@
     else if(calculation == 'comparison') {
       if(axisAssignments.z) {
         return {
-          title: '' + columnLabel(axisAssignments.z) + ' compared to ' + columnLabel(axisAssignments.x) + ' grouped by ' + columnLabel(axisAssignments.x)
+          title: '' + columnLabel(axisAssignments.y) + ' compared to ' + columnLabel(axisAssignments.x) + ' for each ' + columnLabel(axisAssignments.z)
         }
       } else {
         return {
@@ -134,10 +134,22 @@
         }
       }
     }
+    else if(calculation === 'min') {
+      if(axisAssignments.x.values.length > 1) {
+        return {
+          title: columnLabel(axisAssignments.y, '') + ' for Each Column'
+        }
+      }
+      else {
+        return {
+          title: 'Minimum value for ' + axisAssignments.x.column_header
+        }
+      }
+    }
     
     
     return {
-      title: 'no title for '+calculation
+      title: 'No title for '+calculation
     }
     
   }

@@ -2,11 +2,10 @@
   var popilyChart = window.popily.chart;
   
   var chart = _.clone(popilyChart.baseChart);
-  chart.defaultFor = [
-    'scatterplot',
-    'scatterplot_per_category'
-  ];
-  chart.accepts = [];
+  
+  chart.assignAxis = function(columns, calculation, options) {
+      return popilyChart.chartTypes.compare.assignAxis(columns,calculation,options);
+  };
 
   chart.render = function(element, options, rawData) {
       var preppedData = popilyChart.chartTypes.compare.prepData(rawData, options);

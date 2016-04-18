@@ -3,50 +3,59 @@
   
   var chart = _.clone(popilyChart.baseChart);
 
-  chart.defaultFor = [
-    'geo_points',
-    'geo_points_category',
-    'geo_points_amount',
-    'geo_points_category_amount'
-  ];
-  chart.accepts = [];
+  chart.assignAxis = function(columns, calculation, options) {
+      var axis = {};
 
-  chart.prepData = function(rawData, options) {
-    var xValues = rawData.chartData.x.values;
+      _.each(columns, function(column) {
+          if(column.data_type === 'numeric') {
+            axis.y = column;
+          }
+          else if(column.data_type === 'coordinate') {
+            axis.x = column;
+          }
+          else {
+            axis.z = column;
+          }
+      });
+
+      return axis;
+  };
+
+  chart.prepData = function(formattedData, options) {
+    var xValues = formattedData.chartData.x.values;
     var zValues = [];
-    if(rawData.chartData.z) {
-      zValues = rawData.chartData.z.values;
+    if(formattedData.chartData.z) {
+      zValues = formattedData.chartData.z.values;
     }
     var yValues = [];
-    if(rawData.chartData.y) {
-      yValues = rawData.chartData.y.values;
+    if(formattedData.chartData.y) {
+      yValues = formattedData.chartData.y.values;
     }
     var rowLabels = [];
-    if(rawData.chartData.metadata.rowlabels) {
-      rowLabels = rawData.chartData.metadata.rowlabels;
+    if(formattedData.chartData.metadata.rowlabels) {
+      rowLabels = formattedData.chartData.metadata.rowlabels;
     }
 
     return [xValues, yValues, zValues, rowLabels]
 
   };
 
-  chart.render = function(element, options, rawData) {
-    var preppedData = this.prepData(rawData, options);
+  chart.render = function(element, options, formattedData) {
+    var preppedData = this.prepData(formattedData, options);
     var coords = preppedData[0];
     var categories = preppedData[2];
     var amounts = preppedData[1];
     var labels = preppedData[3];
-    var metadata = rawData.chartData.metadata;
-    var analysisType = rawData.analysisType;
+    var metadata = formattedData.chartData.metadata;
 
     var radiusToZoom = function(radius) {
         return Math.round(9-Math.log(radius)/Math.LN2);
     }
 
-    var coords = rawData.chartData.x.values;
+    var coords = formattedData.chartData.x.values;
     var categories = [];
-    if(rawData.chartData.z) {
-      categories = rawData.chartData.z.values;
+    if(formattedData.chartData.z) {
+      categories = formattedData.chartData.z.values;
     }
 
     var layer = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
@@ -88,7 +97,7 @@
     scale.range([metadata.geo_radius * 1, metadata.geo_radius * 250]);
     var showTooltip = (_.isUndefined(options.tooltip)?true:options.tooltip);
 
-    if(analysisType.indexOf('_category') > -1) {
+    if(formattedData.chartData.z) {
         var categoryColorMap = {};
         var uniqueCategories = _.uniq(categories);
         var sizeDiff = uniqueCategories.length - options.colors.length;

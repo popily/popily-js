@@ -2,19 +2,32 @@
   var popilyChart = window.popily.chart;
   
   var chart = _.clone(popilyChart.baseChart);
-  chart.defaultFor = [
-    'scatterplot_by_category'
-  ];
-  chart.accepts = [];
+  chart.assignAxis = function(columns, calculation, options) {
+      var axis = {};
 
-  chart.render = function(element, options, rawData) {
-      var preppedData = popilyChart.chartTypes.compare.prepData(rawData, options);
+      _.each(columns, function(column) {
+          if(column.data_type === 'category') {
+            axis.z = column;
+          }
+          else if(!axis.y) {
+            axis.y = column;
+          }
+          else {
+            axis.x = column;
+          }
+      });
+
+      return axis;
+  };
+
+  chart.render = function(element, options, formattedData) {
+      var preppedData = popilyChart.chartTypes.compare.prepData(formattedData, options);
       var xValues = preppedData[0];
       var yValues = preppedData[1];
       var zValues = preppedData[2];
-      var xLabel = rawData.chartData.x.label;
-      var yLabel = rawData.chartData.y.label;
-      var zLabel = rawData.chartData.z.label;    
+      var xLabel = formattedData.chartData.x.label;
+      var yLabel = formattedData.chartData.y.label;
+      var zLabel = formattedData.chartData.z.label;    
 
       var columns = [];
       var xs = {};

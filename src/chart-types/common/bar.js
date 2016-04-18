@@ -2,46 +2,130 @@
   var popilyChart = window.popily.chart;
   var chart = _.clone(popilyChart.baseChart);
 
-  chart.prepData = function(rawData, options, group) {
+  chart.assignAxis = function(columns, calculation, options) {
+      var axis = {};
+
+      var numerics = _.where(columns,{data_type:'numeric' });
+
+      // Reorganize the columns to use the column headers as the groupby 
+      // variable.
+      if(numerics.length > 1) {
+        var xColumn = _.find(columns, function(column) { 
+                          var dataType = column.data_type;
+                          return dataType === 'datetime' || dataType === 'category';
+                      });
+        var firstNumeric = numerics.shift();
+        var x = xColumn;
+        var y = firstNumeric;
+        var z = {
+          column_header: 'Columns',
+          data_type: 'category',
+          values: _.map(firstNumeric.values,function(val) { return firstNumeric.column_header })
+        };
+
+        _.each(numerics, function(numeric) {
+            for(var i=0;i<numeric.values.length;i++) {
+              x.values.push(x.values[i]);
+              y.values.push(numeric.values[i]);
+              z.values.push(numeric.column_header);
+            }
+        });
+      }
+      else {
+        var x,y,z;
+        y = popilyChart.analyze.getColumnForType(columns, 'numeric');
+        
+        // put the datetime on the x if we can
+        x = popilyChart.analyze.getColumnForType(columns, 'datetime');
+
+        if(x) {
+          z = popilyChart.analyze.getColumnForType(columns, 'category');
+        }
+        else {
+          // No datetime, so can group on either
+          var groupers = _.filter(columns, function(column) { 
+                          var dataType = column.data_type;
+                          return dataType === 'category';
+                      });
+
+          // smaller groups and more dense x looks better than lots of 
+          // groups and only a few xs.
+          if(_.uniq(groupers[0].values).length > _.uniq(groupers[1].values).length) {
+            x = groupers[0];
+            z = groupers[1];
+          }
+          else {
+            x = groupers[1];
+            z = groupers[0];
+          }
+        }
+
+      }
+
+      // Reassign based on user preference if necessary
+      if(options.groupByColumn && options.groupByColumn === x.column_header) {
+        axis.z = x;
+        axis.x = z;
+      }
+      else if(options.xColumn && options.xColumn === z.column_header) {
+        axis.x = z;
+        axis.z = x;
+      }
+      else {
+        axis.x = x;
+        axis.z = z;
+      }
+      axis.y = y;
+
+      return axis;
+  };
+
+  chart.prepData = function(formattedData, options, group) {
     var that = this;
     var limit = that.defaults.categoryLimit;
-    var cleanValues = that.cleanData(rawData);
-
-    var analysisTypeCheck = 'count_by_value';
-    if(group) {
-      analysisTypeCheck = 'count_by_value_by_category';
+    var chartData = formattedData.chartData;
+    var xValues = chartData.x.values;
+    var yValues = chartData.y.values;
+    var zValues = [];
+    if(chartData.hasOwnProperty('z')) {
+        zValues = chartData.z.values;
     }
+    var values = [xValues,yValues,zValues];
 
-    if(rawData.analysisType == analysisTypeCheck) {
-        var rangeBottoms = _.map(cleanValues[0], function(x) {
+    // Check if every x value has ' to ' in it. This is kind of cheating 
+    // to see if it's a list of value ranges (eg '1 to 10') and needs 
+    // to be ordered as such.
+    if(_.every(xValues, function(x) { return x.indexOf(' to ') > -1 })) {
+        var rangeBottoms = _.map(xValues, function(x) {
             return parseFloat(x.split(' to ')[0]);
         });
 
-        cleanValues.push(rangeBottoms);
-        var cleanZipped = _.zip(cleanValues[0],cleanValues[1],cleanValues[2],cleanValues[3]);
-        cleanZipped = _.sortBy(cleanZipped, function(t){ 
+        values.push(rangeBottoms);
+        var cleanZipped = _.zip(values[0],values[1],values[2],values[3]);
+        zipped = _.sortBy(cleanZipped, function(t){ 
                             return t[3]; 
                         });
-        cleanValues = _.first(_.unzip(cleanZipped),limit);        
+        values = _.first(_.unzip(zipped),limit);        
     }
     else {
         var order = options.order || 'auto';
-        cleanValues = popilyChart.chartData.sortData(cleanValues[0],cleanValues[1],cleanValues[2],limit,order,cleanValues[3]);
+        values = popilyChart.chartData.sortData(values[0],values[1],values[2],limit,order);
     }
 
-    var cleanXValues = cleanValues[0];
+    xValues = values[0];
     
-    if(rawData.analysisType.indexOf('date') > -1 && _.every(cleanXValues, popilyChart.chartData.checkIsDateStr)) {
-      var dateFormatStr = popilyChart.format.formatFromInspection(cleanXValues);
+    // Format date strings just in case we're working with dates.
+    if(chartData.x.dataType.indexOf('date') > -1 && _.every(xValues, popilyChart.chartData.checkIsDateStr)) {
+      var dateFormatStr = popilyChart.format.formatFromInspection(xValues);
       var dateFormat = d3.time.format(dateFormatStr);
-      cleanXValues = _.map(cleanXValues, function(x) { return dateFormat((new Date(x))); });
+      xValues = _.map(xValues, function(x) { return dateFormat((new Date(x))); });
     }
 
-    var cleanYValues = popilyChart.format.formatNumbers(cleanValues[1]);
-    var cleanZValues = cleanValues[2];
-    var cleanZ2Values = cleanValues[3];
+    // Format y values as numbers
+    yValues = popilyChart.format.formatNumbers(values[1]);
+    zValues = values[2];
 
-    return [cleanXValues, cleanYValues, cleanZValues, cleanZ2Values];
+    return [xValues, yValues, zValues];
   };
 
   chart.getChartObject = function(kwargs) {
@@ -49,7 +133,6 @@
     var element = kwargs.element;
     var data = kwargs.data;
     var zValues = kwargs.zValues;
-    var z2Values = kwargs.z2Values;
     var xLabel = kwargs.xLabel;
     var yLabel = kwargs.yLabel;
     var options = kwargs.options;
@@ -95,9 +178,6 @@
       legend: {
           position: 'bottom',
           show: (!_.isUndefined(options.legend) ? options.legend : (function() {
-            if(z2Values && z2Values.length > 0) {
-              return true;
-            }
             if(zValues.length < 50) {
               return true; 
             }

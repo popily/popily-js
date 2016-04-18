@@ -3,15 +3,22 @@
 (function(window) {
 
 
-  window.popily.dataset = function(columns, options) {
+  window.popily.dataset = function(insightObject, options) {
 
-    var labels, dataTypes, table, columnsCache;
+    var labels, dataTypes, table, columnsCache, variations;
     
-    var initialize = function(columns) {
+    var initialize = function(insightObject) {
       labels = [];
       dataTypes = [];
+      possibleDataTypes = [];
       columnsCache = null;
-      table = zip(columns);
+      variations = insightObject.variations;
+
+      if(insightObject.hasOwnProperty('default_variation')) {
+        variations[insightObject.default_variation] = insightObject.columns;
+      }
+
+      table = zip(insightObject.columns);
     }
     
     var zip = function(columns) {
@@ -20,6 +27,7 @@
       _.each(columns, function(column) {
         labels.push(column.column_header);
         dataTypes.push(column.data_type);
+        possibleDataTypes.push(column.possible_data_types);
         if(column.data_type == 'numeric')
           column.values = _.map(column.values, function(v) {return parseFloat(v)});
         data.push(column.values);
@@ -33,7 +41,8 @@
         columns.push({
           column_header:labels[i],
           values:c,
-          data_type:dataTypes[i]
+          data_type:dataTypes[i],
+          possible_data_types: possibleDataTypes[i]
         });
       });
       return columns;
@@ -54,7 +63,7 @@
       })
     }
     
-    initialize(columns);
+    initialize(insightObject);
     
     return {
     

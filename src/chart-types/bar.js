@@ -2,45 +2,43 @@
   var popilyChart = window.popily.chart;
   
   var bar = _.clone(popilyChart.baseChart);
-  bar.defaultFor = [
-  ];
-  bar.accepts = [
-    'count_by_datetime',
-    'ratio_by_datetime',
-    'sum_by_datetime',
-    'average_by_datetime',
-    'count_per_category_by_datetime',
-    'average_per_category_by_datetime',
-    'count_per_category_by_category',
-    'count_by_category_by_category_distinct',
-    'count_by_value',
-    'count_by_category',
-    'average_by_category',
-    'sum_by_category',
 
-    'count_by_state',
-    'average_by_state',
-    'sum_by_state',
+  bar.assignAxis = function(columns, calculation, options) {
+      var axis = {};
+      var typePattern = popilyChart.analyze.getTypePattern(columns);
 
-    'count_by_country',
-    'average_by_country',
-    'sum_by_country',
+      if(typePattern === 'numeric,numeric') {
+        axis.y = {
+            column_header: calculation.charAt(0).toUpperCase() + calculation.slice(1).toLowerCase(),
+            values: _.map(columns, function(column) { return column.values[0] }),
+            data_type: 'numeric'
+        }
+        axis.x = {
+            column_header: 'Columns',
+            values: _.map(columns, function(column) { return column.column_header }),
+            data_type: 'category'
+        }
+      }
+      else {
+        _.each(columns, function(column) {
+            if(column.data_type === 'numeric') {
+              axis.y = column;
+            }
+            else {
+              axis.x = column;
+            }
+        });
+      }
 
-    'sum_sum_by_category',
-    'sum_by_category_per_category',
-    'average_by_category_per_category',
-    'count_by_category_per_category',
-    'count_per_category_by_category',
-    'count_by_category_by_datetime_distinct',
-    'top_by_rowlabel'
-  ];
+      return axis;
+  };
 
-
-  bar.render = function(element, options, rawData) {
+  bar.render = function(element, options, formattedData) {
       var that = this;
-      var preppedData = popilyChart.chartTypes.barCommon.prepData(rawData, options);
+      var preppedData = popilyChart.chartTypes.barCommon.prepData(formattedData, options);
       var xValues = preppedData[0];
       var yValues = preppedData[1];
+      var chartData = formattedData.chartData;
 
       var chart;
         
@@ -56,7 +54,7 @@
           options.height = (yValues.length * 9) + 450;
       }
 
-      var yLabel = rawData.chartData.y.label;
+      var yLabel = chartData.y.label;
       yValues.unshift(yLabel);
       
       var chartData = {
@@ -80,7 +78,7 @@
               fit: true
             },
             label: {
-              text: options.xLabel || rawData.chartData.x.label,
+              text: options.xLabel || chartData.x.label,
               position: rotated?'outer-middle':'inner-right',
             }
           },

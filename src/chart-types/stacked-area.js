@@ -2,23 +2,9 @@
   var popilyChart = window.popily.chart;
 
   var chart = _.clone(popilyChart.baseChart);
-  chart.defaultFor = [
-    'sum_by_datetime',
-    'ratio_by_datetime',
-    'sum_per_category_by_datetime',
-    'sum_by_category_by_datetime',
-    'count_by_category_by_datetime',
-    'count_by_datetime_by_state',
-    'count_by_datetime_by_country'
-  ];
-  chart.accepts = [
-    'count_by_datetime',
-    'ratio_by_datetime',
-    'average_by_datetime',
-    'count_per_category_by_datetime',
-    'average_per_category_by_datetime',
-    'average_by_category_by_datetime'
-  ];
+  chart.assignAxis = function(columns, calculation, options) {
+      return popilyChart.chartTypes.barCommon.assignAxis(columns,calculation,options);
+  };
 
   chart.render = function(element, options, rawData) {
       return popilyChart.chartTypes.linear.render(element, options, rawData, true);

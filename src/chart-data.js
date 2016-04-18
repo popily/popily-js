@@ -40,89 +40,8 @@
       }
   };
 
-  var c3ifyMulti = function(xValues,yValues,zValues,z2Values) {
-    var zipped = _.zip(xValues,yValues,zValues,z2Values);
-    var sep = '___';
-    var names = {};
-
-    var columnMap = {};
-    _.each(zipped, function(group) {
-      var x = group[0];
-      var y = group[1];
-      var z = group[2];
-      var z2 = group[3];
-      var zz2 = z + sep + z2;
-
-      names[zz2] = z;
-
-      if(!columnMap[zz2]) {
-        columnMap[zz2] = {};
-      }
-      columnMap[zz2][x] = y;
-    });
-
-    var groups = [];
-    var orderedGroups = [];
-    _.each(_.uniq(z2Values), function(z2) {
-      orderedGroups.push(z2);
-      var group = [];
-      _.each(_.uniq(zValues), function(z) {
-        group.push(z + sep + z2);
-      });
-      groups.push(group);
-    });
-
-    var xLabels = _.unique(xValues);
-    var xLabelsDisplay = _.map(xLabels, function(xValue) {
-      if(orderedGroups.join(','))
-        return xValue + ' (' + orderedGroups.join(',') + ')';
-      else 
-        return xValue;
-    });
-
-    var columns = [];
-
-    for(var column in columnMap) {
-      var col = [column];
-      _.each(xLabels, function(x) {
-        col.push(parseFloat(columnMap[column][x] || 0));
-      });
-      columns.push(col);
-    }
-    
-    return {
-        categories: xLabelsDisplay,
-        columns: columns,
-        groups: groups,
-        names: names
-    }
-  };
-
-  var nan = -99999;
-  var cleanData = function(xValues,yValues,zValues,z2Values) {
-      xValues = xValues || [];
-      yValues = yValues || [];
-      zValues = zValues || [];
-      z2Values = z2Values || [];
-
-
-      var tuples = _.zip(xValues,yValues,zValues,z2Values);
-
-      // Remove nan
-      var cleaned = _.reject(tuples, function(t) {
-          if (t[1] === nan || t[0] === nan) {
-              return true;
-          }
-          return false;
-      });
-
-
-      return _.unzip(cleaned);
-
-  };
-
   var nanToZero = function(num) {
-      if(num === nan || num === 'nan') {
+      if(num === 'nan' || _.isNaN(num)) {
           return 0;
       }
       return num;
@@ -242,10 +161,8 @@
 
   window.popily.chart.chartData = {        
       sortData: sortData,
-      cleanData: cleanData,
       cleanNanToZero: cleanNanToZero,
       c3ify: c3ify,
-      c3ifyMulti: c3ifyMulti,
       checkIsDateStr: checkIsDateStr
   }
 
