@@ -169,6 +169,7 @@
               },
               tick: {
                   format: d3.format(","),
+                  rotate: options.yRotation ||  0,
               }
           },
           rotated: rotated

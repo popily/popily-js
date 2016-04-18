@@ -49,8 +49,8 @@ setTimeout(function() {
 popily.api.setToken('d39c69f05c5fae5cbcbe6a3b6ebac693c6ffb807');
 var insightOptions = {
     source: 'superstore-sales-csv-5',
-    columns: ['Sales', 'Product Category'],
-    calculation: 'average'
+    columns: ['Sales', 'Profit'],
+    yRotation: 45,
 };
 
 
@@ -100,6 +100,7 @@ popily.chart.getAndRender('#my-chart-01', {
 });
 //*/
 
+/*
 popily.api.setToken('54450aa49c331d9245cccdf0a606ea5bf8478968');
 popily.api.setURL('http://localhost:8000');
 
@@ -116,7 +117,7 @@ var insightOptions = {
 };
 popily.chart.getAndRender('#my-chart-02', insightOptions);
 
-
+*/
 })();
 </script>
 

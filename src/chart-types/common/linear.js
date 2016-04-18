@@ -81,7 +81,8 @@
                     position: 'outer-middle'
                 },
                 tick: {
-                    format: d3.format(",")
+                    format: d3.format(","),
+                    rotate: options.yRotation ||  0,
                 },
                 padding: {top:0, bottom:0}
             }

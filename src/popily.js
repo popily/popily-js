@@ -77,8 +77,6 @@
         var chartType = popily.chart.analyze.chartTypeForData(ds.getColumns(), calculation, options);
         var chartClass = popily.chart.chartTypes[chartType];
         
-        console.log(chartType);
-        console.log(ds.getColumns());
         // Assign the data to axis (potentially modifying its structure) 
         // and manipulate the format expected by charting functions
         var axisAssignments = chartClass.assignAxis(ds.getColumns(), calculation, options);
@@ -393,116 +391,6 @@
     return ds;
   };
 
-  function c3Customizations() {
-    
-    c3.chart.internal.fn.additionalConfig = {
-      axis_x_tick_autorotate: true  
-    }
-  
-    c3.chart.internal.fn.oldGetHorizontalAxisHeight = c3.chart.internal.fn.getHorizontalAxisHeight;
-    c3.chart.internal.fn.getHorizontalAxisHeight = function(axisId) {
-      var $$ = this, config = this.config;
-      
-      if(config.axis_x_tick_autorotate && ((axisId === 'x' && !config.axis_rotated) || (axisId === 'y' && config.axis_rotated)) && ($$.svg != false)  && (!_.isUndefined($$.x))) {
-        
-        var targetsToShow = $$.filterTargetsToShow($$.data.targets);
-        if(!config.axis_x_tick_rotate_original)
-          config.axis_x_tick_rotate_original = config.axis_x_tick_rotate;
-        else
-          config.axis_x_tick_rotate = config.axis_x_tick_rotate_original;
-        
-        var wtf, scale, test = 1, axis, g;
-        
-        if(axisId === 'x') {
-          wtf = $$.getXDomain(targetsToShow);
-          if($$.isCategorized())
-            wtf[1] += 2;
-          scale = $$.x.copy().domain(wtf);
-        }
-        else {
-          wtf = $$.getYDomain(targetsToShow, 'y');
-          scale = $$.y.copy().domain(wtf);
-        }
-        
-        /*var dummy = $$.d3.select('body').append('div').classed('c3', true).classed('popily-chartarea', true);
-        var svg = dummy.append("svg")
-            .style('visibility', 'visible')
-            .style('position', 'fixed')
-            .style('top', 0).style('left', 0); */
-        
-        while(test && test < 10) {
-          if(axisId === 'x') {
-            axis = $$.axis.getXAxis(scale, $$.xOrient, $$.xAxisTickFormat, 
-                                $$.xAxisTickValues, false, true, false);
-            $$.axis.updateXAxisTickValues(targetsToShow, axis);
-          }
-          else if(axisId === 'y') {
-            axis = $$.axis.getYAxis(scale, $$.yOrient, config.axis_y_tick_format, 
-                                $$.yAxisTickValues, false, true, false);
-          }
-          g = $$.svg.append('g');
-          g.call(axis);
-          if(axisId === 'y') {
-            var texts = g.selectAll("text")
-              .attr("transform", 'rotate('+config.axis_x_tick_rotate+') translate(10, 0)')
-              .style("text-anchor", 'start')
-              .attr("x", 0)
-              .attr("y", 11.5 - 2.5 * (config.axis_x_tick_rotate / 15) * (config.axis_x_tick_rotate > 0 ? 1 : -1));
-            g.select("text").remove();
-          }
-          var axisWidth = g[0][0].getBoundingClientRect().width;
-          var maxAxisWidth = g.select('path')[0][0].getBoundingClientRect().width;
-          //console.log(axisWidth);
-          //console.log(maxAxisWidth);
-          if(axisWidth > maxAxisWidth + 2) {
-            config.axis_x_tick_rotate = Math.min(config.axis_x_tick_rotate+10, 90);
-            test = test + 1;
-          }
-          else
-            test = 0; 
-          g.remove();
-        }
-        //dummy.remove();
-      }
-      
-      var h = $$.oldGetHorizontalAxisHeight(axisId);
-      
-      if (axisId === 'y' && config.axis_rotated && config.axis_x_tick_rotate) {
-        h = 30 + $$.axis.getMaxTickWidth(axisId) * Math.cos(Math.PI * (90 - config.axis_x_tick_rotate) / 180);
-      }
-      
-      return h;
-    }
-    c3.chart.internal.fn.oldgetAxisWidthByAxisId = c3.chart.internal.fn.getAxisWidthByAxisId;
-    c3.chart.internal.fn.getAxisWidthByAxisId = function(id, withoutRecompute) {
-      var $$ = this, config = this.config;
-      return $$.oldgetAxisWidthByAxisId(id, withoutRecompute)-8;
-    };
-    
-    for (var k in c3.chart.internal.fn.CLASS) {
-      c3.chart.internal.fn.CLASS[k] = c3.chart.internal.fn.CLASS[k].replace('c3', 'popily');
-    };
-    
-    c3.chart.internal.fn.afterInit = function(config) {
-    };
-    
-    
-    c3.chart.internal.axis.fn.constructor.prototype.redrawOld = c3.chart.internal.axis.fn.constructor.prototype.redraw;
-    c3.chart.internal.axis.fn.constructor.prototype.redraw = function redraw(transitions, isHidden) {
-      var $$ = this.owner;
-      this.redrawOld(transitions, isHidden);
-      if($$.config.axis_rotated) {
-        transitions.axisY.selectAll("text")
-          .attr("transform", 'rotate('+$$.config.axis_x_tick_rotate+') translate(10, 0)')
-          .style("text-anchor", 'start')
-          .attr("x", 10)
-          .attr("y", 11.5 - 2.5 * ($$.config.axis_x_tick_rotate / 15) * ($$.config.axis_x_tick_rotate > 0 ? 1 : -1));
-      }
-    };
-    
-  }
-  
-  c3Customizations();
 
   if (typeof define === 'function' && define.amd) {
       define("popily", [], function () { return c3; });

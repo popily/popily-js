@@ -82,7 +82,8 @@
                       position: 'outer-middle'
                   },
                   tick: {
-                      format: d3.format(",")
+                      format: d3.format(","),
+                      rotate: options.yRotation ||  0,
                   }
               }
           },
