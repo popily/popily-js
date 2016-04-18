@@ -17,14 +17,21 @@
       var $$ = this;
       
       if($$.config.grid_background) {
-        var rect = $$.main.select('rect');
         var bg = $$.main.insert("rect", "rect");
-      
-        bg.attr('width', rect.attr('width'));
-        bg.attr('height', rect.attr('height'));
-        bg.attr('fill', $$.config.grid_background);
+        bg.classed('popily-background', true)
+          .attr('width', $$.width)
+          .attr('height', $$.height)
+          .attr('fill', $$.config.grid_background);
       }
-      
+    }
+    
+    c3.chart.internal.fn.updateSvgSizeOld = c3.chart.internal.fn.updateSvgSize;
+    c3.chart.internal.fn.updateSvgSize = function() {
+      var $$ = this;
+      $$.updateSvgSizeOld();
+      $$.svg.select('.popily-background')
+        .attr('width', $$.width)
+        .attr('height', $$.height);
     }
     
     c3.chart.internal.fn.oldGetHorizontalAxisHeight = c3.chart.internal.fn.getHorizontalAxisHeight;
