@@ -3,7 +3,7 @@
 
 
 .popily {
-  
+
 }
 
 .popily-font {
@@ -22,7 +22,7 @@
 
 .popily-chartarea {
   @extend .popily-font;
-  
+
   .unit {
     cursor: pointer;
     fill: #333;
@@ -114,7 +114,23 @@
   margin-right: 6px;
 }
 
+.popily-tooltip tbody{
+}
 
+.popily-tooltip tr {
+    border: none;
+}
+
+.popily-tooltip th {
+    background-color: rgba(17, 17, 17,.9);
+    border: none;
+}
+
+.popily-tooltip td {
+    background-color: rgba(17, 17, 17,.9);
+    border-left: none;
+    color: #fff;
+}
 
 
 .popily-loading {
@@ -147,7 +163,7 @@ $duration: 1.4s;
     transform-origin: center;
     stroke: #ccc;
     animation:
-      dash $duration ease-in-out infinite, 
+      dash $duration ease-in-out infinite,
   }
 }
 

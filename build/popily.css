@@ -690,6 +690,18 @@
   height: 10px;
   margin-right: 6px; }
 
+.popily-tooltip tr {
+  border: none; }
+
+.popily-tooltip th {
+  background-color: rgba(17, 17, 17, 0.9);
+  border: none; }
+
+.popily-tooltip td {
+  background-color: rgba(17, 17, 17, 0.9);
+  border-left: none;
+  color: #fff; }
+
 .popily-loading {
   color: #aaa;
   text-align: center;
