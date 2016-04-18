@@ -112,7 +112,7 @@
     
     var tooltip = (_.isUndefined(options.tooltip)?true:options.tooltip);
     if(tooltip && (!options.order || options.order == 'auto') ) {
-      var dateFormat = d3.time.format(tickFormatStr);
+      var dateFormat = d3.time.format(dateFormatStr);
       chartData.tooltip = {
         show: true,
         format: {
@@ -131,7 +131,7 @@
     var dayDiff = popily.chart.format.daysDiff(xValues); 
     var tickFormatStr = popily.chart.format.formatFromDayDiff(dayDiff);
     
-    var interval = options.timeInterval;
+    var interval = options.interval;
 
     var dateFormatStr = popily.chart.format.formatFromInterval(interval);
     if(_.isUndefined(interval)) {
