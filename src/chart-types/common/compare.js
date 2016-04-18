@@ -47,7 +47,8 @@
                   },
                   tick: {
                       fit: false,
-                      rotate: 45
+                      rotate: options.xRotation ||  45,
+                      autorotate: !options.xRotation,
                   }
               },
               y: {

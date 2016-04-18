@@ -55,7 +55,8 @@
                 tick: {
                     fit: false,
                     format: tickFormatStr,
-                    rotate:45,
+                    rotate: options.xRotation ||  45,
+                    autorotate: !options.xRotation,
                     centered: true,
                     values: (!options.order || options.order == 'auto' ? ticksValues : null),
                     count: ticksValues.length

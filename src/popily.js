@@ -304,6 +304,8 @@
       'time_interval': 'interval',
       'skipAnimation': 'skipAnimation',
       'legend': 'legend',
+      'xRotation': 'xRotation',
+      'yRotation': 'yRotation',
     };
 
     var availableServerOptions = {
@@ -452,11 +454,16 @@
   };
 
   function c3Customizations() {
+    
+    c3.chart.internal.fn.additionalConfig = {
+      axis_x_tick_autorotate: true  
+    }
+  
     c3.chart.internal.fn.oldGetHorizontalAxisHeight = c3.chart.internal.fn.getHorizontalAxisHeight;
     c3.chart.internal.fn.getHorizontalAxisHeight = function(axisId) {
       var $$ = this, config = this.config;
       
-      if(((axisId === 'x' && !config.axis_rotated) || (axisId === 'y' && config.axis_rotated)) && ($$.svg != false)  && (!_.isUndefined($$.x))) {
+      if(config.axis_x_tick_autorotate && ((axisId === 'x' && !config.axis_rotated) || (axisId === 'y' && config.axis_rotated)) && ($$.svg != false)  && (!_.isUndefined($$.x))) {
         
         var targetsToShow = $$.filterTargetsToShow($$.data.targets);
         if(!config.axis_x_tick_rotate_original)

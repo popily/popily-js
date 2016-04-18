@@ -75,7 +75,8 @@
             type: 'category',
             categories: xValues,
             tick: {
-              rotate: 45,
+              rotate: options.xRotation ||  45,
+              autorotate: !options.xRotation,
               multiline: false,
               fit: true
             },

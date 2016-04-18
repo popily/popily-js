@@ -50,14 +50,7 @@ popily.api.setToken('d39c69f05c5fae5cbcbe6a3b6ebac693c6ffb807');
 var insightOptions = {
     source: 'superstore-sales-csv-5',
     columns: ['Sales', 'Product Category'],
-    calculation: 'average',
-    transformations: [
-        {
-            column: 'Product Category',
-            op: 'eq',
-            values: ['Office Supplies', 'Technology']
-        }
-    ],
+    calculation: 'average'
 };
 
 
@@ -68,7 +61,7 @@ var insightOptions = {
     columns: ['Sales', 'Product Category'],
     calculation: 'average',
 };
-popily.chart.getAndRender('#my-chart-02', insightOptions);
+//popily.chart.getAndRender('#my-chart-02', insightOptions);
 
 //popily.api.getSource(2551, function(err, source) {console.log(source);});
 
