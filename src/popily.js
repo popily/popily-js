@@ -23,6 +23,7 @@
             '#C92918', '#FAA96F'
           ],
       },
+      categoryLimit: 500,
       barBubbleCutoff: 30,
       chartPadding: function() { return {lefright: 0, top: 0 }; }
     },
