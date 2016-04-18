@@ -22,7 +22,7 @@
             '#9FB921', '#0665A2', '#8333A2', '#0F3863', '#BC9805', '#FFE26C', '#E989B6',
             '#C92918', '#FAA96F'
           ],
-          background: "#99F"
+          background: false
       },
       categoryLimit: 500,
       barBubbleCutoff: 30,
