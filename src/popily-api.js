@@ -112,7 +112,6 @@ popily.api = {
 
 
   getInsights: function(sourceId, params, cb) {
-    
     params = params || {};
     var payload = {'source': sourceId};
 
@@ -124,14 +123,10 @@ popily.api = {
     if('single' in params) {
       payload['single'] = params['single'];
     }
-    if('time_interval' in params) {
-      payload['time_interval'] = params['time_interval'];
-    }
 
     if('calculations' in params) {
       payload['calculations'] = packCalculations(params['calculations']);
     }
-    
 
     _request('GET', '/insights/', {qs: payload}, cb);
   },
