@@ -26,6 +26,9 @@
           size: {
             height: options.height
           },
+          grid: {
+            background: options.background
+          },
           onresized: function() {
               if (window.innerWidth <= 768) {
                   chart.resize({height:220});

@@ -199,7 +199,8 @@
         },
         y: {
           show: _.isUndefined(options.yGrid)?true:options.yGrid
-        }
+        },
+        background: options.background
       },
       bar: {
         width: {

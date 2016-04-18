@@ -111,7 +111,8 @@
           },
           y: {
             show: _.isUndefined(options.yGrid)?true:options.yGrid
-          }
+          },
+          background: options.background
         },
         tooltip: (_.isUndefined(options.tooltip)?true:options.tooltip),
         onresized: function() {

@@ -7,6 +7,24 @@
     c3.chart.internal.fn.additionalConfig = {
       axis_x_tick_autorotate: true,
       axis_y_tick_rotate: true,
+      grid_background: false,
+    }
+    
+    c3.chart.internal.fn.oldInit = c3.chart.internal.fn.init;
+    
+    c3.chart.internal.fn.init = function() {
+      this.oldInit();
+      var $$ = this;
+      
+      if($$.config.grid_background) {
+        var rect = $$.main.select('rect');
+        var bg = $$.main.insert("rect", "rect");
+      
+        bg.attr('width', rect.attr('width'));
+        bg.attr('height', rect.attr('height'));
+        bg.attr('fill', $$.config.grid_background);
+      }
+      
     }
     
     c3.chart.internal.fn.oldGetHorizontalAxisHeight = c3.chart.internal.fn.getHorizontalAxisHeight;

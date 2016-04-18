@@ -55,6 +55,9 @@
           size: {
             height: options.height
           },
+          grid: {
+            background: options.background
+          },
           tooltip: (_.isUndefined(options.tooltip)?true:options.tooltip)
       };
       

@@ -93,7 +93,8 @@
           },
           y: {
             show: _.isUndefined(options.yGrid)?true:options.yGrid
-          }
+          },
+          background: options.background
         },
         color: {
             pattern: options.colors
