@@ -603,12 +603,16 @@
   background: #fff;
   border: 1px solid #666; }
 
+.popily {
+  padding: 10px; }
+
 .popily-font, .popily-title, .popily-chartarea, .popily-tooltip-container, .popily-loading {
   font-family: sans-serif; }
 
 .popily-title {
   text-align: center;
-  font-size: 20px; }
+  font-size: 20px;
+  margin-bottom: 20px; }
   .popily-title-variable {
     font-weight: bold; }
 

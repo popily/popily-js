@@ -181,9 +181,8 @@
         if(chartTextCss)
           extraCss += '.'+options.uniqueClassName+ ' text {'+chartTextCss+'}';
 
-        if(options.chartBackgroundColor) {
-          chartCss = 'fill: '+options.chartBackgroundColor+';';
-          extraCss += '.'+options.uniqueClassName+ ' .popily-chart {'+chartCss+'}';
+        if(options.cardBackgroundColor) {
+          extraCss += '.'+options.uniqueClassName+ '.popily {background-color: '+options.cardBackgroundColor+'}';
         }
           
         if(extraCss) {
@@ -320,7 +319,8 @@
       'chartFontFamily': 'chartFontFamily',
       'chartFontSize': 'chartFontSize',
       'chartFontColor': 'chartFontColor',
-      'chartBackgroundColor': 'chartBackgroundColor',
+      'chartBackgroundColor': 'background',
+      'cardBackgroundColor': 'cardBackgroundColor',
       'xGrid': 'xGrid',
       'yGrid': 'yGrid',
       'timeInterval': 'variation',
@@ -329,7 +329,6 @@
       'legend': 'legend',
       'xRotation': 'xRotation',
       'yRotation': 'yRotation',
-      'background': 'background',
       'xAxis': 'xAxis',
       'yAxis': 'yAxis',
     };

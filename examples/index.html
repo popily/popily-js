@@ -45,6 +45,7 @@ setTimeout(function() {
 
 //popily.api.setToken('04d3355451dc557066bca149de2b83f3746f9102');
 //popily.api.setURL('http://local.popily.com');
+/*
 popily.api.setToken('56ea1e35ebcf052737fa4096e5409ea8d9c1491f');
 var chartOptions = {
     source: 'jok2vr2',
@@ -54,6 +55,7 @@ var chartOptions = {
 };
 
 popily.chart.getAndRender('#my-chart-01', chartOptions);
+*/
 
 //popily.api.getSource(2551, function(err, source) {console.log(source);});
 
@@ -112,7 +114,7 @@ popily.chart.getAndRender('#my-chart-02', insightOptions);
 
 var insightOptions = {
     source: 'example-csv1913',
-    columns: ['Second Donation','Transation Date','Employer'],
+    columns: ['Second Donation','Transation Date','Employer','Occupation','State'],
     title: true,
     calculations: [
       {
@@ -120,7 +122,21 @@ var insightOptions = {
         calculation: 'average'
       }
     ],
-    timeInterval: 'week'
+    transformations: [
+      {
+        column: 'Occupation',
+        value: 'PHYSICIAN'
+      },
+      {
+        column: 'State',
+        value: 'CA'
+      }
+    ],
+    timeInterval: 'week',
+    chartBackgroundColor: '#555',
+    cardBackgroundColor: '#555',
+    chartFontColor: '#fff',
+    titleFontColor: '#fff'
 };
 popily.chart.getAndRender('#my-chart-01', insightOptions);
 
