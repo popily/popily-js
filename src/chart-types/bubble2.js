@@ -164,7 +164,7 @@
     
     
     var chargeFn = function(d) {
-      return -Math.pow(radiusScale(d.value), 2.0);
+      return -Math.pow(radiusScale(d.value), 2.0)*1.5;
     }
     
     var centered = function(alpha) {
@@ -178,7 +178,7 @@
         .size([width, height])
         .nodes(nodes)
         .size([width, height])
-        .gravity(-0.01)
+        .gravity(0.2)
         .charge(chargeFn)
         .friction(0.9)
         .on("tick", function(e) {
