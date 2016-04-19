@@ -186,5 +186,5 @@
     d3.select(window).on('resize', onResize);
   };
 
-  popilyChart.chartTypes.bubble = chart;
+  popilyChart.chartTypes.bubbleStatic = chart;
 })(window);
