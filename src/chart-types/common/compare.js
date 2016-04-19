@@ -66,6 +66,7 @@
           },
           axis: {
               x: {
+                  show: options.xAxis,
                   label: {
                       text: options.xLabel || xLabel,
                       position: 'inner-right',
@@ -77,6 +78,7 @@
                   }
               },
               y: {
+                  show: options.yAxis,
                   label: {
                       text: options.yLabel || yLabel,
                       position: 'outer-middle'

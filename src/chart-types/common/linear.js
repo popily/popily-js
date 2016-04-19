@@ -58,6 +58,7 @@
         padding: chartPadding,
         axis: {
             x: {
+                show: options.xAxis,
                 type: (!options.order || options.order == 'auto' ? 'timeseries' : 'category'),
                 tick: {
                     fit: false,
@@ -74,7 +75,7 @@
                 }
             },
             y: {
-                show: true,
+                show: options.yAxis,
                 min: yMin,
                 label: {
                     text: options.yLabel || yLabel,

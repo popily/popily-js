@@ -70,6 +70,7 @@
         padding: that.defaults.chartPadding(),
         axis: {
           x: {
+            show: options.xAxis,
             type: 'category',
             categories: xValues,
             tick: {
@@ -84,7 +85,7 @@
             }
           },
           y: {
-            show: true,
+            show: options.yAxis,
             label: {
               text: options.yLabel || yLabel,
               position: rotated?'inner-right':'outer-middle'

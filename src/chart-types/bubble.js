@@ -7,7 +7,11 @@
       var axis = {};
       var typePattern = popilyChart.analyze.getTypePattern(columns);
 
-      if(typePattern === 'numeric,numeric') {
+      var allNumbers = _.every(columns, function(column) { 
+                                return column.data_type === 'numeric'; 
+                            })
+
+      if(allNumbers) {
         axis.y = {
             column_header: calculation.charAt(0).toUpperCase() + calculation.slice(1).toLowerCase(),
             values: _.map(columns, function(column) { return column.values[0] }),
@@ -15,7 +19,7 @@
         }
         axis.x = {
             column_header: 'Columns',
-            values: _.map(columns, function(column) { return column.column_header }),
+            values: _.map(columns, function(column) { return column.label }),
             data_type: 'category'
         }
       }
@@ -56,9 +60,6 @@
             {'name': 'negative', 'children': []},
             {'name': 'positive', 'children': []},
         ]};
-    if(typeof window.chartSize == 'undefined') {
-        window.chartSize = function() { return {'height': width}; };
-    }
         
     var preppedData = this.prepData(formattedData, options);
     var xValues = preppedData[0];
@@ -72,9 +73,10 @@
             data.children[0].children.push({category: yValues[i], className: 'data', showValue: yValue, value: -1*parseFloat(yValue) });
     });
 
-    width = element.getBoundingClientRect().width;
-    var size = popilyChart.utils.chartSize();
-    height = size['height'];
+    if(width == '100%')
+      width = element.getBoundingClientRect().width;
+    if(height == '100%')
+      var height = popilyChart.utils.chartSize()['height'];
     
     var transitionDuration = 350;
     if(options.skipAnimation)
@@ -148,9 +150,11 @@
         .attr("pointer-events", "none");
 
     var onResize = function() {
-        width = element.getBoundingClientRect().width;
-        size = popilyChart.utils.chartSize();
-        height = size['height'];
+        if(options.width == '100%')
+          width = element.getBoundingClientRect().width;
+        if(options.height == '100%')
+          height = popilyChart.utils.chartSize()['height'];
+        
         svg
             .attr("width", width)
             .attr("height", height);
@@ -179,7 +183,7 @@
         
     };
 
-    window.onresize = onResize;
+    d3.select(window).on('resize', onResize);
   };
 
   popilyChart.chartTypes.bubble = chart;

@@ -124,7 +124,7 @@ popily.chart.getAndRender('#my-chart-02', insightOptions);
 
 var insightOptions = {
     source: 'example-csv1913',
-    columns: ['First Donation','State','Third Donation','Second Donation'],
+    columns: ['First Donation','State','Third Donation','Second Donation','Occupation'],
     title: true,
     calculations: [
       {
@@ -143,8 +143,11 @@ var insightOptions = {
     transformations: [
       {
         column: 'State',
-        value: ['CA', 'TX'],
-        op: 'in'
+        value: 'CA',
+      },
+      {
+        column: 'Occupation',
+        value: 'PHYSICIAN'
       }
     ]
 };

@@ -125,6 +125,11 @@ Analyze data from the Popily API and prepare for rendering
         else if(typePattern === 'category,coordinate,numeric') {
             bestType = 'interactiveMap';
         }
+        else if(_hasOnly(columns,['numeric'])) {
+            if(_.every(columns,function(column) {return column.values.length === 1})) {
+                bestType = 'bubble';
+            }
+        }
 
         return bestType;
     };
@@ -141,14 +146,15 @@ Analyze data from the Popily API and prepare for rendering
         options = options || {};
 
         var possibleTypes = {
-            'bar': ['pie','bubble','line'],
+            'bar': ['pie','bubble','bubble2','line'],
             'scatterplotCategory': ['barGrouped'],
             'barGrouped': ['barStacked'],
             'barStacked': ['barGrouped'],
-            'bubble': ['bar'],
+            'bubble': ['bar', 'bubble2'],
+            'bubble2': ['bar', 'bubble'],
             'multiLine': ['stackedArea','barGrouped','barStacked'],
             'stackedArea': ['multiLine','barGrouped','barStacked'],
-            'choropleth': ['bar','bubble'],
+            'choropleth': ['bar','bubble','bubble2'],
             'line': ['bar']
         };
 
@@ -171,6 +177,11 @@ Analyze data from the Popily API and prepare for rendering
                 } 
                 else {
                     bestType = 'barGrouped';
+                }
+            }
+            else if(_hasOnly(columns,['numeric'])) {
+                if(_.every(columns,function(column) {return column.values.length === 1})) {
+                    bestType = 'bubble';
                 }
             }
         }

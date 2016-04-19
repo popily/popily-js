@@ -22,7 +22,9 @@
             '#9FB921', '#0665A2', '#8333A2', '#0F3863', '#BC9805', '#FFE26C', '#E989B6',
             '#C92918', '#FAA96F'
           ],
-          background: false
+          background: false,
+          xAxis: true,
+          yAxis: true,
       },
       categoryLimit: 500,
       barBubbleCutoff: 30,
@@ -135,7 +137,7 @@
         var extraCss = '';
         
         _.each(_.keys(popily.chart.baseChart.defaults.options), function(key) {
-          if(!options[key]) {
+          if(!(key in options)) {
             options[key] = popily.chart.baseChart.defaults.options[key];
           }
         });
@@ -323,6 +325,8 @@
       'xRotation': 'xRotation',
       'yRotation': 'yRotation',
       'background': 'background',
+      'xAxis': 'xAxis',
+      'yAxis': 'yAxis',
     };
 
     var availableServerOptions = {
