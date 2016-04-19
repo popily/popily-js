@@ -64,6 +64,7 @@ Analyze data from the Popily API and prepare for rendering
         else if(typePattern === 'category,numeric') {
             var hasState = _hasPossible(columns,'category','state');
             var hasCountry = _hasPossible(columns,'category','country');
+            
             var hasNegative = (function() {
                 var numColumn = getColumnForType(columns,'numeric');
                 return _.some(numColumn.values, function(value) {

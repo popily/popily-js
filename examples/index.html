@@ -105,7 +105,7 @@ popily.chart.getAndRender('#my-chart-01', {
 //*/
 
 
-popily.api.setToken('54450aa49c331d9245cccdf0a606ea5bf8478968');
+popily.api.setToken('04d3355451dc557066bca149de2b83f3746f9102');
 popily.api.setURL('http://localhost:8000');
 /*
 var insightOptions = {
@@ -123,13 +123,28 @@ popily.chart.getAndRender('#my-chart-02', insightOptions);
 */
 
 var insightOptions = {
-    source: 'example-csv',
-    columns: ['First Donation'],
+    source: 'example-csv1913',
+    columns: ['First Donation','State','Third Donation','Second Donation'],
     title: true,
     calculations: [
       {
         column: 'First Donation',
         calculation: 'average'
+      },
+      {
+        column: 'Third Donation',
+        calculation: 'average'
+      },
+      {
+        column: 'Second Donation',
+        calculation: 'average'
+      }
+    ],
+    transformations: [
+      {
+        column: 'State',
+        value: ['CA', 'TX'],
+        op: 'in'
       }
     ]
 };

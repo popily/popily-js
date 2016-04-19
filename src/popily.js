@@ -32,7 +32,7 @@
       //console.log(1);
       chartObj.resize(width, height);
     },
-    formatChartData: function(axisAssignments, apiResponse) {
+    formatChartData: function(axisAssignments, apiResponse, chartableColumns) {
       var newData = {};
       var possibleAxis = ['x','y','z'];
 
@@ -57,48 +57,79 @@
         }
       });
 
-      if(axisAssignments.hasOwnProperty('columns')) {
-        newData.chartData.columns = _.map(axisAssignments.columns, function(column) {
-          return {
-            values: column.values,
-            label: column.column_header,
-            dataType: column.data_type,
-            possibleDataTypes: column.possible_data_types
-          }
-        });
-      }
+      newData.chartData.columns = _.map(chartableColumns, function(column) {
+        return {
+          values: column.values,
+          label: column.column_header,
+          dataType: column.data_type,
+          possibleDataTypes: column.possible_data_types
+        }
+      });
 
       if(apiResponse.insight_metadata) {
         newData.chartData.metadata = apiResponse.insight_metadata;
       }
 
       return newData;
+    },
+    chartableColumns: function(columns,valueFilters) {
+      var filtered = _.keys(valueFilters);
+      var chartables = _.filter(columns, function(column) {
+          if(!_.contains(filtered,column.column_header)) {
+            return true;
+          }
+          else if(_.isArray(valueFilters[column.column_header]) && valueFilters[column.column_header].length > 1) {
+            return true;
+          }
+          
+          return false;
+      });
+
+      return chartables;
+    },
+    valueFilters: function(transformations) {
+      if(_.isUndefined(transformations)) {
+        return {};
+      }
+
+      var filters = {};
+      _.each(transformations,function(transformation) {
+        if(_.isUndefined(transformation.op) || _(['eq','in']).contains(transformation.op)) {
+          filters[transformation.column] = transformation.value;
+        }
+      });
+
+      return filters;
     }
   };
 
   popily.chart.create = function(apiResponse) {
-  
+    window.apiResponse = apiResponse;
     var ds = popily.dataset(apiResponse);
+
     return {
       dataset : function() {
         return ds;
       },
       
       draw: function(element, options) {
+        
         var that = this;
         var calculation = apiResponse.calculation;
 
         // Determine the chart type based on the data
-        var chartType = popily.chart.analyze.chartTypeForData(ds.getColumns(), calculation, options);
+        var valueFilters = popily.chart.baseChart.valueFilters(options.transformations);
+        var chartableColumns = popily.chart.baseChart.chartableColumns(ds.getColumns(),valueFilters);
+        var chartType = popily.chart.analyze.chartTypeForData(chartableColumns, calculation, options);
         var chartClass = popily.chart.chartTypes[chartType];
         
         // Assign the data to axis (potentially modifying its structure) 
         // and manipulate the format expected by charting functions
-        var axisAssignments = chartClass.assignAxis(ds.getColumns(), calculation, options);
-        var formattedData = popily.chart.baseChart.formatChartData(axisAssignments, apiResponse);
+        var axisAssignments = chartClass.assignAxis(chartableColumns, calculation, options);
+        var formattedData = popily.chart.baseChart.formatChartData(axisAssignments, apiResponse, chartableColumns);
 
         // Build a title
-        var labels = popily.chart.generateLabels(calculation, axisAssignments, options.transformations || []);
+        var labels = popily.chart.generateLabels(calculation, formattedData.chartData.columns, options.transformations || []);
         
         // Add custom CSS if requested by user
         var extraCss = '';
@@ -165,6 +196,7 @@
         // Render the chart
         var chart = chartClass.render(chartElement, options, formattedData);
         return chart;
+        
       },
       
     }

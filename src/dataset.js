@@ -62,7 +62,7 @@
         listner();
       })
     }
-    
+  
     initialize(insightObject);
     
     return {
@@ -114,6 +114,8 @@
           var testFunc = function(e) {return e[idx] < value}
         else if(op == 'lte')
           var testFunc = function(e) {return e[idx] <= value}
+        else if(op === 'in')
+          var testFunc = function(e) { return _(value).contains(e[idx]) }
         else {
           console.error('Unrecognized filter option: '+op);
           return this; 
