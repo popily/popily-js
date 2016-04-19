@@ -46,16 +46,14 @@ setTimeout(function() {
 //popily.api.setToken('04d3355451dc557066bca149de2b83f3746f9102');
 //popily.api.setURL('http://local.popily.com');
 
-popily.api.setToken('d39c69f05c5fae5cbcbe6a3b6ebac693c6ffb807');
+popily.api.setToken('360bf1df37ee048b8132dd42e22fe5b11eb479c1');
 var insightOptions = {
-    source: 'superstore-sales-csv-5',
-    columns: ['Sales'],
+    source: 'game-of-thrones-battles-csv-294',
+    //columns: ['Battle', 'Size Of Attacking Army'],
+    columns: ['Attacker'],
     calculation: 'count',
-    //chartType: 'pie',
-    //rotated: true,
-    xAxis: false,
-    yAxis: false,
-    
+    chartType: 'bubble2',
+    height: 400
 };
 
 

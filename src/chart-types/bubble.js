@@ -56,9 +56,6 @@
             {'name': 'negative', 'children': []},
             {'name': 'positive', 'children': []},
         ]};
-    if(typeof window.chartSize == 'undefined') {
-        window.chartSize = function() { return {'height': width}; };
-    }
         
     var preppedData = this.prepData(formattedData, options);
     var xValues = preppedData[0];
@@ -72,9 +69,10 @@
             data.children[0].children.push({category: yValues[i], className: 'data', showValue: yValue, value: -1*parseFloat(yValue) });
     });
 
-    width = element.getBoundingClientRect().width;
-    var size = popilyChart.utils.chartSize();
-    height = size['height'];
+    if(width == '100%')
+      width = element.getBoundingClientRect().width;
+    if(height == '100%')
+      var height = popilyChart.utils.chartSize()['height'];
     
     var transitionDuration = 350;
     if(options.skipAnimation)
@@ -150,7 +148,9 @@
     var onResize = function() {
         width = element.getBoundingClientRect().width;
         size = popilyChart.utils.chartSize();
-        height = size['height'];
+        
+        width = options.width || width;
+        height = options.height || size['height'];
         svg
             .attr("width", width)
             .attr("height", height);
@@ -179,7 +179,7 @@
         
     };
 
-    window.onresize = onResize;
+    d3.select(window).on('resize', onResize);
   };
 
   popilyChart.chartTypes.bubble = chart;
