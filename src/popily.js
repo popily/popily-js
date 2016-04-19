@@ -214,9 +214,14 @@
       options.transformations = options.filters;
     }      
     var chart = popily.chart.create(apiResponse);
+    var ds = chart.dataset();
+
+    if(options.variation) {
+      console.log(options.variation);
+      ds.assignVariation(options.variation);
+    }
     
     if(options.transformations) {
-      var ds = chart.dataset();
       popily.chart.applyTransformations(ds, options.transformations);
     }
     
@@ -318,8 +323,8 @@
       'chartBackgroundColor': 'chartBackgroundColor',
       'xGrid': 'xGrid',
       'yGrid': 'yGrid',
-      'timeInterval': 'interval',
-      'time_interval': 'interval',
+      'timeInterval': 'variation',
+      'time_interval': 'variation',
       'skipAnimation': 'skipAnimation',
       'legend': 'legend',
       'xRotation': 'xRotation',

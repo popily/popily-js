@@ -124,32 +124,15 @@ popily.chart.getAndRender('#my-chart-02', insightOptions);
 
 var insightOptions = {
     source: 'example-csv1913',
-    columns: ['First Donation','State','Third Donation','Second Donation','Occupation'],
+    columns: ['Second Donation','Transation Date','Employer'],
     title: true,
     calculations: [
-      {
-        column: 'First Donation',
-        calculation: 'average'
-      },
-      {
-        column: 'Third Donation',
-        calculation: 'average'
-      },
       {
         column: 'Second Donation',
         calculation: 'average'
       }
     ],
-    transformations: [
-      {
-        column: 'State',
-        value: 'CA',
-      },
-      {
-        column: 'Occupation',
-        value: 'PHYSICIAN'
-      }
-    ]
+    timeInterval: 'week'
 };
 popily.chart.getAndRender('#my-chart-01', insightOptions);
 

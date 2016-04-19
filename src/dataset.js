@@ -224,6 +224,13 @@
         else
           return column;
       },
+
+      assignVariation: function(variation) {
+        if(variations.hasOwnProperty(variation)) {
+          columnsCache = null;
+          table = zip(variations[variation]);
+        }
+      },
       
       onChange: function(cb) {
         dataListeners.push(cb);
