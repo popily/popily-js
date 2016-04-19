@@ -11,12 +11,24 @@
         return daysDiff;
     };
 
-    var formatNumbers = function(numberList) {
+    var formatNumbers = function(numberList, decimalPlaces) {
         var formatted = _.map(numberList, function(num) {
             num = parseFloat(num);
 
+            var formatStr = '0';
+            if(_.isUndefined(decimalPlaces)) {
+                formatStr += '[.00]'
+            }
+            else {
+                formatStr += '[.';
+                for(var i=0;i<decimalPlaces-1;i++) {
+                    formatStr += '0';
+                }
+                formatStr += ']';
+            }
+
             if(num !== "nan" && _.isNumber(num) && !_.isNaN(num)) {
-                return numeral(num).format('0[.00]');
+                return numeral(num).format(formatStr);
             }
             return '0.00';
         });
@@ -33,6 +45,31 @@
           });
     };
 
+
+    function formatDates(xValues, interval) {
+        var dayDiff = daysDiff(xValues); 
+        var tickFormatStr = formatFromDayDiff(dayDiff);
+
+
+        var dateFormatStr = formatFromInterval(interval);
+        if(_.isUndefined(interval)) {
+            dateFormatStr = formatFromInspection(xValues);
+        }
+
+        var dateFormat = d3.time.format(dateFormatStr);
+        var tickFormat = d3.time.format(tickFormatStr);
+        var fullFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
+
+        var ticksValues = tickFormatValues(xValues, tickFormatStr, dateFormat);
+
+        if(dateFormat != fullFormat) {
+            xValues = _.map(xValues, function(d) {
+                  return dateFormat(fullFormat.parse(d.split('.')[0]));
+              });
+        }
+
+        return xValues;
+    }
 
     function formatFromDayDiff(dayDiff) {
         if(dayDiff > 1000)
@@ -75,7 +112,7 @@
         var stepFunc = stepInterval(tickFormatStr);
         if(!stepFunc)
             return null;
-            
+        
         var dates = _.map(categories, function(d) { return new Date(d); });
         var minDate = _.min(dates);
         var maxDate = _.max(dates);
@@ -107,6 +144,22 @@
         .replace(/-+$/, '');            // Trim - from end of text
     }
 
+
+      var joinWith = function(arr, word) {
+        if(arr.length < 2)
+          return arr.join('');
+        else
+          return [arr.slice(0, -1).join(', '), arr.slice(-1)[0]].join(' ' + word + ' ');
+      };
+
+      var wrapLabel = function(label) {
+        return '<span class="popily-title-variable" >'+ label + '</span>';
+      };
+
+      var capitalize = function(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+      };
+
     popily.chart.format = {
         formatNumbers: formatNumbers,
         toNumber: toNumber,
@@ -114,7 +167,11 @@
         formatFromDayDiff: formatFromDayDiff,
         formatFromInterval: formatFromInterval,
         formatFromInspection: formatFromInspection,
+        formatDates: formatDates,
         tickFormatValues: tickFormatValues,
-        slugify: slugify
+        slugify: slugify,
+        joinWith: joinWith,
+        wrapLabel: wrapLabel,
+        capitalize: capitalize
     }
 })(window);

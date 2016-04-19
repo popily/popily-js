@@ -2,19 +2,32 @@
   var popilyChart = window.popily.chart;
   
   var chart = _.clone(popilyChart.baseChart);
-  chart.defaultFor = [
-    'scatterplot_by_category'
-  ];
-  chart.accepts = [];
+  chart.assignAxis = function(columns, calculation, options) {
+      var axis = {};
 
-  chart.render = function(element, options, rawData) {
-      var preppedData = popilyChart.chartTypes.compare.prepData(rawData, options);
+      _.each(columns, function(column) {
+          if(column.data_type === 'category') {
+            axis.z = column;
+          }
+          else if(!axis.y) {
+            axis.y = column;
+          }
+          else {
+            axis.x = column;
+          }
+      });
+
+      return axis;
+  };
+
+  chart.render = function(element, options, formattedData) {
+      var preppedData = popilyChart.chartTypes.compare.prepData(formattedData, options);
       var xValues = preppedData[0];
       var yValues = preppedData[1];
       var zValues = preppedData[2];
-      var xLabel = rawData.chartData.x.label;
-      var yLabel = rawData.chartData.y.label;
-      var zLabel = rawData.chartData.z.label;    
+      var xLabel = formattedData.chartData.x.label;
+      var yLabel = formattedData.chartData.y.label;
+      var zLabel = formattedData.chartData.z.label;    
 
       var columns = [];
       var xs = {};
@@ -45,11 +58,14 @@
 
       var tooltip = options.tooltip || {
           contents: function (d, defaultTitleFormat, defaultValueFormat, color) {
-              var markup = '<div class="popily-tooltip"><h3 ><span class="square" style="background-color:' + color(d[0].id) + '"></span> ' + xLabel + ':&nbsp;<strong>' + d[0].x + '</strong>, ' + yLabel + ':&nbsp;<strong>' + d[0].value + '</strong></h3>';
-              markup += zLabel + ': <strong>';
-              markup += d[0].name;
-              markup += '</strong>';
-              markup += '</div>';
+              var markup = '<table class="popily-tooltip"><tbody>';
+              if(!_.isUndefined(zValues[d[0].index]))
+                markup += '<tr><th colspan="2"><span style="background-color:'+color(d[0].id)+'"></span> '+zValues[d[0].index]+'</th></tr>';
+              
+              markup += '<tr class="popily-tooltip-name"><td class="name">'+xLabel+'</td><td class="value">'+d[0].x+'</td></tr>';
+              markup += '<tr class="popily-tooltip-name"><td class="name">'+yLabel+'</td><td class="value">'+d[0].value+'</td></tr>';
+              
+              markup += '</tbody></table>'
               return markup;
           }
       };

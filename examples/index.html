@@ -12,7 +12,7 @@
 
 <h1>Single chart</h1>
 
-<div id="my-chart-01">asdasdasd</div>
+<div id="my-chart-01" style="">asdasdasd</div>
 <div id="my-chart-02"></div>
 <div id="my-chart-03"></div>
 
@@ -54,6 +54,7 @@ var chartOptions = {
 };
 
 popily.chart.getAndRender('#my-chart-01', chartOptions);
+
 //popily.api.getSource(2551, function(err, source) {console.log(source);});
 
 //*/
@@ -90,6 +91,39 @@ popily.chart.getAndRender('#my-chart-01', {
   * /
 });
 //*/
+
+
+popily.api.setToken('04d3355451dc557066bca149de2b83f3746f9102');
+popily.api.setURL('http://localhost:8000');
+/*
+var insightOptions = {
+    source: 'example-csv',
+    columns: ['Transation Date', 'First Donation','Employer'],
+    title: true,
+    calculations: [
+      {
+        column: 'First Donation',
+        calculation: 'sum'
+      }
+    ]
+};
+popily.chart.getAndRender('#my-chart-02', insightOptions);
+*/
+
+var insightOptions = {
+    source: 'example-csv1913',
+    columns: ['Second Donation','Transation Date','Employer'],
+    title: true,
+    calculations: [
+      {
+        column: 'Second Donation',
+        calculation: 'average'
+      }
+    ],
+    timeInterval: 'week'
+};
+popily.chart.getAndRender('#my-chart-01', insightOptions);
+
 
 })();
 </script>

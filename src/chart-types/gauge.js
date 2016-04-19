@@ -21,10 +21,13 @@
               pattern: options.colors
           },              
           legend: {
-              hide: true
+              show: !_.isUndefined(options.legend) && options.legend
           },
           size: {
             height: options.height
+          },
+          grid: {
+            background: options.background
           },
           onresized: function() {
               if (window.innerWidth <= 768) {

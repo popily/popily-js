@@ -3,356 +3,212 @@ Analyze data from the Popily API and prepare for rendering
 */
 
 (function(window) {
-    var categoricals = [
-        'category',
-        'state',
-        'country',
-        'zipcode',
-        'rowlabel'
-    ];
 
-    var numerals = [
-        'numeric',
-        'currency'
-    ];
-
-    var isA = function(dataType, column) {
-        if(_.isUndefined(column)) {
-            return false;
-        }
-        var typeList = dataType === 'number' ? numerals : categoricals;
-        return _(typeList).contains(column.data_type);
+    var _hasOne = function(columns, dataType) {
+        return _.where(columns,{data_type:dataType}).length === 1;
     };
 
-    var isNumeric = function(column) {
-        return isA('number', column);
-    };
-
-    var isCategorical = function(column) {
-        return isA('category', column);
-    };
-
-    var hasSingleEquality = function(filters) {
-        return _.some(filters, function(_filter) {
-            var op = _filter.op || 'eq';
-            if(op === 'eq' && _filter.values.length === 1) {
-                return true;
-            }
-            return false;
-        });
-    };
-
-    var hasDistinct = function(filters) {
-        return _.some(filters, function(_filter) {
-            return _filter.op === 'distinct' || _filter.op === 'countUnique';
-        });
-    };
-
-    var assignToAxis = function(columns, options) {
-        options = options || {};
-        var filters = options.filters;
-        var axisAssignments = {};
-        var filterRef = {};
-
-        var assigned = [];
-        var isAssigned = function(prop) {
-            return _(assigned).contains(prop);
-        };
-
-        if(!_.isUndefined(filters)) {
-            _.each(filters, function(columnFilter) {
-                _.each(columns, function(column) {
-                    if(!filterRef.hasOwnProperty(column.column_header)) {
-                        filterRef[column.column_header] = [];
-                    }
-                    if(column.column_header === columnFilter.column) {
-                        filterRef[column.column_header].push(columnFilter);
-                    }
-                });
+    var _hasOnly = function(columns,dataTypes) {
+        return _.every(columns, function(column) { 
+                return _(dataTypes).contains(column.data_type); 
             });
+    };
+
+    var _hasPossible = function(columns, dataType, possibleType) {
+        return _.some(columns, function(column) {
+                if(column.data_type != dataType) {
+                    return false;
+                } 
+                return _.contains(column.possible_data_types,possibleType);
+            });
+    };
+
+    var getColumnForType = function(columns, dataType) {
+        return _.findWhere(columns, {data_type: dataType});
+    };
+
+    var getTypePattern = function(columns) {
+        var dataTypes = _.map(columns, function(column) { return column.data_type });
+        dataTypes.sort();
+        return dataTypes.toString();
+    };
+
+    var _bestForTwo = function(columns,calculation) {
+        var bestType;
+        var typePattern = getTypePattern(columns);
+
+        // Anything with coordinates needs to be viewed on a map
+        if(_hasOne(columns,'coordinate')) {
+            bestType = 'interactiveMap';
         }
 
-        var hasSingleOrDistinct = function(column) {
-            if(!filterRef.hasOwnProperty(column.column_header)) {
-                return false;
+        // Everything is numeric
+        else if(typePattern === 'numeric,numeric') {
+            // All the columns have one value. This is like average 
+            // of column 1 and average of column 2. Not a great way to 
+            // visualize this, but we'll choose bar.
+            if(_.every(columns,function(column) { return column.values.length === 1 })) {
+                bestType = 'bar';
             }
-
-            if(hasDistinct(filterRef[column.column_header])) {
-                return true;
+            else {
+                bestType = 'scatterplot';
             }
+        }
 
-            if(hasSingleEquality(filterRef[column.column_header])) {
-                return true;
-            }
-
-            return false;
-        };
-
+        // Dates are shown as time series by default
+        else if(typePattern === 'datetime,numeric') {
+            bestType = 'line';
+        }
         
-        // Allow for user to set x,z. In order for this to be possible
-        // we need to ensure that these are the first columns we check.
-        var useColumns = [],
-            xColumn,
-            zColumn;
-
-        if(options.xColumn) {
-            xColumn = _.find(columns, function(column) {
-                return column.column_header === options.xColumn;
-            });
-            if(xColumn) {
-                useColumns.push(xColumn);
-            }
-        }
-        if(options.groupByColumn) {
-            zColumn = _.find(columns, function(column) {
-                return column.column_header === options.groupByColumn;
-            });
-            if(zColumn) {
-                useColumns.push(zColumn);
-            }
-        }
-
-        var usedHeaders = _.pluck(useColumns, 'column_header');
-        _.each(columns, function(column) {
-            if(!_(usedHeaders).contains(column.column_header)) {
-                useColumns.push(column);
-            }
-        });
-
-        if(useColumns.length < columns.length) {
-            useColumns = columns;
-        }
-
-        // Now that we have a definite column order, we can inspect
-        // the columns. 
-        var column, dataType;
-        for (index = 0; index < useColumns.length; index++) {
-            column = useColumns[index];
-            dataType = column.data_type;
-
-            // Check user options
-            if(options.xColumn && column.column_header === options.xColumn) {
-                axisAssignments.x = column;
-                assigned.push('x');
-                continue;
-            }
-
-            if(options.groupByColumn && column.column_header === options.groupByColumn) {
-                axisAssignments.z = column;
-                assigned.push('z');
-                continue;
-            }
+        // Category + number
+        else if(typePattern === 'category,numeric') {
+            var hasState = _hasPossible(columns,'category','state');
+            var hasCountry = _hasPossible(columns,'category','country');
             
-            // check filters
-            if(filterRef.hasOwnProperty(column.column_header) && filterRef[column.column_header].length > 0) {
-                // if column has filter where and 1 value, it is z
+            var hasNegative = (function() {
+                var numColumn = getColumnForType(columns,'numeric');
+                return _.some(numColumn.values, function(value) {
+                    return parseFloat(value) < 0;
+                })
+            })();
 
-                if(hasSingleEquality(filterRef[column.column_header])) {
-                    if(isAssigned('z')) {
-                        axisAssignments.z2 = column;
-                        assigned.push('z2');
-                        continue;
-                    }
-                    else {
-                        axisAssignments.z = column;
-                        assigned.push('z');
-                        continue;
-                    }
-                }
-
-                // if column has filter distinct/countUnique
-                else if(hasDistinct(filterRef[column.column_header])) {
-                    // if we already assigned z2, then it is z
-                    if(isAssigned('x')) {
-                        axisAssignments.z = column;
-                        assigned.push('z');
-                        continue;
-                    }
-                    else {
-                        axisAssignments.x = column;
-                        assigned.push('x');
-                        continue; 
-                    }
-                }
-
+            // Default to choropleth maps because those are nice
+            if(hasState || hasCountry) {
+                bestType = 'choropleth';
             }
-
-            // geo
-            if(dataType === 'coordinate') {
-                axisAssignments.x = column;
-                assigned.push('x');
-                continue;
+            else if(columns[0].values.length > 35 && !hasNegative) {
+                bestType = 'bubble';
             }
-
-            // if column is numeric
-            if(isNumeric(column)) {
-                // if we already have a y
-                if(isAssigned('y')) {
-                    // if there are three columns it is y2
-                    if(columns.length > 3) {
-                        axisAssignments.y2 = column;
-                        assigned.push('y2');
-                        continue;
-                    }
-                    // if two columns it is x
-                    else {
-                        axisAssignments.x = column;
-                        assigned.push('x');
-                        continue;
-                    }
-                }
-                // else it is y
-                else {
-                    axisAssignments.y = column;
-                    assigned.push('y');
-                    continue;
-                }
+            else {
+                bestType = 'bar';
             }
-
-            else if(dataType === 'datetime' && !hasSingleOrDistinct(column)) {
-                axisAssignments.x = column;
-                assigned.push('x');
-                continue;
-            }
-
-            // if column is category
-            else if(isCategorical(column)) {
-                // if we already have x
-                if(isAssigned('x')) {
-                    // if we already have z
-                    if(isAssigned('z')) {
-                        axisAssignments.z2 = column;
-                        assigned.push('z2');
-                        continue;
-                    }
-                    else {
-                        axisAssignments.z = column;
-                        assigned.push('z');
-                        continue;
-                    }
-                }
-                else {
-                    axisAssignments.x = column;
-                    assigned.push('x');
-                }
-            } 
         }
-        return axisAssignments;
+
+        return bestType;
     };
 
-    var determineType = function(columns, axisAssignments, calculation) {
-        //console.log(axisAssignments);
+    var _bestForThree = function(columns, calculation) {
+        var bestType;
+        var typePattern = getTypePattern(columns);
 
-        var types = {
-            countByCategory: 'count_by_category',
-            averageByCategory: 'average_by_category',
-            sumByCategory: 'sum_by_category',
-            geoPoints: 'geo_points',
-            geoPointsCategory: 'geo_points_category',
-            geoPointsAmount: 'geo_points_amount',
-            geoPointsCategoryAmount: 'geo_points_category_amount',
-            scatterplot: 'scatterplot',
-            scatterplotByCategory: 'scatterplot_by_category',
-            countPerCategoryByDatetime: 'count_per_category_by_datetime',
-            ratioPerCategory: 'ratio_per_category',
-            countByState: 'count_by_state',
-            countByCountry: 'count_by_country'
+        // if datetime and category and number
+        if(typePattern === 'category,datetime,numeric') {
+            // if calculation is total
+            if(calculation === 'sum') {
+                bestType = 'stackedArea';
+            }
+            else {
+                bestType = 'multiLine';
+            }
+        }
+        else if(typePattern === 'datetime,numeric,numeric') {
+            bestType = 'multiLine';
+        }
+        else if(typePattern === 'category,category,numeric') {
+            if(calculation === 'average') {
+                bestType = 'barGrouped';
+            }
+            else {
+                bestType = 'barStacked';
+            }
+        }
+        else if(typePattern === 'category,numeric,numeric') {
+            // For example value/range counts (histogram) for multiple
+            // number columns
+            if(calculation === 'count') {
+                bestType = 'barGrouped';
+            }
+            else {
+                bestType = 'scatterplotCategory';
+            }
+        }
+        else if(typePattern === 'category,coordinate,numeric') {
+            bestType = 'interactiveMap';
+        }
+        else if(_hasOnly(columns,['numeric'])) {
+            if(_.every(columns,function(column) {return column.values.length === 1})) {
+                bestType = 'bubble';
+            }
+        }
+
+        return bestType;
+    };
+
+    var chartTypeForData = function(columns, calculation, options) {
+        // The data_type for any column will be one of the four Popily
+        // basic data types: category, numeric, datetime, coordinate. 
+        // The column will also have a possible_data_types property that may 
+        // provide additional context. For example a data_type of category 
+        // may also have possible_data_types like state or country.
+
+        var bestType;
+        var typePattern = getTypePattern(columns);
+        options = options || {};
+
+        var possibleTypes = {
+            'bar': ['pie','bubble','bubble2','line'],
+            'scatterplotCategory': ['barGrouped'],
+            'barGrouped': ['barStacked'],
+            'barStacked': ['barGrouped'],
+            'bubble': ['bar', 'bubble2'],
+            'bubble2': ['bar', 'bubble'],
+            'multiLine': ['stackedArea','barGrouped','barStacked'],
+            'stackedArea': ['multiLine','barGrouped','barStacked'],
+            'choropleth': ['bar','bubble','bubble2'],
+            'line': ['bar']
         };
 
-        var defaultType = (function() {
-            if(calculation==='comparison') {
-                return 'scatterplot';
+        if(columns.length === 1) {
+            bestType = 'sentence';
+        }
+        if(columns.length === 2) {
+            bestType = _bestForTwo(columns,calculation);
+        }
+        else if(columns.length === 3) {
+            bestType = _bestForThree(columns,calculation);
+        }
+        else {
+            if(_hasOne(columns,'datetime') && _hasOnly(columns,['datetime','numeric'])) {
+                bestType = 'multiLine';
             }
-
-            var typeStr = calculation;
-            var sortedColumns = _(columns).sortBy('data_type');
-
-            _.each(sortedColumns, function(column) {
-                if(!isNumeric(column)) {
-                    typeStr += '_by_' + column.data_type;
+            else if(_hasOne(columns,'category') && _hasOnly(columns,['category','numeric'])) {
+                if(calculation === 'sum') {
+                    bestType = 'barStacked';
+                } 
+                else {
+                    bestType = 'barGrouped';
                 }
-            });
-
-            return typeStr;
-        })();
-
-        // geo_points
-        if(axisAssignments.x.data_type === 'coordinate') {
-            if(axisAssignments.hasOwnProperty('z')) {
-                if(axisAssignments.z.values.length === 1) {
-                    if(axisAssignments.hasOwnProperty('y')) {
-                        return types.geoPointsAmount;
-                    }
-                    return types.geoPoints;
+            }
+            else if(_hasOnly(columns,['numeric'])) {
+                if(_.every(columns,function(column) {return column.values.length === 1})) {
+                    bestType = 'bubble';
                 }
-                if(axisAssignments.hasOwnProperty('y')) {
-                    return types.geoPointsCategoryAmount;
+            }
+        }
+        
+        if(_.isUndefined(bestType)) {
+            bestType = 'table';
+        }
+
+        if(options.hasOwnProperty('chartType')) {
+            if(options.chartType === 'table') {
+                bestType = 'table';
+            }
+
+            if(possibleTypes.hasOwnProperty(bestType)) {
+                if(_.contains(possibleTypes[bestType], options.chartType)) {
+                    bestType = options.chartType;
                 }
-
-                return types.geoPointsCategory;
-            }
-            else if(axisAssignments.hasOwnProperty('y')) {
-                return types.geoPointsAmount;
-            }
-
-            return types.geoPoints;
-        }
-
-        // scatterplot
-        if(isNumeric(axisAssignments.x) &&
-            axisAssignments.hasOwnProperty('y') && 
-            isNumeric(axisAssignments.y)) {
-
-            if(columns.length === 3) {
-                return types.scatterplotByCategory;
-            }
-            return types.scatterplot;
-        }
-
-        // count_by_category
-        if(columns.length === 2 && 
-            isCategorical(axisAssignments.x) === 'category' && 
-            isNumeric(axisAssignments.y)) {
-
-            return types[calculation + 'ByCategory'];
-        }
-
-        if(columns.length === 3 &&
-            axisAssignments.hasOwnProperty('z') &&
-            axisAssignments.z.values.length === 1) {
-
-            if(axisAssignments.x.data_type === 'datetime') {
-                return types[calculation + 'PerCategoryByDatetime'];
-            }
-
-            return types[calculation + 'ByCategory'];
-        }
-
-        if(calculation === 'geo') {
-            if(axisAssignments.x.data_type === 'state') {
-                return types.countByState;
-            }
-
-            if(axisAssignments.x_data_type === 'country') {
-                return types.countByCountry;
             }
         }
 
-        // ratio_per_category
-        if(columns.length === 2 &&
-            calculation === 'ratio' &&
-            axisAssignments.x.values.length === 1 &&
-            axisAssignments.hasOwnProperty('y') &&
-            axisAssignments.y.values.length === 1) {
+        return bestType;
 
-            return types.ratioPerCategory;
-        }
-
-        return defaultType;
     };
 
     window.popily.chart.analyze = {
-        assignToAxis: assignToAxis,
-        determineType: determineType
+        chartTypeForData: chartTypeForData,
+        getTypePattern: getTypePattern,
+        getColumnForType: getColumnForType
     }
 })(window);

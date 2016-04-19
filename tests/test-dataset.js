@@ -6,13 +6,13 @@ var windowDataset;
 describe('Testing dataset filtering', function() {
     it('should assign columns', function() {
         var apiResponse = JSON.parse(JSON.stringify(categoryDatetime));
-        var dataset = popily.dataset(apiResponse.columns);
+        var dataset = popily.dataset(apiResponse);
         expect(dataset.getColumns().length).to.be.equal(3);
     });
 
     it('should filter category values', function() {
         var apiResponse = JSON.parse(JSON.stringify(categoryDatetime));
-        var dataset = popily.dataset(apiResponse.columns);
+        var dataset = popily.dataset(apiResponse);
 
         var xColumnHeader = 'Ballot Name';
         var xColumn = _(apiResponse.columns).find(function(x) { return x.column_header == xColumnHeader});
@@ -36,7 +36,7 @@ describe('Testing dataset filtering', function() {
         var apiResponse = JSON.parse(JSON.stringify(categoryDatetime));
         var xColumnHeader = 'Ballot Name';
 
-        var dataset = popily.dataset(apiResponse.columns);
+        var dataset = popily.dataset(apiResponse);
         var beforeReplacedColumn = dataset.getColumn(xColumnHeader);
         dataset.replaceValues(xColumnHeader, {'PENDING PENDING PENDING': 'replaced value'});
         var afterReplacedColumn = dataset.getColumn(xColumnHeader);

@@ -2,15 +2,21 @@
   var popilyChart = window.popily.chart;
 
   var chart = _.clone(popilyChart.baseChart);
-  chart.defaultFor = [
-    'average_by_state',
-    'sum_by_state',
-    'sum_by_country',
-    'average_by_country',
-    'count_by_country',
-    'count_by_state'
-  ];
-  chart.accepts = [];
+
+  chart.assignAxis = function(columns, calculation, options) {
+      var axis = {};
+
+      _.each(columns, function(column) {
+          if(column.data_type === 'numeric') {
+            axis.y = column;
+          }
+          else {
+            axis.x = column;
+          }
+      });
+
+      return axis;
+  };
 
   chart.getVal = function(unitName, valueLookup) {
       if(valueLookup[unitName]) {
@@ -28,24 +34,26 @@
       return {'name':name, 'value': 'n/a'};
   };
 
-  chart.prepData = function(rawData, options) {
+  chart.prepData = function(formattedData, options) {
     var that = this;
     var limit = that.defaults.categoryLimit;
-    var cleanValues = that.cleanData(rawData);
+    var chartData = formattedData.chartData;
+    var xValues = chartData.x.values;
+    var yValues = chartData.y.values;
 
     var order = options.order || 'auto';
-    cleanValues = popilyChart.chartData.sortData(cleanValues[0],popilyChart.format.toNumber(cleanValues[1]));
+    cleanValues = popilyChart.chartData.sortData(xValues,popilyChart.format.toNumber(yValues));
 
     var cleanXValues = cleanValues[0];
     var cleanYValues = popilyChart.format.formatNumbers(cleanValues[1]);
 
-    var cleanXValuesSlugified = _.map(cleanXValues, popilyChart.format.slugify);
-    var valueLookup = _.object(cleanXValuesSlugified, cleanXValues);
+    var cleanXValuesSlugified = _.map(xValues, popilyChart.format.slugify);
+    var valueLookup = _.object(cleanXValuesSlugified, xValues);
     valueLookup = _.mapObject(valueLookup, function(val, key) { 
       return {'name': val};
     });
 
-    _.each(_.zip(cleanXValuesSlugified,cleanYValues), function(arr) {
+    _.each(_.zip(cleanXValuesSlugified,yValues), function(arr) {
         if(arr[1]) {
             valueLookup[arr[0]]['value'] = numeral(arr[1]).format('0,0');
         }
@@ -54,12 +62,12 @@
         }
     });
 
-    return [cleanXValuesSlugified, cleanYValues, valueLookup];
+    return [cleanXValuesSlugified, yValues, valueLookup];
   };
 
-  chart.render = function(element, options, rawData) {
+  chart.render = function(element, options, formattedData) {
       var that = this;
-      var preppedData = that.prepData(rawData, options);
+      var preppedData = that.prepData(formattedData, options);
       var xValues = preppedData[0];
       var yValues = preppedData[1];
       var valueLookup = preppedData[2];
@@ -72,11 +80,10 @@
 
       element.onmousemove = onMouseMove;*/
 
-      var insightType = rawData.analysisType;
       var geoJson = popilyChart.data.world.countries;
       var isState = false;
 
-      if(insightType.indexOf('_state') > -1) {
+      if(_.contains(formattedData.chartData.x.possibleDataTypes,'state')) {
           geoJson = popilyChart.data.countries.USA;
           isState = true;
 
@@ -88,17 +95,12 @@
           }
       }
 
-      var tooltip = d3.select("body")
+      var tooltip = d3.select(element)
               .append("div")
+              .classed("popily-tooltip-container", true)
               .style("position", "fixed")
-              .style("z-index", "10")
               .style("top", "0px")
               .style("visibility", "hidden")
-              .style("background", "white")
-              .style("padding", "4px 8px")
-              .style("font-color", "#444")
-              .style("font-weight", "bold")
-              .text("a simple tooltip");
 
       var mapObj = d3.geomap.choropleth().geofile(geoJson);
 
@@ -137,27 +139,38 @@
 
     var mapColors = options.colors;
     if(_.difference(options.colors, popilyChart.baseChart.defaults.options.colors).length == 0) {
-      mapColors = ['Greens'];
+      var mapColors = colorbrewer.Greens[9];
     }
     
-    var mapColor = mapColors[_.random(0, mapColors.length - 1)]; 
-
     var format = function(d) {
         return d3.format(',.2f')(d);
     }
-    
+
     mapObj = mapObj
-        .colors(colorbrewer[mapColor][9])
         .column('yValue')
         .unitId('xValue')
         .format(format)
         .duration(options.skipAnimation ? 0 : 350)
-        .legend(true)
+        .legend(_.isUndefined(options.legend) || options.legend)
+        .colors(mapColors)
         .scale(scale)
         .postUpdate(function(m) { 
             wHeight = window.innerHeight;
             wWidth = window.innerWidth;
+            
+            var legend = d3.select('.'+options.uniqueClassName+' g.legend');
+            var textsCount = mapColors.length+1;
+            var maxTextsCount = legend.attr('height') / 15;
+            
+            var texts = d3.selectAll('.'+options.uniqueClassName+' g.legend text');
+            texts
+              .each(function(d, i) {
+                if(i+1 != texts.size() && (i+1) % Math.ceil(textsCount/maxTextsCount) != 0 )
+                  d3.select(this).style('display', 'none');
+              });
+            
             var paths = d3.select('.'+options.uniqueClassName+' g.units').selectAll('path');
+            paths.selectAll('title').remove();
             if(_.isUndefined(options.tooltip) || options.tooltip) {
                 paths.on("mouseover", function(d) {
                     var selected = d3.select(this);
@@ -165,7 +178,14 @@
 
                     selected.classed("active", true );
                     var label = that.getVal(unitName,valueLookup);
-                    tooltip.text(label['name'] + ": " + label['value'])
+                    
+                    var markup = '<table class="popily-tooltip"><tbody>';
+                    
+                    markup += '<tr class="popily-tooltip-name"><td class="name"><span style="background: '+selected.style('fill')+'"></span>'+label['name']+'</td><td class="value">'+label['value']+'</td></tr>';
+                    
+                    markup += '</tbody></table>'
+                    
+                    tooltip.html(markup)
                       .style("visibility", "visible");
                     return false;
                   })

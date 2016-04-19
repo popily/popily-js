@@ -3,15 +3,22 @@
 (function(window) {
 
 
-  window.popily.dataset = function(columns, options) {
+  window.popily.dataset = function(insightObject, options) {
 
-    var labels, dataTypes, table, columnsCache;
+    var labels, dataTypes, table, columnsCache, variations;
     
-    var initialize = function(columns) {
+    var initialize = function(insightObject) {
       labels = [];
       dataTypes = [];
+      possibleDataTypes = [];
       columnsCache = null;
-      table = zip(columns);
+      variations = insightObject.variations;
+
+      if(insightObject.hasOwnProperty('default_variation')) {
+        variations[insightObject.default_variation] = insightObject.columns;
+      }
+
+      table = zip(insightObject.columns);
     }
     
     var zip = function(columns) {
@@ -20,6 +27,9 @@
       _.each(columns, function(column) {
         labels.push(column.column_header);
         dataTypes.push(column.data_type);
+        possibleDataTypes.push(column.possible_data_types);
+        if(column.data_type == 'numeric')
+          column.values = _.map(column.values, function(v) {return parseFloat(v)});
         data.push(column.values);
       });
       return _.zip.apply(null, data);
@@ -31,7 +41,8 @@
         columns.push({
           column_header:labels[i],
           values:c,
-          data_type:dataTypes[i]
+          data_type:dataTypes[i],
+          possible_data_types: possibleDataTypes[i]
         });
       });
       return columns;
@@ -51,16 +62,24 @@
         listner();
       })
     }
-    
-    initialize(columns);
+  
+    initialize(insightObject);
     
     return {
     
-      orderBy: function(column) {
+      orderBy: function(column, type) {
         var idx = columnIdx(column);
+        
+        if(!type || type == 'asc' || type == 'desc')
+          orderTest = function(e, idx) { return e[idx]; }
+        else
+          orderTest = type;
+        
         table = _.sortBy(table, function(e) {
-          return e[idx];
+          return orderTest(e, idx);
         });
+        if(type == 'desc')
+          table.reverse();
         dataChanged();
         return this;
       },
@@ -78,6 +97,11 @@
         }
         var idx = columnIdx(column);
         
+        if(dataTypes[idx] == 'datetime' && !value instanceof Date)
+          value = new Date(value);
+        if(value instanceof Date)
+          value = value.toISOString().replace('T', 0).slice(0, 19);
+        
         if(op == 'eq')
           var testFunc = function(e) {return value.indexOf(e[idx])!==-1}
         else if(op == 'noteq')
@@ -87,14 +111,15 @@
         else if(op == 'gte')
           var testFunc = function(e) {return e[idx] >= value}
         else if(op == 'lt')
-          var testFunc = function(e) { return e[idx] < value}
+          var testFunc = function(e) {return e[idx] < value}
         else if(op == 'lte')
           var testFunc = function(e) {return e[idx] <= value}
+        else if(op === 'in')
+          var testFunc = function(e) { return _(value).contains(e[idx]) }
         else {
           console.error('Unrecognized filter option: '+op);
           return this; 
         }
-        
         table = _.filter(table, testFunc);
         dataChanged();
         return this;
@@ -198,6 +223,13 @@
         }
         else
           return column;
+      },
+
+      assignVariation: function(variation) {
+        if(variations.hasOwnProperty(variation)) {
+          columnsCache = null;
+          table = zip(variations[variation]);
+        }
       },
       
       onChange: function(cb) {

@@ -52,6 +52,7 @@ gulp.task('scripts', ['api'], function() {
             'src/format.js', 
             'src/utils.js',  
             'src/label.js',  
+            'src/c3extend.js',  
             'src/chart-types/common/*.js', 
             'src/chart-types/*.js',
             '!src/chart-types/choropleth.js',
@@ -155,6 +156,9 @@ gulp.task('styles', ['libimages'], function() {
     .pipe($.sass(sassOptions)).on('error', errorHandler('Sass'))
     .pipe($.autoprefixer()).on('error', errorHandler('Autoprefixer'))
     .pipe($.concat('popily.css'))
+    .pipe($.insert.transform(function(content, file) { 
+      return content.replace(/\.c3-/g, '.popily-');//.replace(/\.c3/g, '.popily .c3');
+    }))
     .pipe(gulp.dest('./build'))
 });
 

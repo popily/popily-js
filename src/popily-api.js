@@ -63,44 +63,18 @@ var _request = function(method, path, data, callback) {
   });
 };
 
-var packFilters = function(filters) {
+var packCalculations = function(calculations) {
   var packedStr = '';
-  filters.forEach(function(f, i) {
-    var op = 'eq'
-    if('op' in f)
-      op = f['op']
-    
+  calculations.forEach(function(f, i) {
     var filterStr = '';
     if(i > 0)
       filterStr += '__';
 
-    var valStr = '';
-    if(f.hasOwnProperty('values')) {
-      valStr = f['values'].join(',');
-    }
-    filterStr += f['column'] + '!' + op + '!' + ( valStr );
+    filterStr += f['column'] + '!' + f['calculation'];
     packedStr += filterStr
   });
   return packedStr;
-}
-
-var assignCustomizations = function(dataDict, insightData) {
-  [
-    'title',
-    'x_label',
-    'y_label',
-    'z_label',
-    'category_order',
-    'time_interval',
-    'refresh_rate',
-    'swap'
-  ].forEach(function(key) {
-    if(key in insightData)
-      dataDict[key] = insightData[key];
-  });
-
-  return dataDict;
-};        
+};       
         
 popily.api = {
   addSource: function(sourceData, cb) {
@@ -146,43 +120,20 @@ popily.api = {
         payload[key] = params[key].join(',')
     });
 
-    if('filters' in params)
-      payload['filters'] = packFilters(params['filters'])
-
-    if('full' in params)
-      payload['full'] = params['full']
-
     if('single' in params) {
       payload['single'] = params['single'];
-      payload = assignCustomizations(payload, params);
+    }
+
+    if('calculations' in params) {
+      payload['calculations'] = packCalculations(params['calculations']);
     }
 
     _request('GET', '/insights/', {qs: payload}, cb);
   },
 
-
   getInsight: function(insightId, params, cb) {
-    var payload = {};
-    if('filters' in params)
-      payload['filters'] = packFilters(params['filters']);
-
-    ['full', 'height', 'width'].forEach(function(key) {
-      if(key in params)
-        payload[key] = params[key];
-    });
-
-    payload = assignCustomizations(payload, params);
-    
+    var payload = {};    
     _request('GET', '/insights/' + insightId + '/', {qs: payload}, cb);
-  },
-
-
-  customizeInsight: function(insightId, params, insightData, cb) {
-    var data = assignCustomizations({}, insightData);
-    if('filters' in params)
-      data['filters'] = packFilters(params['filters'])
-
-    _request('PUT', '/insights/' + insightId + '/', {json: data}, cb);
   },
 
   setToken: function(token) {

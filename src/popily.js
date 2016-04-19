@@ -21,107 +21,123 @@
             '#BB7FD2', '#34618F', '#947700', '#FFE26C', '#92094A', '#BF6322', '#58ADE3',
             '#9FB921', '#0665A2', '#8333A2', '#0F3863', '#BC9805', '#FFE26C', '#E989B6',
             '#C92918', '#FAA96F'
-          ]
+          ],
+          background: false,
+          xAxis: true,
+          yAxis: true,
       },
+      categoryLimit: 500,
       barBubbleCutoff: 30,
-      chartPadding: function() { return {right: 0, top: 0 }; }
+      chartPadding: function() { return {lefright: 0, top: 0 }; }
     },
     resize: function(chartObj, width, height) {
-      console.log(1);
+      //console.log(1);
       chartObj.resize(width, height);
     },
-    cleanData: function(rawData) {
-      var xValues = rawData.chartData.x.values;
-      var yValues = rawData.chartData.y.values;
-      var zValues = [];
-      var z2Values = [];
+    formatChartData: function(axisAssignments, apiResponse, chartableColumns) {
+      var newData = {};
+      var possibleAxis = ['x','y','z'];
 
-      if(rawData.chartData.z) {
-        var zValues = rawData.chartData.z.values;
-      }
+      newData.chartData = {};
+      newData.chartData.metadata = {};
+      newData.chartData.defaultVariation = apiResponse.default_variation;
+      newData.chartData.calculation = apiResponse.calculation;
 
-      if(rawData.chartData.z2) {
-        var z2Values = rawData.chartData.z2.values;
-      }
+      _.each(possibleAxis, function(axis) {
+        if(axisAssignments.hasOwnProperty(axis)) {
+          var values = axisAssignments[axis].values;
+          if(axisAssignments[axis].data_type === 'coordinate') {
+            values = _.map(values, JSON.parse);
+          }
 
-      var cleanValues = popily.chart.chartData.cleanData(xValues,yValues,zValues,z2Values);
-
-      return cleanValues;
-    }
-  };
-
-  popily.chart.getChartForType = function(analysisType, chartType) {
-    if(_.isUndefined(popily.chart.chartMap)) {
-      _buildChartMap();
-    }
-
-    var toComplex = {
-      'bar': ['barStacked', 'barGrouped'],
-      'scatterplot': ['scatterplotCategory'],
-      'line': ['multiLine']
-    }
-
-    if(analysisType in popily.chart.chartMap) {
-        if(!_.isUndefined(chartType)) {
-            if(_(popily.chart.chartMap[analysisType].allowed).contains(chartType)) {
-                return chartType;
-            }
-            else if(popily.chart.chartMap[analysisType].defaultChart === chartType) {
-              return chartType;
-            }
-            else if(toComplex.hasOwnProperty(chartType)) {
-              var toReturn;
-              _.each(toComplex[chartType], function(complexChartType) {
-                if(_(popily.chart.chartMap[analysisType].allowed).contains(complexChartType)) {
-                  toReturn = complexChartType;
-                }
-                else if(popily.chart.chartMap[analysisType].defaultChart === complexChartType) {
-                  toReturn = complexChartType;
-                }
-              });
-              
-              if(!_.isUndefined(toReturn)) {
-                return toReturn;
-              }
-
-              console.error(chartType + ' not possible for ' + analysisType);
-            }
-            else {
-                console.error(chartType + ' not possible for ' + analysisType);
-            }
+          newData.chartData[axis] = {
+            values: values,
+            label: axisAssignments[axis].column_header,
+            dataType: axisAssignments[axis].data_type,
+            possibleDataTypes: axisAssignments[axis].possible_data_types
+          }
         }
-        return popily.chart.chartMap[analysisType].defaultChart;
-    }
-    else {
-        console.error('No chart for ' + analysisType);
+      });
+
+      newData.chartData.columns = _.map(chartableColumns, function(column) {
+        return {
+          values: column.values,
+          label: column.column_header,
+          dataType: column.data_type,
+          possibleDataTypes: column.possible_data_types
+        }
+      });
+
+      if(apiResponse.insight_metadata) {
+        newData.chartData.metadata = apiResponse.insight_metadata;
+      }
+
+      return newData;
+    },
+    chartableColumns: function(columns,valueFilters) {
+      var filtered = _.keys(valueFilters);
+      var chartables = _.filter(columns, function(column) {
+          if(!_.contains(filtered,column.column_header)) {
+            return true;
+          }
+          else if(_.isArray(valueFilters[column.column_header]) && valueFilters[column.column_header].length > 1) {
+            return true;
+          }
+          
+          return false;
+      });
+
+      return chartables;
+    },
+    valueFilters: function(transformations) {
+      if(_.isUndefined(transformations)) {
+        return {};
+      }
+
+      var filters = {};
+      _.each(transformations,function(transformation) {
+        if(_.isUndefined(transformation.op) || _(['eq','in']).contains(transformation.op)) {
+          filters[transformation.column] = transformation.value;
+        }
+      });
+
+      return filters;
     }
   };
 
   popily.chart.create = function(apiResponse) {
-  
-    var ds = popily.dataset(apiResponse.columns);
+    window.apiResponse = apiResponse;
+    var ds = popily.dataset(apiResponse);
+
     return {
       dataset : function() {
         return ds;
       },
       
       draw: function(element, options) {
+        
         var that = this;
         var calculation = apiResponse.calculation;
-        var axisAssignments = popily.chart.analyze.assignToAxis(ds.getColumns(), options);
-        var analysisType = popily.chart.analyze.determineType(ds.getColumns(), axisAssignments, calculation);
-        var formattedData = popily.chart.utils.formatDataset(apiResponse, axisAssignments, analysisType);
-        
-        var labels = popily.chart.generateLabels(calculation, axisAssignments, options.transformations || []);
 
-        var chartType = popily.chart.getChartForType(analysisType, options.chartType);
+        // Determine the chart type based on the data
+        var valueFilters = popily.chart.baseChart.valueFilters(options.transformations);
+        var chartableColumns = popily.chart.baseChart.chartableColumns(ds.getColumns(),valueFilters);
+        var chartType = popily.chart.analyze.chartTypeForData(chartableColumns, calculation, options);
         var chartClass = popily.chart.chartTypes[chartType];
+        
+        // Assign the data to axis (potentially modifying its structure) 
+        // and manipulate the format expected by charting functions
+        var axisAssignments = chartClass.assignAxis(chartableColumns, calculation, options);
+        var formattedData = popily.chart.baseChart.formatChartData(axisAssignments, apiResponse, chartableColumns);
+
+        // Build a title
+        var labels = popily.chart.generateLabels(calculation, formattedData.chartData.columns, options.transformations || []);
+        
+        // Add custom CSS if requested by user
         var extraCss = '';
         
-        //options = _.extend(chartClass.defaults.options, options);
-
         _.each(_.keys(popily.chart.baseChart.defaults.options), function(key) {
-          if(!options[key]) {
+          if(!(key in options)) {
             options[key] = popily.chart.baseChart.defaults.options[key];
           }
         });
@@ -131,13 +147,17 @@
           element = document.querySelector(element);
         }
         
-        element.classList.add('popily-box');
+        element.classList.add('popily');
         element.classList.add(options.uniqueClassName);
         element.innerHTML = '';
         if(options.title) {
           var titleElement = document.createElement("div");
           titleElement.classList.add('popily-title');
-          titleElement.innerHTML = labels.title;
+          if(options.title === true)
+            titleElement.innerHTML = labels.title;
+          else
+            titleElement.innerHTML = options.title;
+            
           element.appendChild(titleElement);
           
           var titleCss = '';
@@ -148,20 +168,37 @@
           if(options.titleFontColor)
             titleCss += 'color: '+options.titleFontColor+';';
           if(titleCss)
-            extraCss = '.'+options.uniqueClassName+ ' .popily-title {'+titleCss+'}';
+            extraCss += '.'+options.uniqueClassName+ ' .popily-title {'+titleCss+'}';
         }
         
+        var chartTextCss = '';
+        if(options.chartFontSize)
+          chartTextCss += 'font-size: '+options.chartFontSize+';';
+        if(options.chartFontFamily)
+          chartTextCss += 'font-family: '+options.chartFontFamily+';';
+        if(options.chartFontColor)
+          chartTextCss += 'fill: '+options.chartFontColor+';';
+        if(chartTextCss)
+          extraCss += '.'+options.uniqueClassName+ ' text {'+chartTextCss+'}';
+
+        if(options.chartBackgroundColor) {
+          chartCss = 'fill: '+options.chartBackgroundColor+';';
+          extraCss += '.'+options.uniqueClassName+ ' .popily-chart {'+chartCss+'}';
+        }
+          
         if(extraCss) {
           var style = popily.chart.utils.createStyleElement(extraCss);
           element.appendChild(style);
         }
   
         var chartElement = document.createElement("div");
-        chartElement.classList.add('popily-chart');
+        chartElement.classList.add('popily-chartarea');
         element.appendChild(chartElement);
         
+        // Render the chart
         var chart = chartClass.render(chartElement, options, formattedData);
         return chart;
+        
       },
       
     }
@@ -177,9 +214,14 @@
       options.transformations = options.filters;
     }      
     var chart = popily.chart.create(apiResponse);
+    var ds = chart.dataset();
+
+    if(options.variation) {
+      console.log(options.variation);
+      ds.assignVariation(options.variation);
+    }
     
     if(options.transformations) {
-      var ds = chart.dataset();
       popily.chart.applyTransformations(ds, options.transformations);
     }
     
@@ -187,27 +229,58 @@
     
   };
 
-  popily.chart.loadingMessage = function(element) {
+  popily.chart.loadingMessage = function(element, options) {
     if(typeof element === "string") {
       element = document.querySelector(element);
     }
+    var height = (options.height || 320);
 
-    var textElement = document.createElement("div");
-    textElement.classList.add('popily-loading');
-    textElement.innerHTML = 'We’re doing some calculations to make this chart possible. One moment...';
+    var loaderBox = document.createElement("div");
+    loaderBox.classList.add('popily-loading');
+    loaderBox.style.cssText = 'height: '+height+'px; line-height: '+height+'px';
+
+
+    var innerElement = document.createElement("div");
+    innerElement.classList.add('popily-loading-inner');
+    
+    var svgElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svgElement.classList.add('popily-spinner');
+    svgElement.setAttribute('width', '65px');
+    svgElement.setAttribute('height', '65px');
+    svgElement.setAttribute('viewBox', '0 0 66 66');
+    
+    var circleElement = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    circleElement.setAttribute('class', 'popily-spinner-path');
+    circleElement.setAttribute('fill', 'none');
+    circleElement.setAttribute('stroke-width', '6');
+    circleElement.setAttribute('stroke-linecap', 'round');
+    circleElement.setAttribute('cx', '33');
+    circleElement.setAttribute('cy', '33');
+    circleElement.setAttribute('r', '30');
+    svgElement.appendChild(circleElement);
+    innerElement.appendChild(svgElement);
+    
+    if(options.poll) {
+      var textElement = document.createElement("div");
+      textElement.setAttribute('class', 'popily-loading-text');
+      textElement.innerHTML = 'We’re doing some calculations to make this chart possible. One moment...';
+      innerElement.appendChild(textElement);
+    }
+      
+    loaderBox.appendChild(innerElement);
     element.innerHTML = '';
-    element.appendChild(textElement);
+    element.appendChild(loaderBox);
   };
 
   var getThen = function(method, slug, serverOptions, poll, element, callback) {
       popily.api[method](slug, serverOptions, function(err, apiResponse) {
         if(apiResponse.hasOwnProperty('insight') && apiResponse.insight === 'not found') {
+          
           if(poll && apiResponse.hasOwnProperty('source_status') && apiResponse.source_status !== 'finished') {
             // add waiting text to element
-            popily.chart.loadingMessage(element);
 
             setTimeout(function() {
-              getThen(method, slug, serverOptions, poll, element, callback);
+              //getThen(method, slug, serverOptions, poll, element, callback);
             },1000);
           }
           else {
@@ -237,17 +310,28 @@
       'width': 'width',
       'rotated': 'rotated',
       'title': 'title',
-      'xOrder': 'order',
+      //'xOrder': 'order',
       'barSize': 'barSize',
       'lineSize': 'lineSize',
       'pointSize': 'pointSize',
       'titleFontFamily': 'titleFontFamily',
       'titleFontSize': 'titleFontSize',
       'titleFontColor': 'titleFontColor',
+      'chartFontFamily': 'chartFontFamily',
+      'chartFontSize': 'chartFontSize',
+      'chartFontColor': 'chartFontColor',
+      'chartBackgroundColor': 'chartBackgroundColor',
       'xGrid': 'xGrid',
       'yGrid': 'yGrid',
-      'timeInterval': 'interval',
-      'time_interval': 'interval',
+      'timeInterval': 'variation',
+      'time_interval': 'variation',
+      'skipAnimation': 'skipAnimation',
+      'legend': 'legend',
+      'xRotation': 'xRotation',
+      'yRotation': 'yRotation',
+      'background': 'background',
+      'xAxis': 'xAxis',
+      'yAxis': 'yAxis',
     };
 
     var availableServerOptions = {
@@ -256,8 +340,13 @@
       'timeInterval': 'time_interval',
       'time_interval': 'time_interval',
       'insight_action': 'insight_actions',
-      'analysisType': 'insight_types'
+      'analysisType': 'insight_types',
+      'calculations': 'calculations'
     };
+    
+    if(options.hasOwnProperty('xOrder')) {
+      console.log('xOrder property is not valid any more, please use transformation with op "order"');
+    }
 
     _.each(_.keys(availableChartOptions), function(option) {
       if(options.hasOwnProperty(option)) {
@@ -292,6 +381,8 @@
       method = 'getInsights';
     }
 
+    popily.chart.loadingMessage(element, options);
+    
     getThen(method, slug, serverOptions, options.poll, element, function(err, apiResponse) {
         popily.chart.render(element, apiResponse, chartOptions);
     });
@@ -304,6 +395,14 @@
       }
       else if('replace' == transformation.op) {
         ds.replaceValues(transformation.column, transformation.replacements);
+      }
+      else if('order' == transformation.op) {
+        var value = transformation.value || transformation.values;
+        var type = value;
+        
+        if(type && type != 'asc' && type != 'desc')
+          type = function(e, idx) { var i = value.indexOf(e[idx]); return i>=0 ? i : 9999; }
+        ds.orderBy(transformation.column, type);
       }
       else {
         popily.chart.applyFilter(ds, transformation);
@@ -331,15 +430,6 @@
     return ds;
   };
   
-  /*
-    groupData = {
-      column: <column-name-to-group-by>,
-      op: count|countUnique,
-      groupInto: <new-column-with-aggregated-values>,
-      customFunction: <optional-custom-aggregation-function>
-      customDataType: <optional-custom-type-ofaggregations>
-    }
-  */
   popily.chart.applyGroupData = function(ds, groupData) {
     
     if(groupData.customFunction) {
@@ -349,7 +439,7 @@
       var groupFunc = popily.dataset[groupData.op]
     }
     else {
-      console.error('Unrecognizer grouping agregation function');
+      console.error('Unrecognized grouping function');
       return ds;
     }
     
@@ -357,49 +447,7 @@
     
     return ds;
   };
-  
-  
-  var _buildChartMap = function() {
-    var chartMap = {};
 
-    for(var chartType in popily.chart.chartTypes) {
-      var chartObj = popily.chart.chartTypes[chartType];
-      _.each(chartObj.defaultFor, function(analysisType) {
-        chartMap[analysisType] = chartMap[analysisType] || {};
-        chartMap[analysisType].allowed = chartMap[analysisType].allowed || [];
-        chartMap[analysisType].defaultChart = chartType;
-        chartMap[analysisType].allowed.push(chartType);
-      });
-
-      _.each(chartObj.accepts, function(analysisType) {
-        chartMap[analysisType] = chartMap[analysisType] || {};
-        chartMap[analysisType].allowed = chartMap[analysisType].allowed || [];
-        chartMap[analysisType].allowed.push(chartType);
-      });
-    }
-
-    popily.chart.chartMap = chartMap;
-  };
-
-  function c3Customizations() {
-    c3.chart.internal.fn.oldGetHorizontalAxisHeight = c3.chart.internal.fn.getHorizontalAxisHeight;
-    c3.chart.internal.fn.getHorizontalAxisHeight = function(axisId) {
-      var $$ = this, config = this.config;
-      var h = $$.oldGetHorizontalAxisHeight(axisId);
-      
-      if (axisId === 'y' && config.axis_rotated && config.axis_x_tick_rotate) {
-        h = 30 + $$.axis.getMaxTickWidth(axisId) * Math.cos(Math.PI * (90 - config.axis_x_tick_rotate) / 180);
-      }
-      return h;
-    }
-    c3.chart.internal.fn.oldgetAxisWidthByAxisId = c3.chart.internal.fn.getAxisWidthByAxisId;
-    c3.chart.internal.fn.getAxisWidthByAxisId = function(axisId) {
-      var $$ = this, config = this.config;
-      return $$.oldgetAxisWidthByAxisId(axisId)-14;
-    };
-  }
-  
-  c3Customizations();
 
   if (typeof define === 'function' && define.amd) {
       define("popily", [], function () { return c3; });
