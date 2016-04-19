@@ -2,13 +2,14 @@
 
   // Average number 1 of Category 1 
   
-  
   var joinWithOr = function(arr) {
-    if(arr.length < 2)
-      return arr.join('');
-    else
-      return [arr.slice(0, -1).join(', '), arr.slice(-1)[0]].join(' or ');
-  }
+    return popily.chart.format.joinWith(arr,'or');
+  };
+
+   var joinWithAnd = function(arr) {
+    return popily.chart.format.joinWith(arr,'and');
+  };
+  
     
   window.popily.chart.generateLabels = function(calculation, axisAssignments, transformations) {
         
@@ -16,7 +17,7 @@
     var columnLabel = function(column, description) {
       if(!('column_header' in column))
         console.log(column);
-      var label = '<span class="popily-title-variable" >'+ column.column_header + '</span>';
+      var label = popily.chart.format.wrapLabel(column.column_header);
       var prefixes = [],
         sufixes = [];
       description = description || '';
@@ -42,6 +43,31 @@
         description = 'values of'
       
       return prefixes.join(' and ') +' '+ description + ' '+ label +' '+ sufixes.join(' and ');
+    }
+
+
+    if(axisAssignments.hasOwnProperty('columns')) {
+        var columns = axisAssignments.columns;
+        var numbers = _.filter(columns, function(column) { return column.data_type === 'numeric'});
+        var groupers = _.filter(columns, function(column) { return column.data_type !== 'numeric' });
+        var prefix,suffix;
+        if(numbers.length === 1 && numbers[0].column_header === 'count_0') {
+          prefix = 'Number of ';
+        }
+        else {
+          prefix = popily.chart.format.capitalize(calculation) + ' of ' + joinWithAnd(_.map(_.pluck(numbers,'column_header'),popily.chart.format.wrapLabel));
+        }
+
+        if(groupers.length > 0) {
+          suffix = ' grouped by ' + joinWithAnd(_.map(_.pluck(groupers,'column_header'),popily.chart.format.wrapLabel));
+        }
+        else {
+          suffix = '';
+        }
+      return {
+        title: prefix + suffix
+      }
+
     }
   
   

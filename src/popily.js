@@ -38,6 +38,8 @@
 
       newData.chartData = {};
       newData.chartData.metadata = {};
+      newData.chartData.defaultVariation = apiResponse.default_variation;
+      newData.chartData.calculation = apiResponse.calculation;
 
       _.each(possibleAxis, function(axis) {
         if(axisAssignments.hasOwnProperty(axis)) {
@@ -54,6 +56,17 @@
           }
         }
       });
+
+      if(axisAssignments.hasOwnProperty('columns')) {
+        newData.chartData.columns = _.map(axisAssignments.columns, function(column) {
+          return {
+            values: column.values,
+            label: column.column_header,
+            dataType: column.data_type,
+            possibleDataTypes: column.possible_data_types
+          }
+        });
+      }
 
       if(apiResponse.insight_metadata) {
         newData.chartData.metadata = apiResponse.insight_metadata;
@@ -83,7 +96,7 @@
         // and manipulate the format expected by charting functions
         var axisAssignments = chartClass.assignAxis(ds.getColumns(), calculation, options);
         var formattedData = popily.chart.baseChart.formatChartData(axisAssignments, apiResponse);
-        
+
         // Build a title
         var labels = popily.chart.generateLabels(calculation, axisAssignments, options.transformations || []);
         

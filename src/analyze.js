@@ -179,6 +179,10 @@ Analyze data from the Popily API and prepare for rendering
         }
 
         if(options.hasOwnProperty('chartType')) {
+            if(options.chartType === 'table') {
+                bestType = 'table';
+            }
+
             if(possibleTypes.hasOwnProperty(bestType)) {
                 if(_.contains(possibleTypes[bestType], options.chartType)) {
                     bestType = options.chartType;
