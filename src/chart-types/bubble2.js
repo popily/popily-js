@@ -162,26 +162,6 @@
         .style("opacity", 1)
         .attr("pointer-events", "none");
     
-    /*
-    circles.enter().append("circle")
-      .attr("r", 0)
-      .attr("fill", function(d) {
-        return color(d.group);
-      })
-      .on("mouseover", function(d, i) {
-        tip.show(d, d);
-        d3.select(this.childNodes[0])
-          .transition().duration(50)
-          .attr("r", d.r+5)
-          .transition().duration(100)
-          .attr("r", d.r+3)
-      }).on("mouseout", function(d, i) {
-        tip.hide(d);
-        d3.select(this.childNodes[0])
-            .transition().duration(10)
-            .attr("r", d.r)
-      })
-      */
     
     var chargeFn = function(d) {
       return -Math.pow(radiusScale(d.value), 2.0);
@@ -243,102 +223,6 @@
     }); 
     
     
-    /*
-
-    if((_.isUndefined(options.tooltip)?true:options.tooltip)) {
-        var tip = d3.tip()
-            .attr('class', 'popily-tooltip-container')
-            .offset([-5, 0])
-            .html(function(d) {
-                var text = "<table class='popily-tooltip'><tr><th colspan='2'>" + d.category + "</th></tr>";
-                text += "<tr class='popily-tooltip-name-'>";
-                text += "<td class='name'><span style='background-color:" + color(d.category) + "'></span> " + xLabel + "</td>";
-                text += "<td class='value'>" + d.showValue + "</td>";
-                text += "</tr>";
-                return text + "</table>"; 
-            });
-        svg.call(tip);
-    }
-    
-    var node = svg.selectAll(".node")
-        .data(
-            bubble.nodes(data)
-                .filter(function(d) { return !d.children})
-        )
-        .enter().append("g")
-        .attr("class", "node")
-        .attr("transform", function(d) {
-            return "translate(" + d.x + "," + d.y + ")"; })
-        .on('mouseover', function(d) {
-            tip.show(d, d);
-            d3.select(this.childNodes[0])
-                .transition().duration(50)
-                .attr("r", d.r+5)
-                .transition().duration(100)
-                .attr("r", d.r+3)
-        })
-        .on('mouseout', function(d) { 
-            tip.hide(d);
-            d3.select(this.childNodes[0])
-                .transition().duration(10)
-                .attr("r", d.r)
-        });
-  
-    node.append("circle")
-        .style("fill", function(d) { return color(d.category); })
-        .attr("r", 0)
-        .transition().duration(transitionDuration)
-        .attr("r", function(d) { return d.r; });
-        
-    node.append("text")
-        .attr("dy", ".3em")
-        .style("text-anchor", "middle")
-        .style("opacity", 0)
-        .text(function(d) {
-            if (d.r / 3 > 3) return d.category.substring(0, d.r / 3); 
-            else return '';
-        })
-        .transition().duration(transitionDuration)
-        .style("opacity", 1)
-        .attr("pointer-events", "none");
-
-    var onResize = function() {
-        width = element.getBoundingClientRect().width;
-        size = popilyChart.utils.chartSize();
-        
-        width = options.width || width;
-        height = options.height || size['height'];
-        svg
-            .attr("width", width)
-            .attr("height", height);
-
-        var bubble = d3.layout.pack()
-            .sort(null)
-            .size([width, height])
-            .padding(4);
-        
-        var node = svg.selectAll(".node")
-            .data(
-                bubble.nodes(data)
-                   .filter(function(d) { return !d.children})
-            );
-        svg.selectAll("g")
-            .attr("transform", function(d) {
-                return "translate(" + d.x + "," + d.y + ")"; });
-        
-        svg.selectAll("circle")
-            .attr("r", function(d) { return d.r; });
-        svg.selectAll("text")
-            .text(function(d) { 
-                if (d.r / 3 > 3) return d.category.substring(0, d.r / 3); 
-                else return '';
-            })
-        
-    };
-
-    window.onresize = onResize;
-    
-    */
   };
 
   popilyChart.chartTypes.bubble2 = chart;
