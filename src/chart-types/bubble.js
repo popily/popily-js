@@ -146,11 +146,11 @@
         .attr("pointer-events", "none");
 
     var onResize = function() {
-        width = element.getBoundingClientRect().width;
-        size = popilyChart.utils.chartSize();
+        if(options.width == '100%')
+          width = element.getBoundingClientRect().width;
+        if(options.height == '100%')
+          height = popilyChart.utils.chartSize()['height'];
         
-        width = options.width || width;
-        height = options.height || size['height'];
         svg
             .attr("width", width)
             .attr("height", height);

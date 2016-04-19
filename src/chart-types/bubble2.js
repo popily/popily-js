@@ -217,7 +217,6 @@
       force
         .charge(chargeFn)
         .size([width, height])
-        .resume()
         .start();
       
     }); 
