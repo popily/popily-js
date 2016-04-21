@@ -202,6 +202,26 @@
         return this;
       },
       
+      normalize: function(column, columnNormalized) {
+        var idx = columnIdx(column);
+        var normalizedIdx = columnIdx(columnNormalized);
+        
+        var groupped = _.groupBy(table, function(e){ 
+          return e[idx]; 
+        })
+        _.map(groupped, function(group) {
+          group.sum = _.reduce(group, function(memo, row){ return memo+row[normalizedIdx]; }, 0)
+        });
+
+        table.forEach(function(row) {
+          var group = groupped[row[idx]];
+          row[normalizedIdx] = 100*row[normalizedIdx]/group.sum;
+        });
+        
+        dataChanged();
+        return this;
+      },
+      
       getColumns: function(cb) {
         if(!columnsCache)
           columnsCache = unzip(table);

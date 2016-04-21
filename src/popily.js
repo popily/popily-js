@@ -395,6 +395,9 @@
       else if('replace' == transformation.op) {
         ds.replaceValues(transformation.column, transformation.replacements);
       }
+      else if('normalize' == transformation.op) {
+        ds.normalize(transformation.column, transformation.columnNormalized);
+      }
       else if('order' == transformation.op) {
         var value = transformation.value || transformation.values;
         var type = value;
