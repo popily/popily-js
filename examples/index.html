@@ -53,6 +53,13 @@ var insightOptions = {
     calculation: 'sum',
     xColumn: 'Product Category',
     groupByColumn: 'Customer Segment',
+    transformations: [
+      {
+        column: 'Product Category',
+        op: 'normalize',
+        columnNormalized: 'Sales',
+      }
+    ],
     rotated: true,
     formatters: [
       {

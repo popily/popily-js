@@ -25,6 +25,7 @@
           background: false,
           xAxis: true,
           yAxis: true,
+          formatters: []
       },
       categoryLimit: 500,
       barBubbleCutoff: 30,
@@ -221,7 +222,7 @@
     }
     
     if(options.transformations) {
-      popily.chart.applyTransformations(ds, options.transformations);
+      popily.chart.applyTransformations(ds, options);
     }
     
     return chart.draw(element, options);
@@ -388,8 +389,8 @@
     });
   };
 
-  popily.chart.applyTransformations = function(ds, transformations) {
-    transformations.forEach(function(transformation) {
+  popily.chart.applyTransformations = function(ds, options) {
+    options.transformations.forEach(function(transformation) {
       if(['count', 'countUnique'].indexOf(transformation.op) !== -1) {
         popily.chart.applyGroupData(ds, transformation);
       }
@@ -398,6 +399,12 @@
       }
       else if('normalize' == transformation.op) {
         ds.normalize(transformation.column, transformation.columnNormalized);
+        if(!options.formatters.find(function(f) { return f.column==transformation.columnNormalized}) )
+          options.formatters.push({
+            column: transformation.columnNormalized,
+            op: 'sufix',
+            value: '%'
+          });
       }
       else if('order' == transformation.op) {
         var value = transformation.value || transformation.values;
