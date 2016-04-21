@@ -161,17 +161,18 @@
       };
       
     var formatAxis = function(axis, options, valueFormater) {
-      
-      if(!valueFormater)
-        valueFormater = function(v) {return v;};
-        
+
       if(options[axis+'Formatter'])
-        var formater = function(v) { return options[axis+'Formatter'](valueFormater(v)); }
+        var optionsFormater = options[axis+'Formatter'];
       else
-        var formater = valueFormater;
+        var optionsFormater = function(v) { return v; };
               
       return function(v) {
-        return (options[axis+'Prefix']||"") + formater(v) + (options[axis+'Sufix']||"");
+        var $$ = this, config = $$.config;
+        if(!valueFormater) {
+          valueFormater = $$.isTimeSeries() ? $$.defaultAxisTimeFormat : $$.isCategorized() ? $$.categoryName : function (v) { return v < 0 ? v.toFixed(0) : v; };
+        }
+        return (options[axis+'Prefix']||"") + optionsFormater(valueFormater.call($$, v)) + (options[axis+'Sufix']||"");
       }
     }
 

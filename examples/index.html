@@ -48,19 +48,10 @@ setTimeout(function() {
 //*
 popily.api.setToken('56ea1e35ebcf052737fa4096e5409ea8d9c1491f');
 var insightOptions = {
-    source: 'superstore-sales-csv-5',
-    columns: ['Order Date', 'Sales','Customer Segment'],
-    calculation: 'sum',
-    transformations: [
-      {
-        column: 'Order Date',
-        op: 'normalize',
-        columnNormalized: 'Sales',
-      }
-    ],
-    ySufix: "%",
-    chartType: 'barStacked',
-    rotated: true
+  source: 'superstore-sales-csv-5',
+  columns: ['Sales', 'Product Category'],
+  calculation: 'sum',
+  xPrefix: '%'
 };
 popily.chart.getAndRender('#my-chart-01', insightOptions);
 //*/
