@@ -8,6 +8,7 @@
   };
 
   chart.render = function(element, options, rawData) {
+      formattedData = rawData;
       var preppedData = popilyChart.chartTypes.compare.prepData(rawData, options);
       var xValues = preppedData[0];
       var yValues = preppedData[1];
@@ -39,7 +40,7 @@
           }
       };
         
-      return popilyChart.chartTypes.compare.render(element, options, columns, xs, xLabel, yLabel, tooltip);
+      return popilyChart.chartTypes.compare.render(element, options, columns, xs, xLabel, yLabel, tooltip, formattedData);
   };
 
   popilyChart.chartTypes.scatterplot = chart;

@@ -47,7 +47,7 @@
     return [cleanXValues, cleanYValues, cleanZValues];
   };
 
-  chart.render = function(element, options, columns, xs, xLabel, yLabel, tooltip) {
+  chart.render = function(element, options, columns, xs, xLabel, yLabel, tooltip, formattedData) {
       var chartPadding = {right: 10, top: 10};
 
       var chartData = {
@@ -75,7 +75,7 @@
                       fit: false,
                       rotate: options.xRotation ||  45,
                       autorotate: !options.xRotation,
-                      format: popily.chart.format.formatAxis('x', options),
+                      format: popily.chart.format.formatAxis(formattedData.chartData.x, options),
                   }
               },
               y: {
@@ -85,7 +85,7 @@
                       position: 'outer-middle'
                   },
                   tick: {
-                      format: popily.chart.format.formatAxis('y', options, d3.format(",")),
+                      format: popily.chart.format.formatAxis(formattedData.chartData.y, options, d3.format(",")),
                       rotate: options.yRotation ||  0,
                   }
               }

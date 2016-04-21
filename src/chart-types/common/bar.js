@@ -137,6 +137,7 @@
     var yLabel = kwargs.yLabel;
     var options = kwargs.options;
     var rotated = kwargs.rotated;
+    var formattedData = kwargs.formattedData;
 
     rotated = options.rotated || rotated;
         
@@ -156,7 +157,7 @@
                   rotate: options.xRotation ||  45,
                   autorotate: !options.xRotation,
                   multiline: false,
-                  format: popily.chart.format.formatAxis('x', options)
+                  format: popily.chart.format.formatAxis(formattedData.chartData.x, options)
               },
               label: {
                  text: options.xLabel || xLabel,
@@ -170,7 +171,7 @@
                   position: rotated?'inner-right':'outer-middle'
               },
               tick: {
-                  format: popily.chart.format.formatAxis('y', options, d3.format(",")),
+                  format: popily.chart.format.formatAxis(formattedData.chartData.y, options, d3.format(",")),
                   rotate: options.yRotation ||  0,
               }
           },

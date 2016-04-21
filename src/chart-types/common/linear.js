@@ -48,6 +48,7 @@
     var ticksValues = kwargs.ticksValues;
     var tickFormatStr = kwargs.tickFormatStr;
     var tickFormat = d3.time.format(tickFormatStr);
+    var formattedData = kwargs.formattedData;
     
     var chartData = {
         bindto: element,
@@ -63,7 +64,7 @@
                 type: (!options.order || options.order == 'auto' ? 'timeseries' : 'category'),
                 tick: {
                     fit: false,
-                    format: popily.chart.format.formatAxis('x', options, tickFormat),
+                    format: popily.chart.format.formatAxis(formattedData.chartData.x, options, tickFormat),
                     rotate: options.xRotation ||  45,
                     autorotate: !options.xRotation,
                     centered: true,
@@ -83,7 +84,7 @@
                     position: 'outer-middle'
                 },
                 tick: {
-                    format: popily.chart.format.formatAxis('y', options, d3.format(",")),
+                    format: popily.chart.format.formatAxis(formattedData.chartData.y, options, d3.format(",")),
                     rotate: options.yRotation ||  0,
                 },
                 padding: {top:0, bottom:0}
@@ -187,7 +188,8 @@
         dateFormatStr: dateData.dateFormatStr,
         chartPadding: chartPadding,
         tickFormatStr: dateData.tickFormatStr,
-        ticksValues: dateData.ticksValues
+        ticksValues: dateData.ticksValues,
+        formattedData: formattedData
       };
       var chartData = that.getChartObject(kwargs);
       chartData.tooltip.grouped = (function() {

@@ -38,7 +38,6 @@
       var preppedData = popilyChart.chartTypes.barCommon.prepData(formattedData, options);
       var xValues = preppedData[0];
       var yValues = preppedData[1];
-      var chartData = formattedData.chartData;
 
       var chart;
         
@@ -54,7 +53,7 @@
           options.height = (yValues.length * 9) + 450;
       }
 
-      var yLabel = chartData.y.label;
+      var yLabel = formattedData.chartData.y.label;
       yValues.unshift(yLabel);
       
       var chartData = {
@@ -74,14 +73,14 @@
             type: 'category',
             categories: xValues,
             tick: {
-              format: popily.chart.format.formatAxis('x', options),
+              format: popily.chart.format.formatAxis(formattedData.chartData.x, options),
               rotate: options.xRotation ||  45,
               autorotate: !options.xRotation,
               multiline: false,
               fit: true
             },
             label: {
-              text: options.xLabel || chartData.x.label,
+              text: options.xLabel || formattedData.chartData.x.label,
               position: rotated?'outer-middle':'inner-right',
             }
           },
@@ -92,7 +91,7 @@
               position: rotated?'inner-right':'outer-middle'
             },
             tick: {
-              format: popily.chart.format.formatAxis('y', options, d3.format(",")),
+              format: popily.chart.format.formatAxis(formattedData.chartData.y, options, d3.format(",")),
               rotate: options.yRotation ||  0,
             }
           },

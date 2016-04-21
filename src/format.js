@@ -162,10 +162,23 @@
       
     var formatAxis = function(axis, options, valueFormater) {
 
-      if(options[axis+'Formatter'])
-        var optionsFormater = options[axis+'Formatter'];
-      else
-        var optionsFormater = function(v) { return v; };
+      var formatters = [];
+      (options['formatters']||[]).forEach(function(f) {
+        if(f.column == axis.label)
+          formatters.push(f);
+      });
+      
+      var optionsFormater = function(v) { 
+        formatters.forEach(function(f) {
+          if(f.op == 'prefix')
+            v = f.value + v;
+          else if(f.op == 'sufix')
+            v = v + f.value;
+          else if(f.func)
+            v = f.func(v);
+        });
+        return v;
+      };
               
       return function(v) {
         var $$ = this, config = $$.config;

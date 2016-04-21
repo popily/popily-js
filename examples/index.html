@@ -48,10 +48,28 @@ setTimeout(function() {
 //*
 popily.api.setToken('56ea1e35ebcf052737fa4096e5409ea8d9c1491f');
 var insightOptions = {
-  source: 'superstore-sales-csv-5',
-  columns: ['Sales', 'Product Category'],
-  calculation: 'sum',
-  xPrefix: '%'
+    source: 'superstore-sales-csv-5',
+    columns: ['Sales', 'Product Category','Customer Segment'],
+    calculation: 'sum',
+    xColumn: 'Product Category',
+    groupByColumn: 'Customer Segment',
+    rotated: true,
+    formatters: [
+      {
+        column: 'Product Category',
+        op: 'prefix',
+        value: '$'
+      },
+      {
+        column: 'Product Category',
+        op: 'sufix',
+        value: '%'
+      },
+      {
+        column: 'Product Category',
+        func: function(v) {return '#'+v+'#';}
+      }
+    ]
 };
 popily.chart.getAndRender('#my-chart-01', insightOptions);
 //*/

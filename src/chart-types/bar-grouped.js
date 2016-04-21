@@ -28,7 +28,8 @@
         rotated: rotated,
         xLabel: xLabel,
         yLabel: yLabel,
-        element: element
+        element: element,
+        formattedData: formattedData
       };
       var chartData = popilyChart.chartTypes.barCommon.getChartObject(kwargs);
       chartData.onresized = function() {

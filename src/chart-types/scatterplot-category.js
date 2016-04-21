@@ -75,7 +75,7 @@
           showLegend = false;
       }
 
-      return popilyChart.chartTypes.compare.render(element, options, columns, xs, xLabel, yLabel, tooltip);
+      return popilyChart.chartTypes.compare.render(element, options, columns, xs, xLabel, yLabel, tooltip, formattedData);
   };
 
   popilyChart.chartTypes.scatterplotCategory = chart;
