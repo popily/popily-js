@@ -75,6 +75,7 @@
                       fit: false,
                       rotate: options.xRotation ||  45,
                       autorotate: !options.xRotation,
+                      format: popily.chart.format.formatAxis('x', options),
                   }
               },
               y: {
@@ -84,7 +85,7 @@
                       position: 'outer-middle'
                   },
                   tick: {
-                      format: d3.format(","),
+                      format: popily.chart.format.formatAxis('y', options, d3.format(",")),
                       rotate: options.yRotation ||  0,
                   }
               }

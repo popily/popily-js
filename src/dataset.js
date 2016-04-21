@@ -3,7 +3,7 @@
 (function(window) {
 
 
-  window.popily.dataset = function(insightObject, options) {
+  window.popily.dataset = function(insightObject) {
 
     var labels, dataTypes, table, columnsCache, variations;
     

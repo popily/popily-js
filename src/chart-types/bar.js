@@ -74,6 +74,7 @@
             type: 'category',
             categories: xValues,
             tick: {
+              format: popily.chart.format.formatAxis('x', options),
               rotate: options.xRotation ||  45,
               autorotate: !options.xRotation,
               multiline: false,
@@ -91,7 +92,7 @@
               position: rotated?'inner-right':'outer-middle'
             },
             tick: {
-              format: d3.format(","),
+              format: popily.chart.format.formatAxis('y', options, d3.format(",")),
               rotate: options.yRotation ||  0,
             }
           },

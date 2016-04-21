@@ -331,6 +331,12 @@
       'yRotation': 'yRotation',
       'xAxis': 'xAxis',
       'yAxis': 'yAxis',
+      'xPrefix': 'xPrefix',
+      'xSufix': 'xSufix',
+      'xFormatter': 'xFormatter',
+      'yPrefix': 'yPrefix',
+      'ySufix': 'ySufix',
+      'yFormatter': 'yFormatter',
     };
 
     var availableServerOptions = {

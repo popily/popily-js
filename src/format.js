@@ -159,6 +159,21 @@
       var capitalize = function(str) {
         return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
       };
+      
+    var formatAxis = function(axis, options, valueFormater) {
+      
+      if(!valueFormater)
+        valueFormater = function(v) {return v;};
+        
+      if(options[axis+'Formatter'])
+        var formater = function(v) { return options[axis+'Formatter'](valueFormater(v)); }
+      else
+        var formater = valueFormater;
+              
+      return function(v) {
+        return (options[axis+'Prefix']||"") + formater(v) + (options[axis+'Sufix']||"");
+      }
+    }
 
     popily.chart.format = {
         formatNumbers: formatNumbers,
@@ -172,6 +187,7 @@
         slugify: slugify,
         joinWith: joinWith,
         wrapLabel: wrapLabel,
-        capitalize: capitalize
+        capitalize: capitalize,
+        formatAxis: formatAxis
     }
 })(window);

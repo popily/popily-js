@@ -116,7 +116,7 @@
                   type: (!options.order || options.order == 'auto' ? 'timeseries' : 'category'),
                   tick: {
                       fit: false,
-                      format: tickFormatStr,
+                      format: popily.chart.format.formatAxis('x', options, tickFormat),
                       rotate: options.xRotation ||  45,
                       autorotate: !options.xRotation,
                       multiline: false,
@@ -137,7 +137,7 @@
                       position: 'outer-middle'
                   },
                   tick: {
-                      format: d3.format(","),
+                      format: popily.chart.format.formatAxis('x', options, d3.format(",")),
                       rotate: options.yRotation ||  0,
                   }
               }
