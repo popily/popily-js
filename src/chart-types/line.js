@@ -68,10 +68,10 @@
       var dayDiff = popily.chart.format.daysDiff(xValues); 
       var tickFormatStr = popily.chart.format.formatFromDayDiff(dayDiff);
       
-      var interval = options.interval || formattedData.chartData.metadata.intervals[0];
+      var variation = options.variation || formattedData.chartData.metadata.intervals[0];
 
-      var dateFormatStr = popily.chart.format.formatFromInterval(interval);
-      if(_.isUndefined(interval)) {
+      var dateFormatStr = popily.chart.format.formatFromInterval(variation);
+      if(_.isUndefined(variation)) {
         dateFormatStr = popily.chart.format.formatFromInspection(xValues);
       }
       

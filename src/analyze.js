@@ -152,8 +152,8 @@ Analyze data from the Popily API and prepare for rendering
             'barStacked': ['barGrouped'],
             'bubble': ['bar', 'bubble2'],
             'bubble2': ['bar', 'bubble'],
-            'multiLine': ['stackedArea','barGrouped','barStacked'],
-            'stackedArea': ['multiLine','barGrouped','barStacked'],
+            'multiLine': ['stackedArea','barGrouped','barStacked', 'radar'],
+            'stackedArea': ['multiLine','barGrouped','barStacked', 'radar'],
             'choropleth': ['bar','bubble','bubble2'],
             'line': ['bar']
         };

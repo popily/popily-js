@@ -44,7 +44,7 @@
     var options = kwargs.options;
     var dateFormatStr = kwargs.dateFormatStr;
     var chartPadding = kwargs.chartPadding;
-    var interval = kwargs.interval;
+    var variation = kwargs.variation;
     var ticksValues = kwargs.ticksValues;
     var tickFormatStr = kwargs.tickFormatStr;
     var tickFormat = d3.time.format(tickFormatStr);
@@ -135,10 +135,10 @@
     var dayDiff = popily.chart.format.daysDiff(xValues); 
     var tickFormatStr = popily.chart.format.formatFromDayDiff(dayDiff);
     
-    var interval = options.interval;
+    var variation = options.variation;
 
-    var dateFormatStr = popily.chart.format.formatFromInterval(interval);
-    if(_.isUndefined(interval)) {
+    var dateFormatStr = popily.chart.format.formatFromInterval(variation);
+    if(_.isUndefined(variation)) {
       dateFormatStr = popily.chart.format.formatFromInspection(xValues);
     }
 
@@ -169,7 +169,7 @@
       var xLabel = formattedData.chartData.x.label;
       var yLabel = formattedData.chartData.y.label;
 
-      options.interval = options.interval || formattedData.chartData.metadata.intervals[0];
+      options.variation = options.variation || formattedData.chartData.metadata.intervals[0];
       var yMin = that.getYMin(yValues);
             
       var data = popilyChart.chartData.c3ify(xValues,yValues,zValues);
