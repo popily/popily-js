@@ -56,27 +56,11 @@ var insightOptions = {
     transformations: [
       {
         column: 'Product Category',
-        op: 'normalize',
-        columnNormalized: 'Sales',
+        op: 'noteq',
+        value: ['Technology'],
       }
     ],
-    rotated: true,
-    formatters: [
-      {
-        column: 'Product Category',
-        op: 'prefix',
-        value: '$'
-      },
-      {
-        column: 'Product Category',
-        op: 'sufix',
-        value: '%'
-      },
-      {
-        column: 'Product Category',
-        func: function(v) {return '#'+v+'#';}
-      }
-    ]
+    hideColumns: ['Product Category'],
 };
 popily.chart.getAndRender('#my-chart-01', insightOptions);
 //*/

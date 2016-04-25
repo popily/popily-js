@@ -75,16 +75,20 @@
 
       return newData;
     },
-    chartableColumns: function(columns,valueFilters) {
+    chartableColumns: function(columns,valueFilters,hideColumns) {
       var filtered = _.keys(valueFilters);
       var chartables = _.filter(columns, function(column) {
+          
+          if(_.contains(hideColumns,column.column_header)) {
+            return false;
+          }
+          
           if(!_.contains(filtered,column.column_header)) {
             return true;
           }
           else if(_.isArray(valueFilters[column.column_header]) && valueFilters[column.column_header].length > 1) {
             return true;
           }
-          
           return false;
       });
 
@@ -122,7 +126,7 @@
 
         // Determine the chart type based on the data
         var valueFilters = popily.chart.baseChart.valueFilters(options.transformations);
-        var chartableColumns = popily.chart.baseChart.chartableColumns(ds.getColumns(),valueFilters);
+        var chartableColumns = popily.chart.baseChart.chartableColumns(ds.getColumns(),valueFilters,options.hideColumns||[]);
         var chartType = popily.chart.analyze.chartTypeForData(chartableColumns, calculation, options);
         var chartClass = popily.chart.chartTypes[chartType];
         
@@ -333,6 +337,7 @@
       'xAxis': 'xAxis',
       'yAxis': 'yAxis',
       'formatters': 'formatters',
+      'hideColumns': 'hideColumns',
     };
 
     var availableServerOptions = {
