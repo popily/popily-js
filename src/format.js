@@ -183,7 +183,10 @@
       return function(v) {
         var $$ = this, config = $$.config;
         if(!valueFormater) {
-          valueFormater = $$.isTimeSeries() ? $$.defaultAxisTimeFormat : $$.isCategorized() ? $$.categoryName : function (v) { return v < 0 ? v.toFixed(0) : v; };
+          if($$.config)
+            valueFormater = $$.isTimeSeries() ? $$.defaultAxisTimeFormat : $$.isCategorized() ? $$.categoryName : function (v) { return v < 0 ? v.toFixed(0) : v; };
+          else
+            valueFormater = function (v) { return v < 0 ? v.toFixed(0) : v; };
         }
         return (options[axis+'Prefix']||"") + optionsFormater(valueFormater.call($$, v)) + (options[axis+'Sufix']||"");
       }

@@ -49,17 +49,17 @@ setTimeout(function() {
 popily.api.setToken('56ea1e35ebcf052737fa4096e5409ea8d9c1491f');
 var insightOptions = {
     source: 'superstore-sales-csv-5',
-    columns: ['Order Date', 'Sales','Customer Segment'],
+    //columns: ['Order Date', 'Sales','Customer Segment'],
+    columns: ['Sales', 'Product Category','Customer Segment'],
+    //calculation: 'average',
+    //columns: ['Product Category','Sales','Customer Segment'],
     calculation: 'sum',
+    //xColumn: 'Product Category',
+    //groupByColumn: 'Customer Segment',
     chartType: 'radar'
+    //transformations
+    //hideColumns: ['Customer Segment']
 };
-var insightOptions = {
-    source: 'superstore-sales-csv-5',
-    columns: ['Order Date', 'Sales', 'Customer Segment'],
-    calculation: 'sum',
-    timeInterval: 'month'
-};
-
 popily.chart.getAndRender('#my-chart-01', insightOptions);
 //*/
 
