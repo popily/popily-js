@@ -43,7 +43,7 @@
     radius = Math.min(width/2-labelMaxBox.width, height/2-labelMaxBox.height);
 	  scale
 	    .range([0, radius*0.95])
-	    .domain([data.axis.y.tick.min, data.axis.y.tick.max])
+	    .domain([data.axis.y.min, data.axis.y.max])
 	    .nice();
 	  ticks = scale.ticks(data.axis.y.tick.count);
 
@@ -54,7 +54,7 @@
         .html(function(d, i, k) {
           var text = "<table class='popily-tooltip'><tr><th colspan='2'>" + data.axis.x.tick.format(data.axis.x.categories[i]) + "</th></tr>";
           text += "<tr class='popily-tooltip-name-'>";
-          text += "<td class='name'><span style='background-color:" + data.colors[k] + "'></span> " + data.data.groups[k] + "</td>";
+          text += "<td class='name'><span style='background-color:" + data.colors[k] + "'></span> " + data.data.columns[k][0] + "</td>";
           text += "<td class='value'>" + data.axis.y.tick.format(d) + "</td>";
           text += "</tr>";
           return text + "</table>"; 
@@ -265,20 +265,35 @@
 
 
   chart.assignAxis = function(columns, calculation, options) {
-      return popilyChart.chartTypes.barCommon.assignAxis(columns,calculation,options);
+      var data;
+      if(columns.length == 2)
+        data = popilyChart.chartTypes.bar.assignAxis(columns,calculation,options);
+      else
+        data = popilyChart.chartTypes.barCommon.assignAxis(columns,calculation,options);
+      return data;
   };
 
   chart.render = function(element, options, formattedData) {
   
+    var data;
     var xLabel = formattedData.chartData.x.label;
     var yLabel = formattedData.chartData.y.label;
 
-    data = popilyChart.chartData.c3ify( formattedData.chartData.x.values,
+    if(formattedData.chartData.z) {
+      data = popilyChart.chartData.c3ify( formattedData.chartData.x.values,
                                         formattedData.chartData.y.values,
                                         formattedData.chartData.z.values);
-    
+    }
+    else {
+      var column = [formattedData.chartData.y.label];
+      column.push.apply(column, formattedData.chartData.y.values)
+      data = {
+        columns: [column],
+        groups: false,
+        categories: formattedData.chartData.x.values
+      };
+    }
     console.log(data);
-    
     var chartData = {
       bindTo: element,
       data : {
@@ -286,27 +301,27 @@
         groups: data.groups
       },
       axis: {
-          x: {
-              show: options.xAxis,
-              categories: data.categories,
-              tick: {
-                  format: popily.chart.format.formatAxis(formattedData.chartData.x, options)
-              },
-              label: {
-                 text: options.xLabel || xLabel,
-              },
+        x: {
+          show: options.xAxis,
+          categories: data.categories,
+          tick: {
+            format: popily.chart.format.formatAxis(formattedData.chartData.x, options)
           },
-          y: {
-              show: options.yAxis,
-              label: {
-                  text: options.yLabel || yLabel,
-              },
-              tick: {
-                  max: _.max(formattedData.chartData.y.values),
-                  min: _.min(formattedData.chartData.y.values),
-                  format: popily.chart.format.formatAxis(formattedData.chartData.y, options, d3.format(",")),
-              }
+          label: {
+           text: options.xLabel || xLabel,
           },
+        },
+        y: {
+          min: Math.min(_.min(formattedData.chartData.y.values), 0),
+          max: _.max(formattedData.chartData.y.values),
+          show: options.yAxis,
+          label: {
+            text: options.yLabel || yLabel,
+          },
+          tick: {
+            format: popily.chart.format.formatAxis(formattedData.chartData.y, options, d3.format(",")),
+          }
+        },
       },
       colors: options.colors,
       legend: (!_.isUndefined(options.legend) ? options.legend : true),
