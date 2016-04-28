@@ -52,11 +52,22 @@ var insightOptions = {
     //columns: ['Order Priority'],
     //calculation: 'count',
     //calculation: 'average',
-    columns: ['Order Date','Customer Segment'],
+    columns: ['Sales','Order Priority', 'Product Category'],
+    //calculation: 'sum',
     //xColumn: 'Product Category',
     //groupByColumn: 'Customer Segment',
-    chartType: 0?'radar':'radarStacked',
-    timeInterval: 'month'
+    chartType: 1?'radar':'radarStacked',
+    timeIntervals: 'month',
+    transformationss: [{
+      column: 'Order Date',
+      op: 'normalize',
+      columnNormalized: 'Sales'
+    }],
+    tooltip: false,
+    xGrid: false,
+    legend: false,
+    yAxis: true,
+    xAxis: false
     //transformations
     //hideColumns: ['Customer Segment']
 };

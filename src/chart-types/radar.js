@@ -20,6 +20,8 @@
       ticks, scale = d3.scale.linear(),
       stackedValues = [],
       columnsCount = data.data.columns.length-1,
+      legendHeight = 0, legendItemPositions = [],
+      labelMaxBox = {width: 0, height: 0},
       $$ = this;
   
     if(!this.isStacked) {
@@ -46,6 +48,7 @@
         if(stackedBefore > maxValue) maxValue = stackedBefore;
       };
     }
+    minValue = Math.min(minValue, 0);
 
     var stacked = function(d,i,k) {
       if(!$$.isStacked)
@@ -60,23 +63,69 @@
       height = data.bindTo.getBoundingClientRect().height || 500;
   
   	element = d3.select(data.bindTo);
-  	element.style("max-height", height+'px'); 
+  	element.style("max-height", (height+legendHeight)+'px'); 
   	
   	element.select("svg").remove();
   	var svg = element.append("svg")
 			.attr("width", width)
-			.attr("height", height);
+			.attr("height", height+legendHeight);
     var g = svg.append("g");
     
-    var dummy = g.append('g');
-    dummy.selectAll('text')
-      .data(data.axis.x.categories)
-      .enter()
-      .append('text')
-      .text(function(d){return data.axis.x.tick.format(d)});
-    var labelMaxBox = dummy[0][0].getBoundingClientRect();
-    dummy.remove();
-		  
+    var getTextWidth = function(text) {
+      if(!_.isArray(text))
+        text = [text];
+      var dummy = g.append('g');
+      dummy.selectAll('text')
+        .data(text)
+        .enter()
+        .append('text')
+        .text(function(d){return data.axis.x.tick.format(d)});
+      var size = dummy[0][0].getBoundingClientRect();
+      dummy.remove();
+      return size;
+    }
+    
+    var legendTextsWidths = _.map(data.data.groups, function(group) {
+      return getTextWidth(group).width;
+    });
+    
+    var calculateLegendItemPositions = function(groups) {
+      var positions = [];
+      var currentLineItems = [];
+      var currentLineWidth = 0;
+      var line = 0;
+      legendTextsWidths.forEach(function(w) {
+        w=w+20;
+        if(currentLineWidth+w+20>width) {
+          var padding = (width-currentLineWidth)/2;
+          currentLineItems.forEach(function(i) {
+            positions.push({left: padding, line: line});
+            padding = padding+i;
+          });
+          line += 1;
+          currentLineWidth = 0;
+          currentLineItems = [];
+        }
+        currentLineWidth += w;
+        currentLineItems.push(w)
+      });
+      var padding = (width-currentLineWidth)/2;
+      
+      currentLineItems.forEach(function(w) {
+        positions.push({left: padding, line: line})
+        padding = padding+w;
+      });
+      return positions;
+    }
+    
+    if(data.legend) {
+  		legendItemPositions = calculateLegendItemPositions(data.data.groups);
+      legendHeight = (legendItemPositions[legendItemPositions.length-1].line+1)*20;
+      height = height - legendHeight;
+    }
+    if(data.axis.x.show)
+      labelMaxBox = getTextWidth(data.axis.x.categories);
+		
     radius = Math.min(width/2-labelMaxBox.width, height/2-labelMaxBox.height);
 	  scale
 	    .range([0, radius*0.95])
@@ -101,26 +150,28 @@
     }
     
     //grid
-    var ygrid = g
-		  .append("g")
-		  .attr("class", "popily-grid")
-		  .append("g")
-		  .attr("class", "popily-ygrids");
-	  var ygridLines = ygrid
-		  .selectAll('g')
-		  .data(ticks)
-		  .enter()
-		  .append('g')
-		  .selectAll(".popily-ygrids")
-	    .data(data.axis.x.categories)
-	    .enter()
-	    .append("svg:line")
-	    .attr("class", "popily-ygrid")
-	    .attr("x1", function(d,i,k){return scale(ticks[k])*(1-Math.sin(i*2*Math.PI/total));})
-	    .attr("y1", function(d,i,k){return scale(ticks[k])*(1-Math.cos(i*2*Math.PI/total));})
-	    .attr("x2", function(d,i,k){return scale(ticks[k])*(1-Math.sin((i+1)*2*Math.PI/total));})
-  	  .attr("y2", function(d,i,k){return scale(ticks[k])*(1-Math.cos((i+1)*2*Math.PI/total));})
-	    .attr("transform", function(d,i,k) { return "translate(" + (width/2-scale(ticks[k])) + ", " + (height/2-scale(ticks[k])) + ")"; });
+    if(data.grid) {
+      var ygrid = g
+		    .append("g")
+		    .attr("class", "popily-grid")
+		    .append("g")
+		    .attr("class", "popily-ygrids");
+	    var ygridLines = ygrid
+		    .selectAll('g')
+		    .data(ticks)
+		    .enter()
+		    .append('g')
+		    .selectAll(".popily-ygrids")
+	      .data(data.axis.x.categories)
+	      .enter()
+	      .append("svg:line")
+	      .attr("class", "popily-ygrid")
+	      .attr("x1", function(d,i,k){return scale(ticks[k])*(1-Math.sin(i*2*Math.PI/total));})
+	      .attr("y1", function(d,i,k){return scale(ticks[k])*(1-Math.cos(i*2*Math.PI/total));})
+	      .attr("x2", function(d,i,k){return scale(ticks[k])*(1-Math.sin((i+1)*2*Math.PI/total));})
+    	  .attr("y2", function(d,i,k){return scale(ticks[k])*(1-Math.cos((i+1)*2*Math.PI/total));})
+	      .attr("transform", function(d,i,k) { return "translate(" + (width/2-scale(ticks[k])) + ", " + (height/2-scale(ticks[k])) + ")"; });
+	  }
 	  
 	  var axis = g.selectAll(".popily-axis popily-axis-y")
 		  .data(data.axis.x.categories)
@@ -128,38 +179,52 @@
 		  .append("g")
 		  .attr("class", "popily-axis popily-axis-y");
 
-	  //Text labels
-	  var yTicks = g.select(".popily-axis-y")
-	    .selectAll(".tick")
-	    .data(ticks)
-	    .enter()
-	    .append("g")
-	    .attr("class", "tick")
-      .append("svg:text")
-      .attr("x", function(d){return scale(d)*(1-Math.sin(0));})
-      .attr("y", function(d){return scale(d)*(1-Math.cos(0));})
-      .attr("transform", function(d) { return "translate(" + (width/2-scale(d)+5) + ", " + (height/2-scale(d)+5) + ")";})
-      .text(function(d, i) {return i?data.axis.y.tick.format(d):''});
+    if(data.axis.y.show) {
+	    //y label
+	    var yLabel = g.select(".popily-axis-y")
+	      .append("svg:text")
+	      .attr("class", "popily-axis-y-label")
+	      .style("text-anchor", "end")
+	      .text(data.axis.y.label.text)
+	      .attr('dy', -7)
+	      .attr("transform", "translate(" + (width/2) + ", " + (height/2-radius*0.95) + ") rotate(-90) ");
+	      
+
+	    //Text labels
+	    var yTicks = g.select(".popily-axis-y")
+	      .selectAll(".tick")
+	      .data(ticks)
+	      .enter()
+	      .append("g")
+	      .attr("class", "tick")
+        .append("svg:text")
+        .attr("x", function(d){return scale(d)*(1-Math.sin(0));})
+        .attr("y", function(d){return scale(d)*(1-Math.cos(0));})
+        .attr("transform", function(d) { return "translate(" + (width/2-scale(d)+5) + ", " + (height/2-scale(d)+5) + ")";})
+        .text(function(d, i) {return i?data.axis.y.tick.format(d):''});
+    }
       
     
     // axis lines
-	  var axisLines = axis.append("line")
-		  .attr("x1", width/2)
-		  .attr("y1", height/2)
-		  .attr("x2", function(d, i){return width/2+radius*(Math.sin(i*2*Math.PI/total));})
-		  .attr("y2", function(d, i){return height/2-radius*(Math.cos(i*2*Math.PI/total));})
-		  .attr("class", "domain")
-		  .style("stroke", "grey")
-		  .style("stroke-width", "1px");
+    var axisLines = axis.append("line")
+	    .attr("x1", width/2)
+	    .attr("y1", height/2)
+	    .attr("x2", function(d, i){return width/2+radius*(Math.sin(i*2*Math.PI/total));})
+	    .attr("y2", function(d, i){return height/2-radius*(Math.cos(i*2*Math.PI/total));})
+	    .attr("class", "domain")
+	    .style("stroke", "grey")
+	    .style("stroke-width", "1px");
 
-    // axis labels
-	  var axisLabels = axis.append("text")
-		  .text(function(d){return data.axis.x.tick.format(d)})
-		  .attr("text-anchor", "middle")
-		  .attr("dy", "1.5em")
-		  .attr("transform", function(d, i){return "translate(0, -10)"})
-		  .attr("x", function(d, i){return width/2+radius*(Math.sin(i*2*Math.PI/total))+labelMaxBox.width/2*Math.sin(i*2*Math.PI/total);})
-		  .attr("y", function(d, i){return height/2-radius*(Math.cos(i*2*Math.PI/total))-labelMaxBox.height/2*Math.cos(i*2*Math.PI/total) - 4 ;});
+    if(data.axis.x.show) {
+      // axis labels
+	    var axisLabels = axis.append("text")
+		    .text(function(d){return data.axis.x.tick.format(d)})
+		    .attr("text-anchor", "middle")
+		    .attr("dy", "1.5em")
+		    .attr("transform", function(d, i){return "translate(0, -10)"})
+		    .attr("x", function(d, i){return width/2+radius*(Math.sin(i*2*Math.PI/total))+labelMaxBox.width/2*Math.sin(i*2*Math.PI/total);})
+		    .attr("y", function(d, i){return height/2-radius*(Math.cos(i*2*Math.PI/total))-labelMaxBox.height/2*Math.cos(i*2*Math.PI/total) - 4 ;});
+    }
 
 
     var line = g
@@ -179,11 +244,7 @@
       .style("stroke", function(d,i) {return data.colors[$$.isStacked?columnsCount-i:i]})
       .attr("points",function(d, k) {
         var str="";
-        d.slice(1).forEach(function(d, i) {
-          str += 
-            (width/2+(scale(stacked(d,i,k))*Math.sin(i*2*Math.PI/total))) + ',' +
-            (height/2-(scale(stacked(d,i,k))*Math.cos(i*2*Math.PI/total))) + ' '
-        })
+        d.slice(1).forEach(function() {str += width/2+','+height/2+' ';});
         return str;
         })
       .style("fill", function(d, i){return data.colors[$$.isStacked?columnsCount-i:i]})
@@ -202,6 +263,18 @@
          .transition(200)
          .style("fill-opacity", 0.2);
       })
+    shapes
+      .transition()
+      .duration(data.transition.duration)
+      .attr("points",function(d, k) {
+        var str="";
+        d.slice(1).forEach(function(d, i) {
+          str += 
+            (width/2+(scale(stacked(d,i,k))*Math.sin(i*2*Math.PI/total))) + ',' +
+            (height/2-(scale(stacked(d,i,k))*Math.cos(i*2*Math.PI/total))) + ' ';
+        });
+        return str;
+        })
       
     // circles
     var points = line
@@ -212,10 +285,10 @@
 		  .attr("class", function(d, i) {return "popily-shapes popily-circles popily-circles-"+i;})
 		  .attr('r', 3)
 		  .attr("cx", function(d,i,k) {
-		    return width/2+scale(stacked(d,i,k))*(Math.sin(i*2*Math.PI/total));
+		    return width/2; // initial
 		  })
 		  .attr("cy", function(d,i,k){
-		    return height/2-scale(stacked(d,i,k))*(Math.cos(i*2*Math.PI/total));
+		    return height/2; // initial
 		  })
 		  .style("fill", function(d, i, k) {return data.colors[$$.isStacked?columnsCount-k:k];})
 		  .style("fill-opacity", .9)
@@ -238,46 +311,124 @@
          .transition(200)
          .style("fill-opacity", 0.2);
 	    });
+    points
+      .transition()
+      .duration(data.transition.duration)
+		  .attr("cx", function(d,i,k) {
+		    return width/2+scale(stacked(d,i,k))*(Math.sin(i*2*Math.PI/total));
+		  })
+		  .attr("cy", function(d,i,k){
+		    return height/2-scale(stacked(d,i,k))*(Math.cos(i*2*Math.PI/total));
+		  })
+
+    if(data.legend) {
+      //Initiate Legend	
+      var legend = g.append("g")
+        .attr("class", "popily-legend")
+        .attr("width", width)
+        .attr("transform", 'translate(0,'+(height)+')');
+      var legendItems = legend
+        .selectAll('.popily-legend-item')
+        .data(data.data.groups)
+        .enter()
+        .append('g')
+		    .attr("class", function(d, i) {return "popily-legend-item popily-legend-item-"+i;})
+		    .style("cursor", "pointer")
+		    .attr("transform", function(d,i) { 
+		      return 'translate('+legendItemPositions[i].left+','+
+		          (legendItemPositions[i].line*20) + ')'; })
+        .on('mouseover', function (d, i){
+          g.selectAll("polygon")
+           .transition(200)
+           .style("fill-opacity", 0.1); 
+          g.selectAll("polygon.popily-lines-"+i)
+           .transition(200)
+           .style("fill-opacity", .7);
+          g.selectAll("g.popily-legend-item")
+           .transition(200)
+           .style("opacity", 0.3);
+          g.selectAll("g.popily-legend-item-"+i)
+           .transition(200)
+           .style("opacity", 1);
+        })
+        .on('mouseout', function (d, i){
+          g.selectAll("polygon")
+           .transition(200)
+           .style("fill-opacity", 0.2);
+          g.selectAll("g.popily-legend-item")
+           .transition(200)
+           .style("opacity", 1);
+        });
       
+      legendItems
+        .append("rect")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("width", 10)
+        .attr("height", 10)
+        .style("fill", function(d, i){ return data.colors[i];});
+      //Create text next to squares
+      legendItems
+        .append("text")
+        .attr("x", 14)
+        .attr("y", 0)
+        .attr("dy", 9)
+        .text(function(d) { return d; });
+    }
+            
     d3.select(window).on('resize', function() {
-      
+      height = data.size.height || "100%";
       if((data.size.width||'100%') == '100%')
         width = data.bindTo.getBoundingClientRect().width;
-      if((data.size.height||'100%') == '100%')
+      if(height == '100%')
         height = data.bindTo.getBoundingClientRect().height || 500;
+      
+      if(data.legend) {
+    		legendItemPositions = calculateLegendItemPositions(data.data.groups);
+        legendHeight = (legendItemPositions[legendItemPositions.length-1].line+1)*20;
+        height = height - legendHeight;
+      }
       
       radius = Math.min(width/2-labelMaxBox.width, height/2-labelMaxBox.height);
       scale
 	      .range([0, radius*0.95])
   	  ticks = scale.ticks(data.axis.y.tick.count);
 	    
-    	element.style("max-height", height+'px'); 
+    	element.style("max-height", (height+legendHeight)+'px'); 
       svg
         .attr("width", width)
-        .attr("height", height);
+        .attr("height", height+legendHeight);
       
-      ygridLines
-        .attr("x1", function(d,i,k){return scale(ticks[k])*(1-Math.sin(i*2*Math.PI/total));})
-	      .attr("y1", function(d,i,k){return scale(ticks[k])*(1-Math.cos(i*2*Math.PI/total));})
-	      .attr("x2", function(d,i,k){return scale(ticks[k])*(1-Math.sin((i+1)*2*Math.PI/total));})
-    	  .attr("y2", function(d,i,k){return scale(ticks[k])*(1-Math.cos((i+1)*2*Math.PI/total));})
-	      .attr("transform", function(d,i,k) { return "translate(" + (width/2-scale(ticks[k])) + ", " + (height/2-scale(ticks[k])) + ")"; });
+      if(data.grid) {
+        ygridLines
+          .attr("x1", function(d,i,k){return scale(ticks[k])*(1-Math.sin(i*2*Math.PI/total));})
+	        .attr("y1", function(d,i,k){return scale(ticks[k])*(1-Math.cos(i*2*Math.PI/total));})
+	        .attr("x2", function(d,i,k){return scale(ticks[k])*(1-Math.sin((i+1)*2*Math.PI/total));})
+      	  .attr("y2", function(d,i,k){return scale(ticks[k])*(1-Math.cos((i+1)*2*Math.PI/total));})
+	        .attr("transform", function(d,i,k) { return "translate(" + (width/2-scale(ticks[k])) + ", " + (height/2-scale(ticks[k])) + ")"; });
+      }
       
-      yTicks
-        .attr("x", function(d){return scale(d)*(1-Math.sin(0));})
-        .attr("y", function(d){return scale(d)*(1-Math.cos(0));})
-        .attr("transform", function(d) { return "translate(" + (width/2-scale(d)+5) + ", " + (height/2-scale(d)+5) + ")";});
+      if(data.axis.y.show) {
+    	  yLabel
+    	    .attr("transform", "translate(" + (width/2) + ", " + (height/2-radius*0.95) + ") rotate(-90) ");
+        yTicks
+          .attr("x", function(d){return scale(d)*(1-Math.sin(0));})
+          .attr("y", function(d){return scale(d)*(1-Math.cos(0));})
+          .attr("transform", function(d) { return "translate(" + (width/2-scale(d)+5) + ", " + (height/2-scale(d)+5) + ")";});
+      }
       
       axisLines
-		    .attr("x1", width/2)
-		    .attr("y1", height/2)
-		    .attr("x2", function(d, i){return width/2+radius*(Math.sin(i*2*Math.PI/total));})
-		    .attr("y2", function(d, i){return height/2-radius*(Math.cos(i*2*Math.PI/total));})
-		    
-      axisLabels
-		    .attr("transform", function(d, i){return "translate(0, -10)"})
-		    .attr("x", function(d, i){return width/2+radius*(Math.sin(i*2*Math.PI/total))+labelMaxBox.width/2*Math.sin(i*2*Math.PI/total);})
-		    .attr("y", function(d, i){return height/2-radius*(Math.cos(i*2*Math.PI/total))-labelMaxBox.height/2*Math.cos(i*2*Math.PI/total) - 4 ;});
+	      .attr("x1", width/2)
+	      .attr("y1", height/2)
+	      .attr("x2", function(d, i){return width/2+radius*(Math.sin(i*2*Math.PI/total));})
+	      .attr("y2", function(d, i){return height/2-radius*(Math.cos(i*2*Math.PI/total));})
+		      
+      if(data.axis.x.show) {
+        axisLabels
+		      .attr("transform", function(d, i){return "translate(0, -10)"})
+		      .attr("x", function(d, i){return width/2+radius*(Math.sin(i*2*Math.PI/total))+labelMaxBox.width/2*Math.sin(i*2*Math.PI/total);})
+		      .attr("y", function(d, i){return height/2-radius*(Math.cos(i*2*Math.PI/total))-labelMaxBox.height/2*Math.cos(i*2*Math.PI/total) - 4 ;});
+      }
 		    
       shapes
         .attr("points",function(d, k) {
@@ -294,9 +445,18 @@
         .attr("cx", function(d,i,k) {return width/2+scale(stacked(d,i,k))*(Math.sin(i*2*Math.PI/total));})
 	      .attr("cy", function(d,i,k){return height/2-scale(stacked(d,i,k))*(Math.cos(i*2*Math.PI/total));});
         
+
+      if(data.legend) {
+        legend
+          .attr("width", width)
+          .attr("transform", 'translate(0,'+(height)+')');
+        legendItems
+          .attr("transform", function(d,i) { 
+		        return 'translate('+legendItemPositions[i].left+','+
+		            (legendItemPositions[i].line*20) + ')'; });
+      }
         
     }); 
-      
     
   }
   
@@ -310,6 +470,9 @@
         data = popilyChart.chartTypes.barCommon.assignAxis(columns,calculation,options);
       return data;
   };
+
+
+
 
   chart.render = function(element, options, formattedData) {
   
@@ -372,6 +535,9 @@
       colors: options.colors,
       legend: (!_.isUndefined(options.legend) ? options.legend : true),
       tooltip: (_.isUndefined(options.tooltip)?true:options.tooltip),
+      transition: {
+        duration: options.skipAnimation?0:750
+      },
       size: {
         height: options.height,
       },

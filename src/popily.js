@@ -338,6 +338,7 @@
       'yAxis': 'yAxis',
       'formatters': 'formatters',
       'hideColumns': 'hideColumns',
+      'tooltip': 'tooltip'
     };
 
     var availableServerOptions = {
@@ -404,6 +405,7 @@
       }
       else if('normalize' == transformation.op) {
         ds.normalize(transformation.column, transformation.columnNormalized);
+        if(!options.formatters) options.formatters = [];
         if(!options.formatters.find(function(f) { return f.column==transformation.columnNormalized}) )
           options.formatters.push({
             column: transformation.columnNormalized,
