@@ -94,7 +94,7 @@ Analyze data from the Popily API and prepare for rendering
         // if datetime and category and number
         if(typePattern === 'category,datetime,numeric') {
             // if calculation is total
-            if(calculation === 'sum') {
+            if(calculation === 'sum' || calculation === 'count') {
                 bestType = 'stackedArea';
             }
             else {
@@ -161,7 +161,7 @@ Analyze data from the Popily API and prepare for rendering
         if(columns.length === 1) {
             bestType = 'sentence';
         }
-        if(columns.length === 2) {
+        else if(columns.length === 2) {
             bestType = _bestForTwo(columns,calculation);
         }
         else if(columns.length === 3) {

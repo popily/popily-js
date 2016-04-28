@@ -36,7 +36,7 @@
     var groupers = _.filter(columns, function(column) { return column.dataType !== 'numeric' });
     var prefix,suffix,clauses;
     if(numbers.length === 1 && numbers[0].label === 'count_0') {
-      prefix = 'Number of ';
+      prefix = 'Count of records ';
     }
     else {
       prefix = popily.chart.format.capitalize(calculation) + ' of ' + joinWithAnd(_.map(_.pluck(numbers,'label'),popily.chart.format.wrapLabel));
