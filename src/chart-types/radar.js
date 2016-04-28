@@ -212,7 +212,7 @@
 	    .attr("x2", function(d, i){return width/2+radius*(Math.sin(i*2*Math.PI/total));})
 	    .attr("y2", function(d, i){return height/2-radius*(Math.cos(i*2*Math.PI/total));})
 	    .attr("class", "domain")
-	    .style("stroke", "grey")
+	    .style("stroke", "#000000")
 	    .style("stroke-width", "1px");
 
     if(data.axis.x.show) {
