@@ -126,7 +126,7 @@
     if(data.axis.x.show)
       labelMaxBox = getTextWidth(data.axis.x.categories);
 		
-    radius = Math.min(width/2-labelMaxBox.width, height/2-labelMaxBox.height);
+    radius = Math.min(width/2-labelMaxBox.width-3, height/2-labelMaxBox.height-3);
 	  scale
 	    .range([0, radius*0.95])
 	    .domain([minValue, maxValue])
@@ -220,10 +220,9 @@
 	    var axisLabels = axis.append("text")
 		    .text(function(d){return data.axis.x.tick.format(d)})
 		    .attr("text-anchor", "middle")
-		    .attr("dy", "1.5em")
-		    .attr("transform", function(d, i){return "translate(0, -10)"})
-		    .attr("x", function(d, i){return width/2+radius*(Math.sin(i*2*Math.PI/total))+labelMaxBox.width/2*Math.sin(i*2*Math.PI/total);})
-		    .attr("y", function(d, i){return height/2-radius*(Math.cos(i*2*Math.PI/total))-labelMaxBox.height/2*Math.cos(i*2*Math.PI/total) - 4 ;});
+		    .attr("dy", 3)
+		    .attr("x", function(d, i){return width/2+(radius+3)*(Math.sin(i*2*Math.PI/total))+labelMaxBox.width/2*Math.sin(i*2*Math.PI/total);})
+		    .attr("y", function(d, i){return height/2-(radius+3)*(Math.cos(i*2*Math.PI/total))-labelMaxBox.height/2*Math.cos(i*2*Math.PI/total);});
     }
 
 
@@ -389,7 +388,7 @@
         height = height - legendHeight;
       }
       
-      radius = Math.min(width/2-labelMaxBox.width, height/2-labelMaxBox.height);
+      radius = Math.min(width/2-labelMaxBox.width-3, height/2-labelMaxBox.height-3);
       scale
 	      .range([0, radius*0.95])
   	  ticks = scale.ticks(data.axis.y.tick.count);
@@ -425,9 +424,8 @@
 		      
       if(data.axis.x.show) {
         axisLabels
-		      .attr("transform", function(d, i){return "translate(0, -10)"})
-		      .attr("x", function(d, i){return width/2+radius*(Math.sin(i*2*Math.PI/total))+labelMaxBox.width/2*Math.sin(i*2*Math.PI/total);})
-		      .attr("y", function(d, i){return height/2-radius*(Math.cos(i*2*Math.PI/total))-labelMaxBox.height/2*Math.cos(i*2*Math.PI/total) - 4 ;});
+  		    .attr("x", function(d, i){return width/2+(radius+3)*(Math.sin(i*2*Math.PI/total))+labelMaxBox.width/2*Math.sin(i*2*Math.PI/total);})
+  		    .attr("y", function(d, i){return height/2-(radius+3)*(Math.cos(i*2*Math.PI/total))-labelMaxBox.height/2*Math.cos(i*2*Math.PI/total);});
       }
 		    
       shapes
@@ -533,7 +531,7 @@
         },
       },
       colors: options.colors,
-      legend: (!_.isUndefined(options.legend) ? options.legend : true),
+      legend: (!_.isUndefined(options.legend) ? options.legend : data.groups.length>1),
       tooltip: (_.isUndefined(options.tooltip)?true:options.tooltip),
       transition: {
         duration: options.skipAnimation?0:750
