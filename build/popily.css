@@ -616,77 +616,89 @@
   .popily-title-variable {
     font-weight: bold; }
 
-.popily-chartarea {
+.popily-chartarea .unit {
+  cursor: pointer;
+  fill: #333;
+  stroke: #000;
+  stroke-width: .4px; }
+  .popily-chartarea .unit title {
+    display: none !important; }
+
+.popily-chartarea .legend-bg {
+  fill: #fff;
+  fill-opacity: .8; }
+
+.popily-chartarea .legend-bar {
+  stroke: #222;
+  stroke-width: 1px; }
+
+.popily-chartarea .unit {
+  stroke: #555;
+  stroke-opacity: .3;
+  opacity: .8;
+  fill: #ccc; }
+
+.popily-chartarea .unit.active {
+  stroke-opacity: .9;
+  stroke-width: 3;
+  -webkit-transition: 300ms;
+  transition: 300ms;
+  opacity: 1; }
+
+.popily-chartarea .background {
+  fill: none;
+  pointer-events: all; }
+
+.popily-chartarea text {
+  fill: #333;
+  font-size: 12px; }
+
+.popily-chartarea.hide-legend .legend {
+  display: None; }
+
+.popily-chartarea .legend-color:hover {
+  cursor: pointer;
+  opacity: 1; }
+
+.popily-chartarea .legend-color {
+  opacity: .8;
+  -webkit-transition: 300ms;
+  transition: 300ms; }
+
+.popily-chartarea path.leaflet-clickable {
+  -webkit-transition: 300ms;
+  transition: 300ms; }
+
+.popily-chartarea .category-legend {
+  margin-bottom: 12px;
+  margin-top: 12px; }
+  .popily-chartarea .category-legend div {
+    display: inline-block;
+    font-size: 12px;
+    margin-left: 10px; }
+
+.popily-chartarea .legend-color {
+  opacity: .8;
+  -webkit-transition: 300ms;
+  transition: 300ms; }
+  .popily-chartarea .legend-color span {
+    background-color: #2475B0;
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 5px; }
+
+.popily-chartarea table.popily-table {
+  width: 100%;
+  border-collapse: collapse;
   /* Zebra striping */ }
-  .popily-chartarea .unit {
-    cursor: pointer;
-    fill: #333;
-    stroke: #000;
-    stroke-width: .4px; }
-    .popily-chartarea .unit title {
-      display: none !important; }
-  .popily-chartarea .legend-bg {
-    fill: #fff;
-    fill-opacity: .8; }
-  .popily-chartarea .legend-bar {
-    stroke: #222;
-    stroke-width: 1px; }
-  .popily-chartarea .unit {
-    stroke: #555;
-    stroke-opacity: .3;
-    opacity: .8;
-    fill: #ccc; }
-  .popily-chartarea .unit.active {
-    stroke-opacity: .9;
-    stroke-width: 3;
-    -webkit-transition: 300ms;
-    transition: 300ms;
-    opacity: 1; }
-  .popily-chartarea .background {
-    fill: none;
-    pointer-events: all; }
-  .popily-chartarea text {
-    fill: #333;
-    font-size: 12px; }
-  .popily-chartarea.hide-legend .legend {
-    display: None; }
-  .popily-chartarea .legend-color:hover {
-    cursor: pointer;
-    opacity: 1; }
-  .popily-chartarea .legend-color {
-    opacity: .8;
-    -webkit-transition: 300ms;
-    transition: 300ms; }
-  .popily-chartarea path.leaflet-clickable {
-    -webkit-transition: 300ms;
-    transition: 300ms; }
-  .popily-chartarea .category-legend {
-    margin-bottom: 12px;
-    margin-top: 12px; }
-    .popily-chartarea .category-legend div {
-      display: inline-block;
-      font-size: 12px;
-      margin-left: 10px; }
-  .popily-chartarea .legend-color {
-    opacity: .8;
-    -webkit-transition: 300ms;
-    transition: 300ms; }
-    .popily-chartarea .legend-color span {
-      background-color: #2475B0;
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      margin-right: 5px; }
-  .popily-chartarea table {
-    width: 100%;
-    border-collapse: collapse; }
-  .popily-chartarea tr:nth-of-type(odd) {
+  .popily-chartarea table.popily-table tr:nth-of-type(odd) {
     background: #eee; }
-  .popily-chartarea th {
+  .popily-chartarea table.popily-table th {
     background: #333;
     color: white;
     font-weight: bold; }
-  .popily-chartarea td, .popily-chartarea th {
+  .popily-chartarea table.popily-table td, .popily-chartarea table.popily-table th {
     padding: 6px;
     border: 1px solid #ccc;
     text-align: left; }

@@ -33,6 +33,7 @@
       var rows = _.zip.apply(null, values);
 
       var table = document.createElement('table');
+      table.classList.add('popily-table');
       var thead = document.createElement('thead');
       var tbody = document.createElement('tbody');
       var theadrow = document.createElement('tr');
