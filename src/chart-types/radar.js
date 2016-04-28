@@ -541,7 +541,7 @@
       size: {
         height: options.height,
       },
-      grid: _.isUndefined(options.xGrid)?false:options.xGrid,
+      grid: _.isUndefined(options.xGrid)?true:options.xGrid,
     }
   
     var c = this.generate(chartData);
