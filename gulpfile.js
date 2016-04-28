@@ -54,6 +54,8 @@ gulp.task('scripts', ['api'], function() {
             'src/label.js',  
             'src/c3extend.js',  
             'src/chart-types/common/*.js', 
+            'src/chart-types/bar.js',
+            'src/chart-types/radar.js',
             'src/chart-types/*.js',
             '!src/chart-types/choropleth.js',
             '!src/chart-types/interactive-map.js',

@@ -2,21 +2,58 @@
   var popilyChart = window.popily.chart;
   var chart = _.clone(popilyChart.baseChart);
 
+  chart.isStacked = false;
+
   chart.generate = function(data) {
     
     if(_.isUndefined(data.axis.y.tick.count))
       data.axis.y.tick.count = 10; 
     
-    data = _.defaults(data, chart.defaults);
+    data = _.defaults(data, this.defaults);
   
     var element, tooltip, radius,
       width = data.size.width || "100%",
       height = data.size.height || "100%",
       element = d3.select(data.bindTo),
       total = data.axis.x.categories.length,
-      maxValue = 100,
-      ticks, scale = d3.scale.linear();
+      maxValue, minValue,
+      ticks, scale = d3.scale.linear(),
+      stackedValues = [],
+      columnsCount = data.data.columns.length-1,
+      $$ = this;
   
+    if(!this.isStacked) {
+      maxValue = data.axis.y.max || data.data.columns[0][1];
+      minValue = data.axis.y.min || data.data.columns[0][1];
+      data.data.columns.forEach(function(column) {
+        for(var i=1; i<column.length; i++) { // skip first element, serie name
+          if(column[i] < minValue) minValue = column[i];
+          if(column[i] > maxValue) maxValue = column[i];
+        }
+      });
+    }
+    else {
+      minValue = data.axis.y.min || data.data.columns[0][1];
+      maxValue = data.axis.y.max || _.reduce(data.data.columns, function(m, c) { return m+=c[1]}, 0);
+      for(var i=data.data.columns[0].length-1; i>0; i--) { // skip first element, serie name
+        var stackedBefore = 0;
+        data.data.columns.forEach(function(column, j) {
+          if(!stackedValues[j]) stackedValues[j] = [];
+          stackedBefore += column[i];
+          stackedValues[j][i-1] = stackedBefore;
+          if(column[i] < minValue) minValue = column[i];
+        });
+        if(stackedBefore > maxValue) maxValue = stackedBefore;
+      };
+    }
+
+    var stacked = function(d,i,k) {
+      if(!$$.isStacked)
+        return d;
+      else
+        return stackedValues[columnsCount-k][i];
+    }
+    
     if(width == '100%')
       width = data.bindTo.getBoundingClientRect().width;
     if(height == '100%')
@@ -43,7 +80,7 @@
     radius = Math.min(width/2-labelMaxBox.width, height/2-labelMaxBox.height);
 	  scale
 	    .range([0, radius*0.95])
-	    .domain([data.axis.y.min, data.axis.y.max])
+	    .domain([minValue, maxValue])
 	    .nice();
 	  ticks = scale.ticks(data.axis.y.tick.count);
 
@@ -52,10 +89,11 @@
         .attr('class', 'popily-tooltip-container')
         .offset([-5, 0])
         .html(function(d, i, k) {
+          k = $$.isStacked?columnsCount-k:k;
           var text = "<table class='popily-tooltip'><tr><th colspan='2'>" + data.axis.x.tick.format(data.axis.x.categories[i]) + "</th></tr>";
           text += "<tr class='popily-tooltip-name-'>";
           text += "<td class='name'><span style='background-color:" + data.colors[k] + "'></span> " + data.data.columns[k][0] + "</td>";
-          text += "<td class='value'>" + data.axis.y.tick.format(d) + "</td>";
+          text += "<td class='value'>" + data.axis.y.tick.format(data.data.columns[k][i+1]) + "</td>";
           text += "</tr>";
           return text + "</table>"; 
         });
@@ -138,17 +176,17 @@
       .append("polygon")
       .attr("class", function(d, i) {return "popily-shapes popily-lines popily-lines-"+i;})
       .style("stroke-width", "1px")
-      .style("stroke", function(d,i) {return data.colors[i]})
-      .attr("points",function(d) {
+      .style("stroke", function(d,i) {return data.colors[$$.isStacked?columnsCount-i:i]})
+      .attr("points",function(d, k) {
         var str="";
-        d.slice(1).forEach(function(value, i) {
+        d.slice(1).forEach(function(d, i) {
           str += 
-            (width/2-(scale(value)*Math.sin(i*2*Math.PI/total))) + ',' +
-            (height/2-(scale(value)*Math.cos(i*2*Math.PI/total))) + ' '
+            (width/2-(scale(stacked(d,i,k))*Math.sin(i*2*Math.PI/total))) + ',' +
+            (height/2-(scale(stacked(d,i,k))*Math.cos(i*2*Math.PI/total))) + ' '
         })
         return str;
         })
-      .style("fill", function(d, i){return data.colors[i]})
+      .style("fill", function(d, i){return data.colors[$$.isStacked?columnsCount-i:i]})
       .style("fill-opacity", 0.2)
       .on('mouseover', function (d, i){
         var z = "polygon.popily-lines-"+i;
@@ -173,13 +211,13 @@
       .append("svg:circle")
 		  .attr("class", function(d, i) {return "popily-shapes popily-circles popily-circles-"+i;})
 		  .attr('r', 3)
-		  .attr("cx", function(d, i) {
-		    return width/2-scale(d)*(Math.sin(i*2*Math.PI/total));
+		  .attr("cx", function(d,i,k) {
+		    return width/2-scale(stacked(d,i,k))*(Math.sin(i*2*Math.PI/total));
 		  })
-		  .attr("cy", function(d, i){
-		    return height/2-scale(d)*(Math.cos(i*2*Math.PI/total));
+		  .attr("cy", function(d,i,k){
+		    return height/2-scale(stacked(d,i,k))*(Math.cos(i*2*Math.PI/total));
 		  })
-		  .style("fill", function(d, i, k) {return data.colors[k];})
+		  .style("fill", function(d, i, k) {return data.colors[$$.isStacked?columnsCount-k:k];})
 		  .style("fill-opacity", .9)
 		  
 	    .on('mouseover', function (d, i, k){
@@ -242,19 +280,19 @@
 		    .attr("y", function(d, i){return height/2-radius*(Math.cos(i*2*Math.PI/total))-labelMaxBox.height/2*Math.cos(i*2*Math.PI/total) - 4 ;});
 		    
       shapes
-        .attr("points",function(d) {
+        .attr("points",function(d, k) {
           var str="";
-          d.slice(1).forEach(function(value, i) {
+          d.slice(1).forEach(function(d, i) {
             str += 
-              (width/2-(scale(value)*Math.sin(i*2*Math.PI/total))) + ',' +
-              (height/2-(scale(value)*Math.cos(i*2*Math.PI/total))) + ' '
+              (width/2-(scale(stacked(d,i,k))*Math.sin(i*2*Math.PI/total))) + ',' +
+              (height/2-(scale(stacked(d,i,k))*Math.cos(i*2*Math.PI/total))) + ' '
           })
           return str;
         });
         
       points
-        .attr("cx", function(d,i) {return width/2-scale(d)*(Math.sin(i*2*Math.PI/total));})
-	      .attr("cy", function(d, i){return height/2-scale(d)*(Math.cos(i*2*Math.PI/total));});
+        .attr("cx", function(d,i,k) {return width/2-scale(stacked(d,i,k))*(Math.sin(i*2*Math.PI/total));})
+	      .attr("cy", function(d,i,k){return height/2-scale(stacked(d,i,k))*(Math.cos(i*2*Math.PI/total));});
         
         
     }); 
@@ -312,8 +350,7 @@
           },
         },
         y: {
-          min: Math.min(_.min(formattedData.chartData.y.values), 0),
-          max: _.max(formattedData.chartData.y.values),
+          min: 0,
           show: options.yAxis,
           label: {
             text: options.yLabel || yLabel,
@@ -332,7 +369,7 @@
       grid: _.isUndefined(options.xGrid)?false:options.xGrid,
     }
   
-    var c = chart.generate(chartData);
+    var c = this.generate(chartData);
   
     return c;
     //return popilyChart.chartTypes.linear.render(element, options, rawData, true);
