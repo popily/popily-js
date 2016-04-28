@@ -146,7 +146,7 @@
 	  var axisLines = axis.append("line")
 		  .attr("x1", width/2)
 		  .attr("y1", height/2)
-		  .attr("x2", function(d, i){return width/2-radius*(Math.sin(i*2*Math.PI/total));})
+		  .attr("x2", function(d, i){return width/2+radius*(Math.sin(i*2*Math.PI/total));})
 		  .attr("y2", function(d, i){return height/2-radius*(Math.cos(i*2*Math.PI/total));})
 		  .attr("class", "domain")
 		  .style("stroke", "grey")
@@ -158,7 +158,7 @@
 		  .attr("text-anchor", "middle")
 		  .attr("dy", "1.5em")
 		  .attr("transform", function(d, i){return "translate(0, -10)"})
-		  .attr("x", function(d, i){return width/2-radius*(Math.sin(i*2*Math.PI/total))-labelMaxBox.width/2*Math.sin(i*2*Math.PI/total);})
+		  .attr("x", function(d, i){return width/2+radius*(Math.sin(i*2*Math.PI/total))+labelMaxBox.width/2*Math.sin(i*2*Math.PI/total);})
 		  .attr("y", function(d, i){return height/2-radius*(Math.cos(i*2*Math.PI/total))-labelMaxBox.height/2*Math.cos(i*2*Math.PI/total) - 4 ;});
 
 
@@ -181,7 +181,7 @@
         var str="";
         d.slice(1).forEach(function(d, i) {
           str += 
-            (width/2-(scale(stacked(d,i,k))*Math.sin(i*2*Math.PI/total))) + ',' +
+            (width/2+(scale(stacked(d,i,k))*Math.sin(i*2*Math.PI/total))) + ',' +
             (height/2-(scale(stacked(d,i,k))*Math.cos(i*2*Math.PI/total))) + ' '
         })
         return str;
@@ -212,7 +212,7 @@
 		  .attr("class", function(d, i) {return "popily-shapes popily-circles popily-circles-"+i;})
 		  .attr('r', 3)
 		  .attr("cx", function(d,i,k) {
-		    return width/2-scale(stacked(d,i,k))*(Math.sin(i*2*Math.PI/total));
+		    return width/2+scale(stacked(d,i,k))*(Math.sin(i*2*Math.PI/total));
 		  })
 		  .attr("cy", function(d,i,k){
 		    return height/2-scale(stacked(d,i,k))*(Math.cos(i*2*Math.PI/total));
@@ -271,12 +271,12 @@
       axisLines
 		    .attr("x1", width/2)
 		    .attr("y1", height/2)
-		    .attr("x2", function(d, i){return width/2-radius*(Math.sin(i*2*Math.PI/total));})
+		    .attr("x2", function(d, i){return width/2+radius*(Math.sin(i*2*Math.PI/total));})
 		    .attr("y2", function(d, i){return height/2-radius*(Math.cos(i*2*Math.PI/total));})
 		    
       axisLabels
 		    .attr("transform", function(d, i){return "translate(0, -10)"})
-		    .attr("x", function(d, i){return width/2-radius*(Math.sin(i*2*Math.PI/total))-labelMaxBox.width/2*Math.sin(i*2*Math.PI/total);})
+		    .attr("x", function(d, i){return width/2+radius*(Math.sin(i*2*Math.PI/total))+labelMaxBox.width/2*Math.sin(i*2*Math.PI/total);})
 		    .attr("y", function(d, i){return height/2-radius*(Math.cos(i*2*Math.PI/total))-labelMaxBox.height/2*Math.cos(i*2*Math.PI/total) - 4 ;});
 		    
       shapes
@@ -284,14 +284,14 @@
           var str="";
           d.slice(1).forEach(function(d, i) {
             str += 
-              (width/2-(scale(stacked(d,i,k))*Math.sin(i*2*Math.PI/total))) + ',' +
+              (width/2+(scale(stacked(d,i,k))*Math.sin(i*2*Math.PI/total))) + ',' +
               (height/2-(scale(stacked(d,i,k))*Math.cos(i*2*Math.PI/total))) + ' '
           })
           return str;
         });
         
       points
-        .attr("cx", function(d,i,k) {return width/2-scale(stacked(d,i,k))*(Math.sin(i*2*Math.PI/total));})
+        .attr("cx", function(d,i,k) {return width/2+scale(stacked(d,i,k))*(Math.sin(i*2*Math.PI/total));})
 	      .attr("cy", function(d,i,k){return height/2-scale(stacked(d,i,k))*(Math.cos(i*2*Math.PI/total));});
         
         
@@ -316,6 +316,7 @@
     var data;
     var xLabel = formattedData.chartData.x.label;
     var yLabel = formattedData.chartData.y.label;
+    var xFormat
 
     if(formattedData.chartData.z) {
       data = popilyChart.chartData.c3ify( formattedData.chartData.x.values,
@@ -331,7 +332,15 @@
         categories: formattedData.chartData.x.values
       };
     }
-    console.log(data);
+    
+    if(formattedData.chartData.x.dataType == 'datetime') {
+      var variation = options.variation || formattedData.chartData.metadata.intervals[0];
+      var xFormatStr = popily.chart.format.formatFromInterval(variation);
+      xFormat = d3.time.format(xFormatStr);
+      var fullFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
+      data.categories = _.map(data.categories, function(c) {return fullFormat.parse(c);})
+    }
+    
     var chartData = {
       bindTo: element,
       data : {
@@ -343,7 +352,7 @@
           show: options.xAxis,
           categories: data.categories,
           tick: {
-            format: popily.chart.format.formatAxis(formattedData.chartData.x, options)
+            format: popily.chart.format.formatAxis(formattedData.chartData.x, options, xFormat)
           },
           label: {
            text: options.xLabel || xLabel,
