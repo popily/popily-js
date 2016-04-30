@@ -165,8 +165,8 @@
               type: 'category',
               categories: data.categories,
               tick: {
-                  rotate: options.xRotation ||  45,
-                  autorotate: !options.xRotation,
+                  rotate: _.isUndefined(options.xRotation)?45:options.xRotation,
+                  autorotate: _.isUndefined(options.xRotation),
                   multiline: false,
                   format: popily.chart.format.formatAxis(formattedData.chartData.x, options)
               },
@@ -182,19 +182,21 @@
                   position: rotated?'inner-right':'outer-middle'
               },
               tick: {
-                  format: popily.chart.format.formatAxis(formattedData.chartData.y, options, d3.format(",")),
                   rotate: options.yRotation ||  0,
+                  autorotate: _.isUndefined(options.yRotation),
+                  format: popily.chart.format.formatAxis(formattedData.chartData.y, options, d3.format(",")),
               }
           },
           y2: {
               show: y2,
               label: {
                   text: options.y2Label || y2Label,
-                  position: 'outer-middle'
+                  position: rotated?'inner-right':'outer-middle'
               },
               tick: {
-                  format: popily.chart.format.formatAxis(formattedData.chartData.y, options, d3.format(",")),
                   rotate: options.yRotation ||  0,
+                  autorotate: _.isUndefined(options.y2Rotation),
+                  format: popily.chart.format.formatAxis(formattedData.chartData.y, options, d3.format(",")),
               }
           },
           rotated: rotated
