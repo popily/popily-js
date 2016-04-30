@@ -50,12 +50,24 @@
     var tickFormat = d3.time.format(tickFormatStr);
     var formattedData = kwargs.formattedData;
     
+    var y2 = false;
+    var y2Label = '';
+    var axes = {};
+    
+    var numerics = formattedData.chartData.columns.filter(function(c) { return c.dataType=='numeric'});
+    if(numerics.length>1 && options.y2Axis) {
+      var y2 = true;
+      y2Label = numerics[1].label;
+      axes[y2Label] = 'y2';
+    }
+    
     var chartData = {
         bindto: element,
         data: {
             x: 'x',
             columns: data.columns,
-            xFormat: dateFormatStr
+            xFormat: dateFormatStr,
+            axes: axes
         },
         padding: chartPadding,
         axis: {
@@ -88,6 +100,17 @@
                     rotate: options.yRotation ||  0,
                 },
                 padding: {top:0, bottom:0}
+            },
+            y2: {
+                show: y2,
+                label: {
+                    text: options.y2Label || y2Label,
+                    position: 'outer-middle'
+                },
+                tick: {
+                    format: popily.chart.format.formatAxis(formattedData.chartData.y, options, d3.format(",")),
+                    rotate: options.yRotation ||  0,
+                }
             }
         },
         grid: {

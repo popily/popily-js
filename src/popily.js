@@ -25,6 +25,7 @@
           background: false,
           xAxis: true,
           yAxis: true,
+          y2Axis: true,
           formatters: []
       },
       categoryLimit: 500,
@@ -308,6 +309,7 @@
       'filters': 'transformations',
       'xLabel': 'xLabel',
       'yLabel': 'yLabel',
+      'y2Label': 'y2Label',
       'xColumn': 'xColumn',
       'groupByColumn': 'groupByColumn',
       'height': 'height',
@@ -336,6 +338,7 @@
       'yRotation': 'yRotation',
       'xAxis': 'xAxis',
       'yAxis': 'yAxis',
+      'y2Axis': 'y2Axis',
       'formatters': 'formatters',
       'hideColumns': 'hideColumns',
       'tooltip': 'tooltip'

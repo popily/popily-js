@@ -147,7 +147,7 @@ Analyze data from the Popily API and prepare for rendering
 
         var possibleTypes = {
             'bar': ['pie','bubble','bubble2','line', 'radar'],
-            'scatterplotCategory': ['barGrouped'],
+            'scatterplotCategory': ['barGrouped', 'multiLine'],
             'barGrouped': ['barStacked', 'radar', 'radarStacked'],
             'barStacked': ['barGrouped', 'radar', 'radarStacked'],
             'bubble': ['bar', 'bubble2'],
