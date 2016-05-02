@@ -116,6 +116,8 @@
           var testFunc = function(e) {return e[idx] <= value}
         else if(op === 'in')
           var testFunc = function(e) { return _(value).contains(e[idx]) }
+        else if(op === 'notin')
+          var testFunc = function(e) { return !_(value).contains(e[idx]) }
         else {
           console.error('Unrecognized filter option: '+op);
           return this; 

@@ -221,7 +221,6 @@
     var ds = chart.dataset();
 
     if(options.variation) {
-      console.log(options.variation);
       ds.assignVariation(options.variation);
     }
     
