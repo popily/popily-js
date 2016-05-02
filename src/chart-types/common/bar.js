@@ -140,12 +140,23 @@
     var formattedData = kwargs.formattedData;
 
     rotated = options.rotated || rotated;
-        
+    var y2 = false;
+    var y2Label = '';
+    var axes = {};
+    
+    var numerics = formattedData.chartData.columns.filter(function(c) { return c.dataType=='numeric'});
+    if(numerics.length>1 && options.y2Axis) {
+      var y2 = true;
+      y2Label = numerics[1].label;
+      axes[y2Label] = 'y2';
+    }
+    
     var chartData = {
       bindto: element,
       data: {
           columns: data.columns,
-          type: 'bar'
+          type: 'bar',
+          axes: axes
       },
       padding: that.defaults.chartPadding(),
       axis: {
@@ -154,8 +165,8 @@
               type: 'category',
               categories: data.categories,
               tick: {
-                  rotate: options.xRotation ||  45,
-                  autorotate: !options.xRotation,
+                  rotate: _.isUndefined(options.xRotation)?45:options.xRotation,
+                  autorotate: _.isUndefined(options.xRotation),
                   multiline: false,
                   format: popily.chart.format.formatAxis(formattedData.chartData.x, options)
               },
@@ -171,8 +182,21 @@
                   position: rotated?'inner-right':'outer-middle'
               },
               tick: {
-                  format: popily.chart.format.formatAxis(formattedData.chartData.y, options, d3.format(",")),
                   rotate: options.yRotation ||  0,
+                  autorotate: _.isUndefined(options.yRotation),
+                  format: popily.chart.format.formatAxis(formattedData.chartData.y, options, d3.format(",")),
+              }
+          },
+          y2: {
+              show: y2,
+              label: {
+                  text: options.y2Label || y2Label,
+                  position: rotated?'inner-right':'outer-middle'
+              },
+              tick: {
+                  rotate: options.yRotation ||  0,
+                  autorotate: _.isUndefined(options.y2Rotation),
+                  format: popily.chart.format.formatAxis(formattedData.chartData.y, options, d3.format(",")),
               }
           },
           rotated: rotated

@@ -46,23 +46,20 @@ setTimeout(function() {
 //popily.api.setToken('04d3355451dc557066bca149de2b83f3746f9102');
 //popily.api.setURL('http://local.popily.com');
 //*
-popily.api.setToken('56ea1e35ebcf052737fa4096e5409ea8d9c1491f');
+popily.api.setToken('360bf1df37ee048b8132dd42e22fe5b11eb479c1');
 var insightOptions = {
-    source: 'superstore-sales-csv-5',
+    source: 'hollywoodsmostprofitablestories-csv-160',
     //columns: ['Order Priority'],
     //calculation: 'count',
     //calculation: 'average',
-    columns: ['Sales','Order Priority', 'Product Category'],
+    columns: ['Year', 'Worldwide Gross', 'Rotten Tomatoes %'],
     //calculation: 'sum',
     //xColumn: 'Product Category',
     //groupByColumn: 'Customer Segment',
-    chartType: 1?'radar':'radarStacked',
-    timeIntervals: 'month',
-    transformationss: [{
-      column: 'Order Date',
-      op: 'normalize',
-      columnNormalized: 'Sales'
-    }],
+    chartType: 'multiLine',
+    yRotation: 25,
+    //xRotation: 20,
+    
     //transformations
     //hideColumns: ['Customer Segment']
 };
