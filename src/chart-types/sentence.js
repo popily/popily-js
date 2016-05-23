@@ -16,7 +16,8 @@
       var header = _.pluck(columns,'label')[0];
       var value = format.formatNumbers(_.pluck(columns,'values'))[0];      
       var p = document.createElement('p');
-      p.innerHTML = 'The ' + format.wrapLabel(calculation) + ' of ' + format.wrapLabel(header) + ' is ' + format.wrapLabel(value);
+      p.classList.add('popily-metric-description');
+      p.innerHTML = 'The ' + format.wrapLabel(calculation) + ' of ' + format.wrapLabel(header) + ' is ' + format.wrapLabel(format.formatNumbers([parseFloat(value)],1));
 
       element.appendChild(p);
 

@@ -20,7 +20,7 @@
     c3internalFn.init = function() {
       this.oldInit();
       var $$ = this;
-      
+
       if($$.config.grid_background) {
         var bg = $$.main.insert("rect", "rect");
         bg.classed('popily-background', true)
@@ -119,13 +119,14 @@
         }
       }
       
-      if (config['axis_'+axisId+'_tick_rotate']) {
+      if (config['axis_'+axisId+'_tick_rotate'] && config['axis_' + axisId + '_show']) {
         var h = 30 + $$.axis.getMaxTickWidth(axisId) * Math.cos(Math.PI * (90 - config['axis_'+axisId+'_tick_rotate']) / 180);
       }
       else
         var h = $$.oldGetHorizontalAxisHeight(axisId);
       return h;
     }
+
     c3internalFn.oldgetAxisWidthByAxisId = c3internalFn.getAxisWidthByAxisId;
     c3internalFn.getAxisWidthByAxisId = function(id, withoutRecompute) {
       var $$ = this, config = this.config;

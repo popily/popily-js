@@ -79,7 +79,7 @@
   }
 
   var sortData = function(xYalues,yValues,zValues,limit,order,z2Values) {
-      return [xYalues,yValues,zValues,z2Values];
+      //return [xYalues,yValues,zValues,z2Values];
       
       var tuples = _.zip(xYalues,yValues,zValues,z2Values);
           

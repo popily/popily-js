@@ -691,16 +691,17 @@
 .popily-chartarea table.popily-table {
   width: 100%;
   border-collapse: collapse;
-  /* Zebra striping */ }
-  .popily-chartarea table.popily-table tr:nth-of-type(odd) {
-    background: #eee; }
+  /* Zebra striping 
+    tr:nth-of-type(odd) { 
+      background: #eee; 
+    }
+    */ }
   .popily-chartarea table.popily-table th {
-    background: #333;
     color: white;
     font-weight: bold; }
   .popily-chartarea table.popily-table td, .popily-chartarea table.popily-table th {
     padding: 6px;
-    border: 1px solid #ccc;
+    border-bottom: 1px solid #555;
     text-align: left; }
 
 .popily-tooltip th > span {

@@ -44,6 +44,8 @@ gulp.task('scripts', ['api'], function() {
             'src/lib/c3.min.js',
             'src/lib/underscore.min.js',
             'src/lib/numeral.min.js',
+            'src/lib/list.min.js',
+            'src/lib/list.pagination.min.js',
             'build/popily-api.js',
             'src/popily.js',
             'src/analyze.js', 

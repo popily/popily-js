@@ -50,19 +50,25 @@
 
     var numbers = _.filter(columns, function(column) { return column.dataType === 'numeric'});
     var groupers = _.filter(columns, function(column) { return column.dataType !== 'numeric' });
-    var prefix,suffix,clauses;
+    var prefix,shortPrefix,suffix,clauses;
     if(numbers.length === 1 && numbers[0].label === 'count_0') {
-      prefix = 'Count of records ';
+      prefix = 'count of records ';
       if (calculation === 'ratio') {
-        prefix = 'Ratio of records ';
+        prefix = 'ratio of records ';
       }
+      shortPrefix = popily.chart.format.capitalize(prefix);
     }
     else {
-      prefix = popily.chart.format.capitalize(calculation) + ' of ' + joinWithAnd(_.map(_.pluck(numbers,'label'),popily.chart.format.wrapLabel));
+      shortPrefix = joinWithAnd(_.map(_.pluck(numbers,'label'),popily.chart.format.wrapLabel))
+      prefix = calculation + ' of ' + shortPrefix;
     }
 
     if(groupers.length > 0) {
-      suffix = ' grouped by ' + joinWithAnd(_.map(_.pluck(groupers,'label'),popily.chart.format.wrapLabel));
+      var groupBy = ' for every value of ';
+      if (groupers.length > 1) {
+        groupBy = ' for every combination of ';
+      }
+      suffix = groupBy + joinWithAnd(_.map(_.pluck(groupers,'label'),popily.chart.format.wrapLabel));
     }
     else {
       suffix = '';
@@ -89,7 +95,14 @@
       clauses = '';
     }
     return {
-      title: prefix + suffix + clauses
+      description: 'This chart shows the ' + prefix + suffix + clauses,
+      title: (function() {
+          var t = shortPrefix;
+          if (groupers.length === 0) {
+            return t;
+          }
+          return t + ' by ' + joinWithAnd(_.map(_.pluck(groupers,'label'),popily.chart.format.wrapLabel))
+        })()
     }
     
   }

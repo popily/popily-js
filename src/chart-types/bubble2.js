@@ -56,11 +56,11 @@
         format = d3.format(",d"),
         color = d3.scale.ordinal().range(options.colors);
 
-    if(width == '100%')
+    if(!width || width === '100%')
       width = element.getBoundingClientRect().width;
-    if(height == '100%')
+    if(!height || height === '100%')
       var height = popilyChart.utils.chartSize()['height'];
-    
+
     var preppedData = this.prepData(formattedData, options);
     var xValues = preppedData[0];
     var yValues = preppedData[1];
@@ -90,7 +90,7 @@
     var avgValue = sumValue/nodes.length;
     
     var createScale = function() {
-      var blankSpaceFactor = 2 + (width+height)/2000;
+      var blankSpaceFactor = .5 + (width+height)/2000;
       var meanR = Math.sqrt((width*height)/(Math.PI*yValues.length*blankSpaceFactor));
       rMax = Math.sqrt(Math.pow(meanR,2) * maxValue/avgValue);
       return d3.scale.pow().exponent(0.5).domain([0, maxValue]).range([2, rMax]);
@@ -101,7 +101,7 @@
       x: width/2,
       y: height/2,
     };
-    
+
     var transitionDuration = 350;
     if(options.skipAnimation)
       transitionDuration = 0;
@@ -119,7 +119,7 @@
                 var text = "<table class='popily-tooltip'><tr><th colspan='2'>" + d.group + "</th></tr>";
                 text += "<tr class='popily-tooltip-name-'>";
                 text += "<td class='name'><span style='background-color:" + color(d.group) + "'></span> " + xLabel + "</td>";
-                text += "<td class='value'>" + d.showValue + "</td>";
+                text += "<td class='value'>" + d.value + "</td>";
                 text += "</tr>";
                 return text + "</table>"; 
             });

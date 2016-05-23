@@ -38,7 +38,7 @@
     },
     formatChartData: function(axisAssignments, apiResponse, chartableColumns) {
       var newData = {};
-      var possibleAxis = ['x','y','z'];
+      var possibleAxis = ['x','y','z','y2'];
 
       newData.chartData = {};
       newData.chartData.metadata = {};
@@ -46,7 +46,7 @@
       newData.chartData.calculation = apiResponse.calculation;
 
       _.each(possibleAxis, function(axis) {
-        if(axisAssignments.hasOwnProperty(axis)) {
+        if(axisAssignments.hasOwnProperty(axis) && axisAssignments[axis]) {
           var values = axisAssignments[axis].values;
           if(axisAssignments[axis].data_type === 'coordinate') {
             values = _.map(values, JSON.parse);
@@ -121,7 +121,6 @@
       },
       
       draw: function(element, options) {
-        
         var that = this;
         var calculation = apiResponse.calculation;
 
@@ -130,7 +129,7 @@
         var chartableColumns = popily.chart.baseChart.chartableColumns(ds.getColumns(),valueFilters,options.hideColumns||[]);
         var chartType = popily.chart.analyze.chartTypeForData(chartableColumns, calculation, options);
         var chartClass = popily.chart.chartTypes[chartType];
-        
+
         // Assign the data to axis (potentially modifying its structure) 
         // and manipulate the format expected by charting functions
         var axisAssignments = chartClass.assignAxis(chartableColumns, calculation, options);
@@ -154,8 +153,9 @@
         }
         
         element.classList.add('popily');
-        element.classList.add(options.uniqueClassName);
+        element.classList.add(options.uniqueClassName);        
         element.innerHTML = '';
+        
         if(options.title) {
           var titleElement = document.createElement("div");
           titleElement.classList.add('popily-title');
@@ -198,13 +198,35 @@
   
         var chartElement = document.createElement("div");
         chartElement.classList.add('popily-chartarea');
-        element.appendChild(chartElement);
+        element.appendChild(chartElement);        
         
-        // Render the chart
+        if (chartableColumns.length > 1 && options.includeDescription !== false) {
+          var descriptionElement = document.createElement("div");
+          var descriptionHeader = document.createElement('h3');
+          descriptionHeader.innerHTML = 'Description';
+          var descriptionText = document.createElement('div');
+          descriptionText.classList.add('popily-description-text');
+          var descriptionTextSection = document.createElement('p');
+          descriptionTextSection.innerHTML = labels.description + '.';
+          descriptionElement.classList.add('popily-description');
+          descriptionText.appendChild(descriptionHeader);
+          descriptionText.appendChild(descriptionTextSection);
+          descriptionElement.appendChild(descriptionText);
+          element.appendChild(descriptionElement);
+        }
+        
         var chart = chartClass.render(chartElement, options, formattedData);
-        return chart;
+
+        var chartObj = {
+          obj: chart,
+          chartType: chartType,
+          getDataset: function() {
+            return ds;
+          }
+        }
+        return chartObj;
         
-      },
+      }
       
     }
   
@@ -340,7 +362,9 @@
       'y2Axis': 'y2Axis',
       'formatters': 'formatters',
       'hideColumns': 'hideColumns',
-      'tooltip': 'tooltip'
+      'tooltip': 'tooltip',
+      'includeAnalysis': 'includeAnalysis',
+      'includeDescription': 'includeDescription'
     };
 
     var availableServerOptions = {

@@ -45,7 +45,7 @@ setTimeout(function() {
 
 //popily.api.setToken('04d3355451dc557066bca149de2b83f3746f9102');
 //popily.api.setURL('http://local.popily.com');
-//*
+/*
 popily.api.setToken('360bf1df37ee048b8132dd42e22fe5b11eb479c1');
 var insightOptions = {
     source: 'hollywoodsmostprofitablestories-csv-160',
@@ -64,6 +64,27 @@ var insightOptions = {
     //hideColumns: ['Customer Segment']
 };
 popily.chart.getAndRender('#my-chart-01', insightOptions);
+*/
+/*
+var a = [1,2,3,4,5,6,7,8,9,10]
+var b = ['a','a','a','b','b','b','c','c','c','d']
+var c = [11,12,13,14,15,16,17,18,19,20]
+var d = ['01/01/2015','01/02/2015','01/03/2015','01/04/2015','01/05/2015','01/06/2015','01/07/2015','01/08/2015','01/09/2015','01/10/2015']
+columns = [
+    {'column_header': 'A', 'data_type':'numeric','values': a},
+    {'column_header': 'B', 'data_type':'category','values': b},
+    {'column_header': 'C', 'data_type':'numeric','values': c},
+    {'column_header': 'D', 'data_type':'datetime','values': d}
+]
+
+popily.api.setToken('04d3355451dc557066bca149de2b83f3746f9102');
+popily.api.setURL('http://localhost:8000');
+
+popily.api.getInteresting(columns, function(err, response) {
+  console.log(response);
+})
+*/
+
 //*/
 
 //popily.api.getSource(2551, function(err, source) {console.log(source);});
@@ -103,10 +124,10 @@ popily.chart.getAndRender('#my-chart-01', {
 });
 //*/
 
-/*
+
 popily.api.setToken('04d3355451dc557066bca149de2b83f3746f9102');
 popily.api.setURL('http://localhost:8000');
-/*
+
 var insightOptions = {
     source: 'example-csv',
     columns: ['Transation Date', 'First Donation','Employer'],
@@ -116,10 +137,11 @@ var insightOptions = {
         column: 'First Donation',
         calculation: 'sum'
       }
-    ]
+    ],
+    includeDescription: true
 };
 popily.chart.getAndRender('#my-chart-02', insightOptions);
-*/
+
 /*
 var insightOptions = {
     source: 'example-csv1913',

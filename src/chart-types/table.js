@@ -32,10 +32,14 @@
       var values = _.pluck(columns,'values');
       var rows = _.zip.apply(null, values);
 
+      var container = document.createElement('div');
+      container.id = _.uniqueId('popily-table-');
+
       var table = document.createElement('table');
       table.classList.add('popily-table');
       var thead = document.createElement('thead');
       var tbody = document.createElement('tbody');
+      tbody.classList.add('list');
       var theadrow = document.createElement('tr');
 
       _.each(headers,function(header) {
@@ -59,7 +63,22 @@
       table.appendChild(thead);
       table.appendChild(tbody);
 
-      element.appendChild(table);
+      var pagination = document.createElement('ul');
+      pagination.classList.add('pagination');
+
+      container.appendChild(table);
+      container.appendChild(pagination);
+
+      element.appendChild(container);
+
+      var options = {
+          page: 10,
+          plugins: [
+            ListPagination({})
+          ]
+        };
+
+        var listObj = new List(container.id, options);
 
       return table;
   };

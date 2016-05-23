@@ -2,10 +2,6 @@
   var popilyChart = window.popily.chart;
   
   var chart = _.clone(popilyChart.baseChart);
-  chart.defaultFor = [
-    'ratio_per_category'
-  ];
-  chart.accepts = [];
 
   chart.render = function(element, options, rawData) {
       var that = this;

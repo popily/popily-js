@@ -120,8 +120,10 @@
     
     if(data.legend) {
   		legendItemPositions = calculateLegendItemPositions(data.data.groups);
-      legendHeight = (legendItemPositions[legendItemPositions.length-1].line+1)*20;
-      height = height - legendHeight;
+      if (legendItemPositions.length > 0) {
+        legendHeight = (legendItemPositions[legendItemPositions.length-1].line+1)*20;
+        height = height - legendHeight;
+      }
     }
     if(data.axis.x.show)
       labelMaxBox = getTextWidth(data.axis.x.categories);

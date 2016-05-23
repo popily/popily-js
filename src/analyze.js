@@ -61,7 +61,7 @@ Analyze data from the Popily API and prepare for rendering
         }
         
         // Category + number
-        else if(typePattern === 'category,numeric') {
+        else if(typePattern === 'category,numeric' || typePattern === 'numeric,rowlabel') {
             var hasState = _hasPossible(columns,'category','state');
             var hasCountry = _hasPossible(columns,'category','country');
             
@@ -146,16 +146,15 @@ Analyze data from the Popily API and prepare for rendering
         options = options || {};
 
         var possibleTypes = {
-            'bar': ['pie','bubble','bubble2','line', 'radar'],
+            'bar': ['pie','bubble','line', 'radar'],
             'scatterplotCategory': ['barGrouped', 'multiLine'],
             'barGrouped': ['barStacked', 'radar', 'radarStacked'],
             'barStacked': ['barGrouped', 'radar', 'radarStacked'],
-            'bubble': ['bar', 'bubble2'],
-            'bubble2': ['bar', 'bubble'],
+            'bubble': ['bar'],
             'multiLine': ['stackedArea','barGrouped','barStacked', 'radar', 'radarStacked'],
             'stackedArea': ['multiLine','barGrouped','barStacked', 'radar', 'radarStacked'],
-            'choropleth': ['bar','bubble','bubble2'],
-            'line': ['bar']
+            'choropleth': ['bar','bubble'],
+            'line': ['bar', 'bubble', 'stackedArea']
         };
 
         if(columns.length === 1) {

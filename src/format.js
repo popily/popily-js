@@ -146,10 +146,15 @@
 
 
       var joinWith = function(arr, word) {
-        if(arr.length < 2)
+        if(arr.length < 2) {
           return arr.join('');
-        else
-          return [arr.slice(0, -1).join(', '), arr.slice(-1)[0]].join(' ' + word + ' ');
+        } else {
+          var joinText = ', ';
+          if (arr.length === 2) {
+            joinText = ' ';
+          }
+          return [arr.slice(0, -1).join(', '), arr.slice(-1)[0]].join(joinText + word + ' ');
+        }
       };
 
       var wrapLabel = function(label) {
@@ -157,7 +162,7 @@
       };
 
       var capitalize = function(str) {
-        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+        return str.charAt(0).toUpperCase() + str.slice(1);
       };
       
     var formatAxis = function(axis, options, valueFormater) {

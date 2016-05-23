@@ -53,8 +53,8 @@
       var preppedData = this.prepData(formattedData, options);
       var xValues = preppedData[0];
       var yValues = preppedData[1];
-      var xLabel = formattedData.chartData.x.label;
-      var yLabel = formattedData.chartData.y.label;
+      var xLabel = options.xLabel || formattedData.chartData.x.label;
+      var yLabel = options.yLabel || formattedData.chartData.y.label;
 
     
       var yMin = 0;
@@ -64,27 +64,31 @@
       }
 
       yValues.unshift(yLabel);
-
-      var dayDiff = popily.chart.format.daysDiff(xValues); 
-      var tickFormatStr = popily.chart.format.formatFromDayDiff(dayDiff);
       
-      var variation = options.variation || formattedData.chartData.metadata.intervals[0];
+      var variation = options.variation || formattedData.chartData.defaultVariation;
+      var ticksValues = xValues;
 
-      var dateFormatStr = popily.chart.format.formatFromInterval(variation);
-      if(_.isUndefined(variation)) {
-        dateFormatStr = popily.chart.format.formatFromInspection(xValues);
+      if(variation) {
+        var dayDiff = popily.chart.format.daysDiff(xValues); 
+        var tickFormatStr = popily.chart.format.formatFromDayDiff(dayDiff);
+
+        var dateFormatStr;
+        if (variation !== 'raw') {
+          dateFormatStr = popily.chart.format.formatFromInterval(variation);
+        } else {
+          dateFormatStr = popily.chart.format.formatFromInspection(xValues);
+        }
+        var dateFormat = d3.time.format(dateFormatStr);
+        var tickFormat = d3.time.format(tickFormatStr);
+        var fullFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
+
+        ticksValues = popily.chart.format.tickFormatValues(xValues, tickFormatStr, dateFormat);
+        
+        if(dateFormat != fullFormat)
+            xValues = _.map(xValues, function(d) {
+                    return dateFormat(fullFormat.parse(d.split('.')[0]));
+                });
       }
-      
-      var dateFormat = d3.time.format(dateFormatStr);
-      var tickFormat = d3.time.format(tickFormatStr);
-      var fullFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
-
-      var ticksValues = popily.chart.format.tickFormatValues(xValues, tickFormatStr, dateFormat);
-      
-      if(dateFormat != fullFormat)
-          xValues = _.map(xValues, function(d) {
-                  return dateFormat(fullFormat.parse(d.split('.')[0]));
-              });
           
       xValues.unshift('x');
 
@@ -97,32 +101,41 @@
       if(tooltip && (!options.order || options.order == 'auto') ) {
         tooltip = {
           title: function (d) {
-            return dateFormat(d);
+            if(variation) {
+              return dateFormat(d);
+            }
+            return d;
           }
         }
       }
+
+      var xTickType = (function() {
+
+      })();
 
       var chartData = {
           bindto: element,
           data: {
               x: 'x',
-              xFormat: dateFormatStr, // 'xFormat' can be used as custom format of 'x'
               columns: [xValues,yValues]
           },
           padding: this.defaults.chartPadding(),
           axis: {
               x: {
                   show: options.xAxis,
-                  type: (!options.order || options.order == 'auto' ? 'timeseries' : 'category'),
+                  type: (function() {
+                    if (variation) {
+                      if (!options.order || options.order === 'auto') {
+                        return 'timeseries';
+                      }
+                    }
+                    return 'category';
+                  })(),
                   tick: {
                       fit: false,
-                      format: popily.chart.format.formatAxis(formattedData.chartData.x, options, tickFormat),
                       rotate: options.xRotation ||  45,
                       autorotate: !options.xRotation,
-                      multiline: false,
-                      //height: 130,
-                      values: (!options.order || options.order == 'auto' ? ticksValues : null),
-                      count: xValues.length-1
+                      multiline: false                      
                   },
                   label: {
                      text: xLabel,
@@ -137,7 +150,6 @@
                       position: 'outer-middle'
                   },
                   tick: {
-                      format: popily.chart.format.formatAxis(formattedData.chartData.y, options, d3.format(",")),
                       rotate: options.yRotation ||  0,
                   }
               }
@@ -168,17 +180,33 @@
           },
           tooltip: tooltip
       }
+
+      
+      if (variation) {
+        chartData.data.xFormat = dateFormatStr; // 'xFormat' can be used as custom format of 'x'
+        chartData.axis.x.tick.format = popily.chart.format.formatAxis(formattedData.chartData.x, options, tickFormat);
+        chartData.axis.x.tick.values = (!options.order || options.order == 'auto' ? ticksValues : null);
+        chartData.axis.x.tick.count = xValues.length-1;
+        chartData.axis.y.tick.format = popily.chart.format.formatAxis(formattedData.chartData.y, options, d3.format(","));
+      }
+      else {
+        chartData.axis.x.tick.count = xValues.length-1;
+        chartData.axis.x.values = ticksValues;
+      }
+      
       
       var tooltip = (_.isUndefined(options.tooltip)?true:options.tooltip);
       if(tooltip && (!options.order || options.order == 'auto') ) {
         chartData.tooltip.format = {
-          title: function(d) {
-            return dateFormat(d);
+          title: function (d) {
+            if(variation) {
+              return dateFormat(d);
+            }
+            return ticksValues[d+1];
           } 
         }
-        chartData.axis.x.tick.values = ticksValues;
+        // chartData.axis.x.tick.values = ticksValues;
       }
-
 
       var animation = popily.chart.utils.initialAnimation(chartData, options);
       var chart = c3.generate(chartData);

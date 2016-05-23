@@ -77,6 +77,10 @@ var packCalculations = function(calculations) {
 };       
         
 popily.api = {
+  getInteresting: function(columns, cb) {
+    _request('POST', '/interesting/describe/', {json: {columns: columns}}, cb);
+  },
+
   addSource: function(sourceData, cb) {
     
     var data = {};
@@ -129,6 +133,22 @@ popily.api = {
     }
 
     _request('GET', '/insights/', {qs: payload}, cb);
+  },
+
+  getOverview: function(sourceId, params, cb) {
+    params = params || {};
+    var payload = {'source': sourceId};
+
+    ['columns', 'insight_types', 'insight_actions'].forEach(function(key) {
+      if(key in params)
+        payload[key] = params[key].join(',')
+    });
+
+    if('calculations' in params) {
+      payload['calculations'] = packCalculations(params['calculations']);
+    }
+
+    _request('GET', '/insights/overview/', {qs: payload}, cb);
   },
 
   getInsight: function(insightId, params, cb) {

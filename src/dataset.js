@@ -14,7 +14,7 @@
       columnsCache = null;
       variations = insightObject.variations;
 
-      if(insightObject.hasOwnProperty('default_variation')) {
+      if(insightObject.hasOwnProperty('default_variation') && insightObject.default_variation) {
         variations[insightObject.default_variation] = insightObject.columns;
       }
 
