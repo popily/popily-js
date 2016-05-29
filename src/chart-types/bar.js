@@ -54,7 +54,7 @@
       }
 
       var yLabel = formattedData.chartData.y.label;
-      yValues.unshift(yLabel);
+      yValues.unshift(options.yLabel || yLabel);
       
       var chartData = {
         data: {

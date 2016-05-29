@@ -84,24 +84,27 @@ popily.api = {
   addSource: function(sourceData, cb) {
     
     var data = {};
-    ['columns', 'title', 'description'].forEach(function(key) {
-      if(key in sourceData)
+    var possibleFields = [
+      'title', 
+      'description', 
+      'columns', 
+      'url',
+      'connection_string',
+      'query',
+      'rows'
+    ];
+    possibleFields.forEach(function(key) {
+      if(sourceData.hasOwnProperty(key))
         data[key] = sourceData[key];
     })
 
-    if('url' in sourceData) {
-      data['url'] = sourceData['url']
-      _request('POST', '/sources/', {json: data}, cb);
+    var keys = Object.keys(data);
+    if (keys.indexOf('url') === -1 && keys.indexOf('connection_string') === -1 && keys.indexOf('rows') === -1) {
+      return cb('url, connection_string or rows is required');
     }
 
-    else if('connection_string' in sourceData ) {
-      data['connection_string'] = sourceData['connection_string']
-      data['query'] = sourceData['query']
-      _request('POST', '/sources/', {json: data}, cb);
-    }
-    
-    else
-      cb('url or connection_string is required');
+    _request('POST', '/sources/', {json: data}, cb);
+      
   },
 
 
