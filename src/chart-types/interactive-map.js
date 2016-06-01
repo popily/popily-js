@@ -122,6 +122,7 @@
         
         _.each(_.zip(coords,categories,labels,amounts), function(coord) {
             var size = 20;
+            
             if(amounts.length > 0) {
                 size = scale(coord[3]);
             }
@@ -129,7 +130,7 @@
             var marker = L.circle(coord[0], size, {
                 color: categoryColorMap[coord[1]],
                 fillColor: categoryColorMap[coord[1]],
-                fillOpacity: 0.5
+                fillOpacity: 0.7
             })
             if(showTooltip) {
               marker
@@ -160,7 +161,7 @@
             markerMap[coord[1]].push(marker);
         });
 
-        if(options.showLegend !== false) {
+        if(options.legend !== false) {
           var legend = document.createElement('div');
           legend.classList.add('category-legend')
 
@@ -211,10 +212,12 @@
         //var color = _.sample(color_pattern, 1)[0];
         var color = options.colors[0];
         _.each(_.zip(coords,labels,amounts), function(coord) {
-            var size = 20;
+            var size = 200;
+            
             if(amounts.length > 0) {
               size = scale(coord[2]);
             }
+            
             var marker = L.circle(coord[0], size, {
                 color: color,
                 fillColor: color,

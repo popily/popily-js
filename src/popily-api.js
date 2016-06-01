@@ -49,6 +49,12 @@ var _request = function(method, path, data, callback) {
 
     if(httpResponse.statusCode === 400)
       return callback(_error('Bad request', body));
+
+    if(httpResponse.statusCode === 404)
+      return callback(_error('Not found', body));
+
+    if(httpResponse.statusCode >= 500)
+      return callback(_error('Application error', body));
       
     try {
       var response = body;
@@ -115,6 +121,26 @@ popily.api = {
 
   getSource: function(sourceId, cb) {
     _request('GET', '/sources/'+sourceId+'/', {}, cb);
+  },
+
+
+  addCustomization: function(insight, title, description, options, cb) {
+    var data = {
+      title: title,
+      description: description,
+      options: options,
+      insight: insight
+    };
+    _request('POST', '/insight-customizations/', {json: data}, cb);
+  },
+
+  getCustomizations: function(sourceID, cb) {
+    var payload = {source:sourceID};
+    _request('GET', '/insight-customizations/', {qs:payload}, cb);
+  },
+
+  getCustomization: function(customizationID, cb) {
+    _request('GET', '/insight-customizations/'+customizationID+'/', {}, cb);
   },
 
 

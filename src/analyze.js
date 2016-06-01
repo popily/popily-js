@@ -27,6 +27,10 @@ Analyze data from the Popily API and prepare for rendering
         return _.findWhere(columns, {data_type: dataType});
     };
 
+    var getColumnsForType = function(columns, dataType) {
+        return _.filter(columns, function(column) { return column.data_type === dataType });
+    };
+
     var getTypePattern = function(columns) {
         var dataTypes = _.map(columns, function(column) { return column.data_type });
         dataTypes.sort();
@@ -157,7 +161,10 @@ Analyze data from the Popily API and prepare for rendering
             'line': ['bar', 'bubble', 'stackedArea']
         };
 
-        if(columns.length === 1) {
+        if (calculation === 'geo') {
+            bestType = 'interactiveMap';
+        }
+        else if(columns.length === 1) {
             bestType = 'sentence';
         }
         else if(columns.length === 2) {

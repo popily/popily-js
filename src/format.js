@@ -64,7 +64,12 @@
 
         if(dateFormat != fullFormat) {
             xValues = _.map(xValues, function(d) {
-                  return dateFormat(fullFormat.parse(d.split('.')[0]));
+                  if (d) {
+                    var firstPiece = d.split('.')[0];
+                    var parsed = fullFormat.parse(firstPiece);
+                    return dateFormat(parsed);
+                  }
+                  return '';
               });
         }
 

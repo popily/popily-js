@@ -6,8 +6,9 @@
   bar.assignAxis = function(columns, calculation, options) {
       var axis = {};
       var typePattern = popilyChart.analyze.getTypePattern(columns);
+      var numerics = _.where(columns,{data_type:'numeric' });
 
-      if(typePattern === 'numeric,numeric') {
+      if(numerics.length === columns.length) {
         axis.y = {
             column_header: calculation.charAt(0).toUpperCase() + calculation.slice(1).toLowerCase(),
             values: _.map(columns, function(column) { return column.values[0] }),
@@ -38,19 +39,20 @@
       var preppedData = popilyChart.chartTypes.barCommon.prepData(formattedData, options);
       var xValues = preppedData[0];
       var yValues = preppedData[1];
+      var height = 500;
 
       var chart;
         
       var rotated = options.rotated || false;
       //if(insight.options_rotate)
       //  rotated = true;
-      if(yValues.length > 40) {
+      if(yValues.length > 40 && (_.isNull(options.rotated) || options.rotated === true)) {
         rotated = true;
       }
 
-      if(rotated == true) {
+      if(rotated === true) {
         if(yValues.length > 40)
-          options.height = (yValues.length * 9) + 450;
+          height = (yValues.length * 9) + 450;
       }
 
       var yLabel = formattedData.chartData.y.label;
@@ -74,8 +76,6 @@
             categories: xValues,
             tick: {
               format: popily.chart.format.formatAxis(formattedData.chartData.x, options),
-              rotate: options.xRotation ||  45,
-              autorotate: !options.xRotation,
               multiline: false,
               fit: true
             },
@@ -92,7 +92,7 @@
             },
             tick: {
               format: popily.chart.format.formatAxis(formattedData.chartData.y, options, d3.format(",")),
-              rotate: options.yRotation ||  0,
+              rotate: options.yRotation || 0,
             }
           },
           rotated: rotated
@@ -104,7 +104,7 @@
           show: !_.isUndefined(options.legend) && options.legend,
         },
         size: {
-          height: options.height
+          height: options.height || height
         },
         grid: {
           x: {
@@ -119,8 +119,19 @@
         onresized: function() {
           popilyChart.chartTypes.barCommon.updateSpecials(element, rotated, options);
         }
+      };
+
+      chartData.axis.x.tick.autorotate = false;
+      if (_.isNull(options.xRotation) || !options.xRotation) {
+        chartData.axis.x.tick.autorotate = true;
       }
-    
+      else if(_.isNumber(options.xRotation)) {
+        chartData.axis.x.tick.rotate = options.xRotation;
+      }
+      else {
+        chartData.axis.x.tick.rotate = 45;
+      }
+
       chartData.bindto = element;
       var animation = popily.chart.utils.initialAnimation(chartData, options);
       
@@ -130,6 +141,7 @@
         popilyChart.chartTypes.barCommon.updateSpecials(element, rotated, options);
       });
       
+      options.rotated = rotated;
       return chart;
   };
 

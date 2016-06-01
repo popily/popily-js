@@ -45,9 +45,6 @@
     var dateFormatStr = kwargs.dateFormatStr;
     var chartPadding = kwargs.chartPadding;
     var variation = kwargs.variation;
-    var ticksValues = kwargs.ticksValues;
-    var tickFormatStr = kwargs.tickFormatStr;
-    var tickFormat = d3.time.format(tickFormatStr);
     var formattedData = kwargs.formattedData;
     
     var y2 = false;
@@ -68,22 +65,26 @@
         data: {
             x: 'x',
             columns: data.columns,
-            xFormat: dateFormatStr,
             axes: axes
         },
         padding: chartPadding,
         axis: {
             x: {
                 show: options.xAxis,
-                type: (!options.order || options.order == 'auto' ? 'timeseries' : 'category'),
+                type: (function() {
+                    if (variation) {
+                      if (!options.order || options.order === 'auto') {
+                        return 'timeseries';
+                      }
+                    }
+                    return 'category';
+                })(),
                 tick: {
                     fit: false,
-                    format: popily.chart.format.formatAxis(formattedData.chartData.x, options, tickFormat),
                     rotate: _.isUndefined(options.xRotation)?45:options.xRotation,
                     autorotate: _.isUndefined(options.xRotation),
-                    centered: true,
-                    values: (!options.order || options.order == 'auto' ? ticksValues : null),
-                    count: ticksValues.length
+                    centered: variation ? true : false,
+                    multiline: false
                 },
                 label: {
                     text: options.xLabel || xLabel,
@@ -140,19 +141,40 @@
             height: options.height
         }
     }
+
+    var ticksValues;;
+    if (variation) {
+      var tickFormatStr = kwargs.tickFormatStr;
+      var tickFormat = d3.time.format(tickFormatStr);
+      ticksValues = kwargs.ticksValues;
+      chartData.data.xFormat = dateFormatStr; // 'xFormat' can be used as custom format of 'x'
+      chartData.axis.x.tick.format = popily.chart.format.formatAxis(formattedData.chartData.x, options, tickFormat);
+      chartData.axis.x.tick.values = (!options.order || options.order == 'auto' ? ticksValues : null);
+      chartData.axis.x.tick.count = xValues.length-1;
+      chartData.axis.y.tick.format = popily.chart.format.formatAxis(formattedData.chartData.y, options, d3.format(","));
+    }
+    else {
+      chartData.axis.x.tick.count = formattedData.chartData.x.values.length-1;
+      chartData.axis.x.values = formattedData.chartData.x.values;
+      ticksValues = chartData.axis.x.values;
+    }
     
+
     var tooltip = (_.isUndefined(options.tooltip)?true:options.tooltip);
     if(tooltip && (!options.order || options.order == 'auto') ) {
-      var dateFormat = d3.time.format(dateFormatStr);
       chartData.tooltip = {
         show: true,
         format: {
-          title: function(d) {
-            return dateFormat(d);
-          } 
+          title: function (d) {
+            if(variation) {
+              var dateFormat = d3.time.format(dateFormatStr);
+              return dateFormat(d);
+            }
+            return ticksValues[d+1];
+          }
         }
       }
-      chartData.axis.x.tick.values = ticksValues;
+      // chartData.axis.x.tick.values = ticksValues;
     }
 
     return chartData;
@@ -196,11 +218,10 @@
       var xLabel = formattedData.chartData.x.label;
       var yLabel = formattedData.chartData.y.label;
 
-      options.variation = options.variation || formattedData.chartData.metadata.intervals[0];
+      options.variation = options.variation || formattedData.chartData.defaultVariation;
       var yMin = that.getYMin(yValues);
             
       var data = popilyChart.chartData.c3ify(xValues,yValues,zValues);
-      var dateData = that.formatDates(xValues, data, options);
 
       data.categories.unshift('x');
       data.columns.unshift(data.categories); 
@@ -212,12 +233,17 @@
         yLabel: yLabel,
         yMin: yMin,
         options: options, 
-        dateFormatStr: dateData.dateFormatStr,
-        chartPadding: chartPadding,
-        tickFormatStr: dateData.tickFormatStr,
-        ticksValues: dateData.ticksValues,
         formattedData: formattedData
       };
+
+      if (options.variation) {
+        var dateData = that.formatDates(xValues, data, options);
+        kwargs.dateFormatStr = dateData.dateFormatStr;
+        kwargs.chartPadding = chartPadding;
+        kwargs.tickFormatStr = dateData.tickFormatStr;
+        kwargs.ticksValues = dateData.ticksValues;
+      }
+
       var chartData = that.getChartObject(kwargs);
       chartData.tooltip.grouped = (function() {
           if(_.uniq(zValues).length > 20) {

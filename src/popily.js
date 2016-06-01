@@ -10,7 +10,7 @@
           width: '100%',
           height: '100%',
           style: 'detail',
-          rotated: false,
+          rotated: null,
           redrawOnResize: true,
           colors: [
             '#54C88A', '#BBD442', '#85C4ED', '#FFC59C', '#4FB27A', '#741699', '#FF7364',
@@ -102,7 +102,7 @@
 
       var filters = {};
       _.each(transformations,function(transformation) {
-        if(_.isUndefined(transformation.op) || _(['eq','in']).contains(transformation.op)) {
+        if(_.isUndefined(transformation.op) || _(['eq','in','noteq','notin']).contains(transformation.op)) {
           filters[transformation.column] = transformation.value;
         }
       });
@@ -136,7 +136,7 @@
         var formattedData = popily.chart.baseChart.formatChartData(axisAssignments, apiResponse, chartableColumns);
 
         // Build a title
-        var labels = popily.chart.generateLabels(calculation, formattedData.chartData.columns, options.transformations || []);
+        var labels = popily.chart.generateLabels(calculation, formattedData.chartData.columns, options.transformations || [], options.variation);
         
         // Add custom CSS if requested by user
         var extraCss = '';
@@ -220,6 +220,7 @@
         var chartObj = {
           obj: chart,
           chartType: chartType,
+          options: options,
           getDataset: function() {
             return ds;
           }

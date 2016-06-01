@@ -90,7 +90,11 @@
     var avgValue = sumValue/nodes.length;
     
     var createScale = function() {
-      var blankSpaceFactor = .5 + (width+height)/2000;
+      var multiplier = 2;
+      if (width < 400) {
+        multiplier = .7;
+      }
+      var blankSpaceFactor = multiplier + (width+height)/2000;
       var meanR = Math.sqrt((width*height)/(Math.PI*yValues.length*blankSpaceFactor));
       rMax = Math.sqrt(Math.pow(meanR,2) * maxValue/avgValue);
       return d3.scale.pow().exponent(0.5).domain([0, maxValue]).range([2, rMax]);
