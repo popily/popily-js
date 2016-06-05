@@ -10,10 +10,13 @@
           if(column.data_type === 'category') {
             axis.z = column;
           }
+          else if (options.xColumn && column.column_header === options.xColumn) {
+            axis.x = column;
+          }
           else if(!axis.y) {
             axis.y = column;
           }
-          else {
+          else if(!axis.x) {
             axis.x = column;
           }
       });

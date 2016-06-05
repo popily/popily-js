@@ -17,8 +17,8 @@
 
       var data = popilyChart.chartData.c3ify(xValues,yValues,zValues);
       var rotated = false;
-      if(data.columns.length > 25) {
-          rotated = true;
+      if(yValues.length > 25 && (_.isNull(options.rotated) || options.rotated === true)) {
+        rotated = true;
       }
 
       var kwargs = {

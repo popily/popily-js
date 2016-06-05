@@ -4,15 +4,31 @@
   var pie = _.clone(popilyChart.baseChart);
   pie.assignAxis = function(columns, calculation, options) {
       var axis = {};
+      var typePattern = popilyChart.analyze.getTypePattern(columns);
+      var numerics = _.where(columns,{data_type:'numeric' });
 
-      _.each(columns, function(column) {
-          if(column.data_type === 'numeric') {
-            axis.y = column;
-          }
-          else {
-            axis.x = column;
-          }
-      });
+      if(numerics.length === columns.length) {
+        axis.y = {
+            column_header: calculation.charAt(0).toUpperCase() + calculation.slice(1).toLowerCase(),
+            values: _.map(columns, function(column) { return column.values[0] }),
+            data_type: 'numeric'
+        }
+        axis.x = {
+            column_header: 'Columns',
+            values: _.map(columns, function(column) { return column.column_header }),
+            data_type: 'category'
+        }
+      }
+      else {
+        _.each(columns, function(column) {
+            if(column.data_type === 'numeric') {
+              axis.y = column;
+            }
+            else {
+              axis.x = column;
+            }
+        });
+      }
 
       return axis;
   };

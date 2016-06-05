@@ -22,8 +22,8 @@
       data.categories.unshift('x');
       data.columns.unshift(data.categories);
       var rotated = false;
-      if(data.columns[0].length > 40) {
-          rotated = true;
+      if(yValues.length > 40 && (_.isNull(options.rotated) || options.rotated === true)) {
+        rotated = true;
       }
 
       var kwargs = {

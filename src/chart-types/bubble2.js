@@ -191,7 +191,8 @@
         .friction(0.9)
         .on("tick", function(e) {
           return bubbles.each(centered(e.alpha)).attr("transform", function(d) {
-            return "translate(" + d.x + "," + d.y + ")"; 
+            var x = !_.isNaN(d.x) && isFinite(d.x) ? d.x : 0;
+            return "translate(" + x + "," + d.y + ")"; 
           })
         });
         

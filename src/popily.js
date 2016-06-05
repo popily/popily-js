@@ -76,38 +76,47 @@
 
       return newData;
     },
-    chartableColumns: function(columns,valueFilters,hideColumns) {
-      var filtered = _.keys(valueFilters);
+    chartableColumns: function(columns,transformations,hideColumns) {
       var chartables = _.filter(columns, function(column) {
-          
+          var transformation = _.find(transformations,function(t) { 
+                                    return t.column === column.column_header });
+
+          if(column.data_type === 'numeric') {
+            return true;
+          }
+
           if(_.contains(hideColumns,column.column_header)) {
             return false;
+          } 
+
+          if(!transformation) {
+            return true;
+          }
+
+          if(column.data_type === 'datetime' && _(['gte', 'lte']).contains(transformation.op)) {
+            return true;
           }
           
-          if(!_.contains(filtered,column.column_header)) {
-            return true;
+          if (_(['eq','in']).contains(transformation.op)) {
+            if (_.isArray(transformation.value) && transformation.value.length > 1) {
+              return true;
+            }
           }
-          else if(_.isArray(valueFilters[column.column_header]) && valueFilters[column.column_header].length > 1) {
-            return true;
+
+          if (transformation.op === 'noteq' && !_.isArray(transformation.value) && column.values.length > 2) {
+            return true
           }
+
+          if (_(['noteq','notin']).contains(transformation.op)) {
+            if (_.isArray(transformation.value) && _.difference(column.values,transformation.value).length > 1) {
+              return true;
+            }
+          }
+
           return false;
       });
 
       return chartables;
-    },
-    valueFilters: function(transformations) {
-      if(_.isUndefined(transformations)) {
-        return {};
-      }
-
-      var filters = {};
-      _.each(transformations,function(transformation) {
-        if(_.isUndefined(transformation.op) || _(['eq','in','noteq','notin']).contains(transformation.op)) {
-          filters[transformation.column] = transformation.value;
-        }
-      });
-
-      return filters;
     }
   };
 
@@ -125,8 +134,8 @@
         var calculation = apiResponse.calculation;
 
         // Determine the chart type based on the data
-        var valueFilters = popily.chart.baseChart.valueFilters(options.transformations);
-        var chartableColumns = popily.chart.baseChart.chartableColumns(ds.getColumns(),valueFilters,options.hideColumns||[]);
+        // console.log("valueFilters", valueFilters, options.transformations);
+        var chartableColumns = popily.chart.baseChart.chartableColumns(ds.getColumns(),options.transformations,options.hideColumns||[]);
         var chartType = popily.chart.analyze.chartTypeForData(chartableColumns, calculation, options);
         var chartClass = popily.chart.chartTypes[chartType];
 
@@ -159,11 +168,13 @@
         if(options.title) {
           var titleElement = document.createElement("div");
           titleElement.classList.add('popily-title');
+          var title;
           if(options.title === true)
-            titleElement.innerHTML = labels.title;
+            title = labels.title;
           else
-            titleElement.innerHTML = options.title;
+            title = options.title;
             
+          titleElement.innerHTML = title;
           element.appendChild(titleElement);
           
           var titleCss = '';
@@ -220,11 +231,13 @@
         var chartObj = {
           obj: chart,
           chartType: chartType,
+          title: title,
           options: options,
           getDataset: function() {
             return ds;
           }
         }
+
         return chartObj;
         
       }

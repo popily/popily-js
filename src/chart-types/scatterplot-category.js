@@ -3,21 +3,7 @@
   
   var chart = _.clone(popilyChart.baseChart);
   chart.assignAxis = function(columns, calculation, options) {
-      var axis = {};
-
-      _.each(columns, function(column) {
-          if(column.data_type === 'category') {
-            axis.z = column;
-          }
-          else if(!axis.y) {
-            axis.y = column;
-          }
-          else {
-            axis.x = column;
-          }
-      });
-
-      return axis;
+      return popilyChart.chartTypes.compare.assignAxis(columns,calculation,options);
   };
 
   chart.render = function(element, options, formattedData) {
@@ -33,11 +19,6 @@
       var xs = {};
       var zs = {};
 
-      /*
-      console.log(xValues);
-      console.log(yValues);
-      console.log(zValues);
-      */
       _.each(_.uniq(zValues), function(z) {
           zs[z] = {xs:[],ys:[]};
       });

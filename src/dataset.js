@@ -248,7 +248,7 @@
       },
 
       assignVariation: function(variation) {
-        if(variations.hasOwnProperty(variation)) {
+        if(!_.isNull(variations) && variations.hasOwnProperty(variation)) {
           columnsCache = null;
           table = zip(variations[variation]);
         }
