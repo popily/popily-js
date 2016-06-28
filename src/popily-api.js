@@ -83,8 +83,15 @@ var packCalculations = function(calculations) {
 };       
         
 popily.api = {
-  getInteresting: function(columns, cb) {
-    _request('POST', '/interesting/describe/', {json: {columns: columns}}, cb);
+  getInteresting: function(columns, params, cb) {
+    var payload = {
+      columns: columns
+    };
+    ['target', 'tests'].forEach(function(key) {
+      if(key in params)
+        payload[key] = params[key]
+    });
+    _request('POST', '/interesting/describe/', {json: payload}, cb);
   },
 
   addSource: function(sourceData, cb) {
@@ -122,27 +129,6 @@ popily.api = {
   getSource: function(sourceId, cb) {
     _request('GET', '/sources/'+sourceId+'/', {}, cb);
   },
-
-
-  addCustomization: function(insight, title, description, options, cb) {
-    var data = {
-      title: title,
-      description: description,
-      options: options,
-      insight: insight
-    };
-    _request('POST', '/insight-customizations/', {json: data}, cb);
-  },
-
-  getCustomizations: function(sourceID, cb) {
-    var payload = {source:sourceID};
-    _request('GET', '/insight-customizations/', {qs:payload}, cb);
-  },
-
-  getCustomization: function(customizationID, cb) {
-    _request('GET', '/insight-customizations/'+customizationID+'/', {}, cb);
-  },
-
 
   getInsights: function(sourceId, params, cb) {
     params = params || {};

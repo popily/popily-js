@@ -5,13 +5,14 @@
 
   window.popily.dataset = function(insightObject) {
 
-    var labels, dataTypes, table, columnsCache, variations;
+    var labels, dataTypes, table, columnsCache, variations, scales;
     
     var initialize = function(insightObject) {
       labels = [];
       dataTypes = [];
       possibleDataTypes = [];
       columnsCache = null;
+      scales = {};
       variations = insightObject.variations;
 
       if(insightObject.hasOwnProperty('default_variation') && insightObject.default_variation) {
@@ -204,20 +205,14 @@
         return this;
       },
       
-      normalize: function(column, columnNormalized) {
+      normalize: function(column) {
         var idx = columnIdx(column);
-        var normalizedIdx = columnIdx(columnNormalized);
+        var values = this.getColumn(column).values;
+        var max = d3.max(values);
+        var scale = d3.scale.linear().domain([0, max]).range([0, 100]);
         
-        var groupped = _.groupBy(table, function(e){ 
-          return e[idx]; 
-        })
-        _.map(groupped, function(group) {
-          group.sum = _.reduce(group, function(memo, row){ return memo+row[normalizedIdx]; }, 0)
-        });
-
         table.forEach(function(row) {
-          var group = groupped[row[idx]];
-          row[normalizedIdx] = 100*row[normalizedIdx]/group.sum;
+          row[idx] = scale(row[idx])
         });
         
         dataChanged();
