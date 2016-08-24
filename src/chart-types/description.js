@@ -138,6 +138,22 @@
     return container;
   };
 
+  var classification = function(textBlocks) {
+    var container = document.createElement('div');
+    container.classList.add('popily-description-classification');
+    var p = document.createElement('p');
+    var text = '';
+
+    if (textBlocks.length > 0) {
+      text += popilyChart.format.capitalize(textBlocks[0].primary) + '.';
+      text += ' For example ' + textBlocks[0].sub_clauses[0] + '.';
+      p.innerHTML = text;
+    }
+
+    container.appendChild(p);
+    return container;
+  };
+
   var empty = function(textBlocks) {
     var container = document.createElement('div');
     container.classList.add('popily-description-empty');
@@ -167,6 +183,9 @@
     }
     else if(primaryType === 'granger') {
       el.appendChild(granger(blocks));
+    }
+    else if(primaryType === 'classification') {
+      el.appendChild(classification(blocks));
     }
     else if(primaryType === 'chi') {
       el.appendChild(chiSquared(blocks));

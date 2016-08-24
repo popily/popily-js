@@ -120,6 +120,15 @@ popily.api = {
       
   },
 
+  addCustomization: function(insight, title, description, options, cb) {
+    var data = {
+      title: title,
+      description: description,
+      options: options,
+      insight: insight
+    };
+    _request('POST', '/insight-customizations/', {json: data}, cb);
+  },
 
   getSources: function(cb) {
     _request('GET', '/sources/', {}, cb);
@@ -128,6 +137,15 @@ popily.api = {
 
   getSource: function(sourceId, cb) {
     _request('GET', '/sources/'+sourceId+'/', {}, cb);
+  },
+
+  getCustomizations: function(sourceID, cb) {
+    var payload = {source:sourceID};
+    _request('GET', '/insight-customizations/', {qs:payload}, cb);
+  },
+
+  getCustomization: function(customizationID, cb) {
+    _request('GET', '/insight-customizations/'+customizationID+'/', {}, cb);
   },
 
   getInsights: function(sourceId, params, cb) {
