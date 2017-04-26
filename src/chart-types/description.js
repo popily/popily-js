@@ -11,7 +11,7 @@
       var d = document.createElement('div');
       d.classList.add(options.sectionClass);
       var p = document.createElement('p');
-      var firstSentence = popilyChart.format.capitalize(textBlock.primary) + '.';
+      var firstSentence = _.escape(popilyChart.format.capitalize(textBlock.primary)) + '.';
       p.innerHTML = firstSentence;
       d.appendChild(p);
 
@@ -25,7 +25,7 @@
 
         _.each(_.first(textBlock.sub_clauses,3), function(subClause) {
           var li = document.createElement('li');
-          li.innerHTML = popilyChart.format.capitalize(subClause);
+          li.innerHTML = _.escape(popilyChart.format.capitalize(subClause));
           ul.appendChild(li);
         });
 
@@ -75,7 +75,7 @@
     }
 
     var p = document.createElement('p');
-    p.innerHTML = paragraph;
+    p.innerHTML = _.escape(paragraph);
 
     container.appendChild(p);
 
@@ -107,7 +107,7 @@
       var paragraph = popilyChart.format.capitalize(firstSentence) + '. '; 
       paragraph += popilyChart.format.capitalize(secondSentence) + '.';
 
-      p.innerHTML = paragraph;
+      p.innerHTML = _.escape(paragraph);
 
       container.appendChild(p);
 
@@ -130,7 +130,7 @@
     var p = document.createElement('p');
 
     if (textBlocks.length > 0) {
-      p.innerHTML = popilyChart.format.capitalize(textBlocks[0].primary) + '.';
+      p.innerHTML = _.escape(popilyChart.format.capitalize(textBlocks[0].primary)) + '.';
     }
 
     container.appendChild(p);
@@ -147,7 +147,7 @@
     if (textBlocks.length > 0) {
       text += popilyChart.format.capitalize(textBlocks[0].primary) + '.';
       text += ' For example ' + textBlocks[0].sub_clauses[0] + '.';
-      p.innerHTML = text;
+      p.innerHTML = _.escape(text);
     }
 
     container.appendChild(p);
@@ -160,7 +160,7 @@
     var p = document.createElement('p');
 
     if (textBlocks.length > 0) {
-      p.innerHTML = popilyChart.format.capitalize(textBlocks[0].primary) + '.';
+      p.innerHTML = _.escape(popilyChart.format.capitalize(textBlocks[0].primary)) + '.';
     }
 
     container.appendChild(p);
