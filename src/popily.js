@@ -54,7 +54,7 @@
 
           newData.chartData[axis] = {
             values: values,
-            label: axisAssignments[axis].column_header,
+            label: _.escape(axisAssignments[axis].column_header),
             dataType: axisAssignments[axis].data_type,
             possibleDataTypes: axisAssignments[axis].possible_data_types
           }
@@ -64,7 +64,7 @@
       newData.chartData.columns = _.map(chartableColumns, function(column) {
         return {
           values: column.values,
-          label: column.column_header,
+          label: _.escape(column.column_header),
           dataType: column.data_type,
           possibleDataTypes: column.possible_data_types
         }

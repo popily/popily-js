@@ -300,7 +300,6 @@
 .leaflet-fade-anim .leaflet-tile,
 .leaflet-fade-anim .leaflet-popup {
   opacity: 0;
-  -webkit-transition: opacity 0.2s linear;
   transition: opacity 0.2s linear; }
 
 .leaflet-fade-anim .leaflet-tile-loaded,
@@ -308,7 +307,6 @@
   opacity: 1; }
 
 .leaflet-zoom-anim .leaflet-zoom-animated {
-  -webkit-transition: -webkit-transform 0.25s cubic-bezier(0, 0, 0.25, 1);
   transition: -webkit-transform 0.25s cubic-bezier(0, 0, 0.25, 1);
   transition: transform 0.25s cubic-bezier(0, 0, 0.25, 1);
   transition: transform 0.25s cubic-bezier(0, 0, 0.25, 1), -webkit-transform 0.25s cubic-bezier(0, 0, 0.25, 1); }
@@ -316,7 +314,6 @@
 .leaflet-zoom-anim .leaflet-tile,
 .leaflet-pan-anim .leaflet-tile,
 .leaflet-touching .leaflet-zoom-animated {
-  -webkit-transition: none;
   transition: none; }
 
 .leaflet-zoom-anim .leaflet-zoom-hide {
@@ -641,7 +638,6 @@
 .popily-chartarea .unit.active {
   stroke-opacity: .9;
   stroke-width: 3;
-  -webkit-transition: 300ms;
   transition: 300ms;
   opacity: 1; }
 
@@ -662,11 +658,9 @@
 
 .popily-chartarea .legend-color {
   opacity: .8;
-  -webkit-transition: 300ms;
   transition: 300ms; }
 
 .popily-chartarea path.leaflet-clickable {
-  -webkit-transition: 300ms;
   transition: 300ms; }
 
 .popily-chartarea .category-legend {
@@ -679,7 +673,6 @@
 
 .popily-chartarea .legend-color {
   opacity: .8;
-  -webkit-transition: 300ms;
   transition: 300ms; }
   .popily-chartarea .legend-color span {
     background-color: #2475B0;
