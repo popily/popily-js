@@ -87,7 +87,7 @@
                     multiline: false
                 },
                 label: {
-                    text: options.xLabel || xLabel,
+                    text: _.unescape(options.xLabel || xLabel),
                     position: 'inner-right'
                 }
             },
@@ -95,7 +95,7 @@
                 show: options.yAxis,
                 min: yMin,
                 label: {
-                    text: options.yLabel || yLabel,
+                    text: _.unescape(options.yLabel || yLabel),
                     position: 'outer-middle'
                 },
                 tick: {

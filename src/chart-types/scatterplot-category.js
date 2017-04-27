@@ -19,6 +19,8 @@
       var xs = {};
       var zs = {};
 
+      console.log(zValues);
+
       _.each(_.uniq(zValues), function(z) {
           zs[z] = {xs:[],ys:[]};
       });

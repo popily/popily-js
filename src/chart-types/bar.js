@@ -80,14 +80,14 @@
               fit: true
             },
             label: {
-              text: options.xLabel || formattedData.chartData.x.label,
+              text: _.unescape(options.xLabel || formattedData.chartData.x.label),
               position: rotated?'outer-middle':'inner-right',
             }
           },
           y: {
             show: options.yAxis,
             label: {
-              text: options.yLabel || yLabel,
+              text: _.unescape(options.yLabel || yLabel),
               position: rotated?'inner-right':'outer-middle'
             },
             tick: {

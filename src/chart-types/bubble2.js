@@ -19,7 +19,7 @@
         }
         axis.x = {
             column_header: 'Columns',
-            values: _.map(columns, function(column) { return column.column_header }),
+            values: _.map(columns, function(column) { return _.escape(column.column_header) }),
             data_type: 'category'
         }
       }

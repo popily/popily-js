@@ -71,7 +71,7 @@
               x: {
                   show: options.xAxis,
                   label: {
-                      text: options.xLabel || xLabel,
+                      text: _.unescape(options.xLabel || xLabel),
                       position: 'inner-right',
                   },
                   tick: {
@@ -84,7 +84,7 @@
               y: {
                   show: options.yAxis,
                   label: {
-                      text: options.yLabel || yLabel,
+                      text: _.unescape(options.yLabel || yLabel),
                       position: 'outer-middle'
                   },
                   tick: {

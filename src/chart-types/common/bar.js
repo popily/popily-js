@@ -171,14 +171,14 @@
                   format: popily.chart.format.formatAxis(formattedData.chartData.x, options)
               },
               label: {
-                 text: options.xLabel || xLabel,
+                 text: _.unescape(options.xLabel || xLabel),
                  position: rotated?'outer-middle':'inner-right',
               },
           },
           y: {
               show: options.yAxis,
               label: {
-                  text: options.yLabel || yLabel,
+                  text: _.unescape(options.yLabel || yLabel),
                   position: rotated?'inner-right':'outer-middle'
               },
               tick: {
@@ -190,7 +190,7 @@
           y2: {
               show: y2,
               label: {
-                  text: options.y2Label || y2Label,
+                  text: _.unescape(options.y2Label || y2Label),
                   position: rotated?'inner-right':'outer-middle'
               },
               tick: {

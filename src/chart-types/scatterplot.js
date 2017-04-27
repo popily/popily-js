@@ -18,10 +18,10 @@
 
 
       var columns = [];
-      yValues.unshift(yLabel);
-      xValues.unshift(xLabel);
+      yValues.unshift(_.unescape(yLabel));
+      xValues.unshift(_.unescape(xLabel));
       var xs = {};
-      xs[yLabel] = xLabel;
+      xs[_.unescape(yLabel)] = _.unescape(xLabel);
       columns.push(xValues);
       columns.push(yValues);
 
